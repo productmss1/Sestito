@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inTechgra POS - Program 100 Toko</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #6179e8;
+            --light-blue: #ebf0fe;
+            --bg-color: #f7f9fa;
+            --sidebar-bg: #ffffff;
+            --border-color: #eef0f3;
+            --text-dark: #2a2e34;
+            --text-gray: #8a92a6;
+            --text-light: #b4bac6;
+            --green: #29b872;
+            --danger: #e25b5b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        .header {
+            height: 64px;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            width: 236px;
+            /* Matches sidebar width approx */
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: #2b354f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo i {
+            color: var(--primary-blue);
+            font-size: 24px;
+        }
+
+        .header-center {
+            display: flex;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .nav-btn {
+            padding: 8px 32px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: none;
+            color: var(--text-gray);
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-blue);
+            color: white;
+            box-shadow: 0 2px 4px rgba(97, 121, 232, 0.2);
+        }
+
+        .nav-btn:not(.active) {
+            border: 1px solid var(--border-color);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-gray);
+            font-weight: normal;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background-color: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-weight: 600;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* LAYOUT */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR (Replaced with Stories) */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+            padding-bottom: 20px;
+        }
+
+        .sidebar-section {
+            padding: 16px 0 8px 0;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            font-weight: 700;
+            padding: 0 24px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-gray);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item i {
+            width: 16px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .menu-item:hover {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .menu-item.active {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border-left-color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 16px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .menu-item.danger {
+            color: var(--danger);
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .page-header {
+            padding: 24px 24px 16px 24px;
+        }
+
+        .breadcrumbs {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .breadcrumbs span {
+            color: var(--text-gray);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dark);
+        }
+
+        .content-body {
+            padding: 0 24px 100px 24px;
+            display: flex;
+            gap: 24px;
+        }
+
+        /* PANELS */
+        .panel {
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .left-panel {
+            flex: 6;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel {
+            flex: 4;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* PRODUCT LIST */
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title i {
+            color: var(--text-light);
+            font-size: 18px;
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-link.blue {
+            color: var(--primary-blue);
+        }
+
+        .product-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .product-remove {
+            color: var(--text-light);
+            cursor: pointer;
+            margin-right: 16px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .product-remove:hover {
+            color: var(--danger);
+        }
+
+        .product-img {
+            width: 48px;
+            height: 48px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .product-meta {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+        }
+
+        .product-price {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .product-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 16px;
+        }
+
+        .product-total {
+            color: var(--green);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        .qty-btn:hover {
+            background-color: var(--bg-color);
+            color: var(--primary-blue);
+        }
+
+        .qty-input {
+            width: 40px;
+            height: 32px;
+            border: none;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .subtotal-row {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 20px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .subtotal-val {
+            color: var(--primary-blue);
+        }
+
+        /* RIGHT PANEL FORMS */
+        .form-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background-color: #ffffff;
+        }
+
+        .form-card.compact {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-title {
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-title i {
+            color: var(--text-light);
+            font-size: 16px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .form-title span {
+            color: var(--text-gray);
+            font-weight: normal;
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .form-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-light);
+        }
+
+        .toggle-group {
+            display: flex;
+            background-color: var(--bg-color);
+            border-radius: 6px;
+            padding: 3px;
+        }
+
+        .toggle-btn {
+            padding: 6px 16px;
+            border: none;
+            background: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-gray);
+        }
+
+        .toggle-btn.active {
+            background-color: var(--primary-blue);
+            color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* VOUCHER SECTION (Custom for PRD) */
+        .voucher-section {
+            background-color: var(--light-blue);
+            border-color: #d1dcff;
+        }
+
+        .voucher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .voucher-title {
+            color: var(--primary-blue);
+        }
+
+        .voucher-title i {
+            color: var(--primary-blue);
+        }
+
+        .voucher-quota {
+            font-size: 12px;
+            color: var(--text-gray);
+            background: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            border: 1px solid #d1dcff;
+        }
+
+        /* BOTTOM BAR */
+        .bottom-bar {
+            position: fixed;
+            bottom: 24px;
+            left: 284px;
+            /* Lebar sidebar 260px + margin 24px */
+            right: 24px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+            z-index: 100;
+        }
+
+        .bottom-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .bottom-subtotal {
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .bottom-total {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bottom-total i {
+            color: var(--primary-blue);
+        }
+
+        .bottom-total-val {
+            color: var(--primary-blue);
+        }
+
+        .bottom-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 10px 28px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        /* MODAL SUCCESS STYLE */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .modal-icon {
+            font-size: 54px;
+            color: #2e7d32;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.5;
+            margin: 0 0 8px 0;
+        }
+
+        .btn-outline {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--bg-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 6px rgba(97, 121, 232, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #4a63d9;
+        }
+
+        .btn-success {
+            background-color: var(--green);
+            border: 1px solid var(--green);
+            color: white;
+        }
+
+        /* ONLINE ORDERS STYLES */
+        .online-orders-container {
+            background-color: #f8f9fc;
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .orders-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filters-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+        .filter-input {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: var(--text-dark);
+            outline: none;
+        }
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+        }
+        .search-wrapper input {
+            padding-right: 40px;
+        }
+        .search-wrapper i {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+        }
+        .orders-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 4px;
+        }
+        .order-tab {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .order-tab:hover {
+            color: var(--text-dark);
+        }
+        .order-tab.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+        .tab-badge {
+            background: #eef2f6;
+            color: var(--text-gray);
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        .order-tab.active .tab-badge {
+            background: #e1e7fc;
+            color: var(--primary-blue);
+        }
+        .order-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f2f5;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+        .order-id {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+        .order-status-badge {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .status-cart {
+            background: #e3f2fd;
+            color: #1e88e5;
+        }
+        .status-confirm {
+            background: #fff3e0;
+            color: #fb8c00;
+        }
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f2f5;
+            margin-bottom: 16px;
+        }
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .grid-label {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+        .grid-val {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .order-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .order-item-row {
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+        .order-item-qty {
+            color: var(--text-gray);
+            font-weight: 600;
+            width: 48px;
+        }
+        .order-item-name {
+            font-weight: 500;
+        }
+
+        /* DETAIL PRODUCT CARD STYLES */
+        .detail-prod-card {
+            display: flex;
+            gap: 16px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 16px;
+            align-items: center;
+        }
+        .detail-prod-card:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .detail-prod-img {
+            width: 64px;
+            height: 64px;
+            background: #f0f2f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .detail-prod-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .detail-prod-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .detail-prod-tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            width: fit-content;
+            margin-top: 2px;
+        }
+        .tag-orange {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .tag-red {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fa-solid fa-cube"></i> inTechgra
+            </div>
+        </div>
+        <div class="header-center">
+            <button class="nav-btn active" id="nav-penjualan" onclick="switchView('pos')">Penjualan</button>
+            <button class="nav-btn" id="nav-penjualan-online" onclick="switchView('orders')">Penjualan Online</button>
+            <button class="nav-btn">Keuangan</button>
+            <button class="nav-btn">Pengaturan</button>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+            <div class="user-profile">
+                <div class="avatar">
+                    <!-- Placeholder avatar using an initial since no image is provided -->
+                    T
+                </div>
+                <div class="user-info">
+                    <span>Tito</span>
+                    <span class="user-role">Kasir</span>
+                </div>
+                <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--text-gray);"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+
+        <!-- SIDEBAR (Replaced with PRD Stories) -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Epic 1: Transaksi & Voucher</div>
+                <div class="menu-item active" id="menu-proses-transaksi" onclick="switchView('pos')">
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span>1.1 Proses Transaksi</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Epic 2: Order Management</div>
+                <div class="menu-item" id="menu-dalam-keranjang" onclick="switchView('orders')">
+                    <i class="fa-solid fa-cart-arrow-down"></i>
+                    <span>2.1 Dalam Keranjang</span>
+                </div>
+                <div class="menu-item" onclick="switchView('orders')">
+                    <i class="fa-solid fa-box"></i>
+                    <span>2.2 Status Dikemas</span>
+                </div>
+                <div class="menu-item" onclick="switchView('orders')">
+                    <i class="fa-solid fa-truck-fast"></i>
+                    <span>2.3 Status Dikirim</span>
+                </div>
+                <div class="menu-item" onclick="switchView('orders')">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>2.4 Selesai</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Referensi</div>
+                <div class="menu-item">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Panduan Pengguna</span>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="menu-item danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Keluar</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="content">
+            <div class="page-header" id="global-page-header">
+                <div class="breadcrumbs" id="global-breadcrumbs">
+                    Penjualan <span>/</span> 1.1 Proses Transaksi
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <div class="page-title" id="global-page-title" style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                        <i class="fa-solid fa-arrow-left" style="font-size: 16px; cursor: pointer;" id="global-back-btn" onclick="switchView('orders')"></i>
+                        <span id="global-title-text">Detail Pesanan</span>
+                        <div style="display: flex; gap: 8px; margin-left: 16px;" id="header-extra-buttons">
+                            <button class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 6px; border: 1.5px solid #2e7d32; color: #2e7d32; background: #e8f5e9; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;" onclick="openUserflow()"><i class="fa-solid fa-diagram-project"></i> Userflow</button>
+                            <button class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 6px; border: 1.5px solid var(--primary-blue); color: var(--primary-blue); background: #e3f2fd; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;" onclick="openHighLevelConcept()"><i class="fa-solid fa-network-wired"></i> High Level Concept</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-body" id="view-ui">
+
+                <!-- LEFT PANEL (Products) -->
+                <div class="panel left-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-cart-shopping"></i> 2 Produk
+                        </div>
+                        <button class="btn-link">
+                            <i class="fa-regular fa-trash-can"></i> Hapus Semua
+                        </button>
+                    </div>
+
+                    <!-- Product 1 -->
+                    <div class="product-item">
+                        <i class="fa-solid fa-xmark product-remove"></i>
+                        <div class="product-img">
+                            <img src="https://via.placeholder.com/48x48/f0f0f0/333333?text=Motor" alt="Product">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Yamaha Lexi 10 cc</div>
+                            <div class="product-meta">Stok: 99.997.469</div>
+                            <div class="product-price">Rp500.000 x 1 (Unit)</div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-link blue"><i class="fa-solid fa-pen"></i> Ubah</button>
+                            <div class="product-total">Rp500.000</div>
+                            <div class="qty-control">
+                                <button class="qty-btn"><i class="fa-solid fa-minus"
+                                        style="font-size: 12px;"></i></button>
+                                <input type="text" class="qty-input" value="1">
+                                <button class="qty-btn"><i class="fa-solid fa-plus"
+                                        style="font-size: 12px;"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="product-item">
+                        <i class="fa-solid fa-xmark product-remove"></i>
+                        <div class="product-img">
+                            <img src="https://via.placeholder.com/48x48/f0f0f0/333333?text=Motor" alt="Product">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Yamaha XMAX 110 cc</div>
+                            <div class="product-meta">Stok: 99.998.663</div>
+                            <div class="product-price">Rp250.000 x 1 (Unit)</div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-link blue"><i class="fa-solid fa-pen"></i> Ubah</button>
+                            <div class="product-total">Rp250.000</div>
+                            <div class="qty-control">
+                                <button class="qty-btn"><i class="fa-solid fa-minus"
+                                        style="font-size: 12px;"></i></button>
+                                <input type="text" class="qty-input" value="1">
+                                <button class="qty-btn"><i class="fa-solid fa-plus"
+                                        style="font-size: 12px;"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subtotal-row">
+                        <div>Subtotal:</div>
+                        <div class="subtotal-val" id="left-panel-total">Rp750.000</div>
+                    </div>
+                </div>
+
+                <!-- RIGHT PANEL (Forms) -->
+                <div class="right-panel">
+
+                    <!-- CARD PELANGGAN AWAL -->
+                    <div class="form-card compact" id="card-pelanggan-awal">
+                        <div class="form-title">
+                            <i class="fa-regular fa-user"></i> Pelanggan
+                        </div>
+                        <button class="btn-link blue" onclick="bukaInputPelanggan()"><i class="fa-solid fa-plus"></i>
+                            Tambah</button>
+                    </div>
+
+                    <!-- CARD PELANGGAN INPUT -->
+                    <div class="form-card compact" id="card-pelanggan-input"
+                        style="display: none; flex-direction: column; align-items: stretch; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="form-title"><i class="fa-regular fa-user"></i> Pelanggan</div>
+                            <button class="btn-link" style="color: var(--text-gray); padding: 0;"
+                                onclick="batalInputPelanggan()"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="form-input-group">
+                            <input type="text" id="input-no-hp" class="input-field"
+                                placeholder="No HP Customer (08xx...)">
+                        </div>
+                        <button class="btn btn-primary" onclick="simpanPelanggan()"
+                            style="justify-content: center;">Pilih Pelanggan</button>
+                    </div>
+
+                    <!-- CARD PELANGGAN TERPILIH -->
+                    <div class="form-card compact" id="card-pelanggan-terpilih" style="display: none;">
+                        <div class="form-title"
+                            style="flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                            <i class="fa-regular fa-user"></i> <span id="nama-pelanggan-text"
+                                style="margin-left: 4px; font-weight: 600; color: var(--primary-blue);"></span>
+                        </div>
+                        <div style="display: flex; gap: 16px; flex-shrink: 0; align-items: center;">
+                            <button class="btn-link blue" onclick="bukaInputPelanggan()"><i class="fa-solid fa-pen"></i>
+                                Ubah</button>
+                            <button class="btn-link" style="color: var(--danger); font-size: 14px;"
+                                onclick="hapusPelanggan()" title="Hapus Pelanggan"><i
+                                    class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- NEW: Section Voucher from PRD -->
+                    <div class="form-card voucher-section">
+                        <div class="voucher-header">
+                            <div class="form-title voucher-title">
+                                <i class="fa-solid fa-ticket"></i> Voucher 1000saudara
+                            </div>
+                            <span class="voucher-quota">Sisa Kuota: 100</span>
+                        </div>
+                        <div id="voucher-action-container">
+                            <button class="btn btn-primary"
+                                style="width: 100%; justify-content: center; margin-top: 4px;"
+                                onclick="terapkanVoucher()">
+                                Apply Voucher Rp 30.000
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <div class="form-header">
+                            <div class="form-title">
+                                <i class="fa-solid fa-tag"></i> Diskon Pesanan <span>(opsional)</span>
+                            </div>
+                        </div>
+                        <div class="form-input-group">
+                            <input type="text" class="input-field" placeholder="Masukkan diskon pesanan">
+                            <div class="toggle-group">
+                                <button class="toggle-btn active">%</button>
+                                <button class="toggle-btn">Rp</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-card compact">
+                        <div class="form-title">
+                            <i class="fa-solid fa-gift"></i> Produk Bonus <span>(opsional)</span>
+                        </div>
+                        <button class="btn-link blue"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    </div>
+
+                    <div class="form-card compact">
+                        <div class="form-title">
+                            <i class="fa-solid fa-location-dot"></i> Alamat Kirim <span>(opsional)</span>
+                        </div>
+                        <button class="btn-link blue"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    </div>
+
+                    <div class="form-card compact">
+                        <div class="form-title">
+                            <i class="fa-solid fa-receipt"></i> Biaya Tambahan <span>(opsional)</span>
+                        </div>
+                        <button class="btn-link blue"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- VIEW FLOW DETAIL -->
+            <div id="view-flow" style="display: none; padding: 0 24px 100px 24px; width: 100%;">
+                <div
+                    style="background: #fff; padding: 32px; border-radius: 8px; border: 1px solid var(--border-color); overflow-y: auto; line-height: 1.6;">
+                    <h3 style="margin-bottom: 16px; color: var(--primary-blue);">Story 1.1 — Proses Transaksi dengan
+                        Benefit Program</h3>
+
+                    <h4 style="margin: 24px 0 12px; color: var(--text-dark);">Gambaran UI</h4>
+                    <p style="margin-bottom: 8px;">Halaman transaksi POS yang sudah ada, dengan tambahan <strong>panel
+                            kanan</strong> yang mencakup:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--text-gray);">
+                        <li>Input No HP Customer</li>
+                        <li>Section Voucher (sisa kuota + tombol Apply Voucher)</li>
+                        <li>Ringkasan harga (subtotal, diskon, total)</li>
+                        <li>Selector fulfillment (Pickup / Delivery)</li>
+                        <li>Tombol PROSES TRANSAKSI dengan floating panel</li>
+                    </ul>
+
+                    <h4 style="margin: 24px 0 12px; color: var(--text-dark);">Detail Functional</h4>
+
+                    <strong style="color: var(--text-dark);">1. Input No HP Customer</strong>
+                    <ul style="margin-left: 20px; margin-bottom: 16px; margin-top: 8px; color: var(--text-gray);">
+                        <li>Field text input untuk No HP customer pada tombol +</li>
+                        <li>Tidak ada API call pada saat input — No HP disimpan di state lokal</li>
+                        <li>No HP digunakan saat validasi pada step PROSES</li>
+                    </ul>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;">
+
+                    <strong style="color: var(--text-dark);">2. Tampilan Section Voucher</strong>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Kondisi tampil:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 12px; color: var(--text-gray);">
+                        <li>Section voucher <strong>hanya muncul</strong> jika toko memiliki flag
+                            <code>is_100_toko = true</code>
+                        </li>
+                        <li>Jika flag tidak ada → section voucher tidak dirender sama sekali</li>
+                        <li>Tampilan hanya tombol apply voucher, teks sisa kuota dan tombol apply voucher muncul</li>
+                    </ul>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Isi section voucher:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--text-gray);">
+                        <li>Teks: <code>Sisa Kuota Voucher: {n}</code> — selalu ditampilkan termasuk saat nilai = 0</li>
+                        <li>Tombol <strong>Apply Voucher</strong>:
+                            <ul style="margin-left: 20px; margin-top: 4px;">
+                                <li><code>kuota > 0</code> → tombol <strong>aktif</strong> (enabled)</li>
+                                <li><code>kuota = 0</code> → tombol <strong>disabled</strong> (greyed out), tidak bisa
+                                    diklik</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;">
+
+                    <strong style="color: var(--text-dark);">3. Apply Voucher</strong>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Trigger: Kasir klik tombol Apply Voucher</p>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Behavior:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--text-gray);">
+                        <li>Sistem langsung mengupdate tampilan harga:
+                            <ul style="margin-left: 20px; margin-top: 4px;">
+                                <li><code>Total = Subtotal - Rp 30.000</code></li>
+                            </ul>
+                        </li>
+                        <li>Badge/label "Voucher Rp 30.000 diterapkan ✓" muncul di UI</li>
+                        <li>Harga sudah berubah di layar sebelum PROSES diklik</li>
+                        <li>Kasir bisa cancel/remove voucher jika diperlukan → harga kembali ke subtotal penuh</li>
+                    </ul>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;">
+
+                    <strong style="color: var(--text-dark);">4. Validasi saat PROSES TRANSAKSI</strong>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Trigger: Kasir klik tombol PROSES TRANSAKSI</p>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Sistem melakukan 2 layer validasi secara
+                        berurutan via API ke server 1000saudara:</p>
+
+                    <p style="margin: 16px 0 8px;"><strong>Layer 1 — Validasi Status Pelanggan 1000saudara</strong></p>
+                    <pre
+                        style="background: var(--bg-color); padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; color: var(--text-gray); margin-bottom: 12px;">Request: GET /customer/lookup?phone={no_hp}
+
+Response:
+- found: true/false
+- is_first_transaction: true/false</pre>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Kondisi:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--text-gray);">
+                        <li><code>found = false</code> (No HP tidak terdaftar sebagai pelanggan 1000saudara):
+                            <ul style="margin-left: 20px; margin-top: 4px;">
+                                <li>Tampilkan notif error: <em>"Pelanggan belum terdaftar di 1000saudara. Voucher tidak
+                                        dapat digunakan."</em></li>
+                                <li>Voucher otomatis di-remove (harga kembali ke subtotal penuh)</li>
+                                <li>Kasir lanjutkan transaksi tanpa voucher</li>
+                                <li><strong>Stop — tidak lanjut ke Layer 2</strong></li>
+                            </ul>
+                        </li>
+                        <li style="margin-top: 8px;"><code>found = true</code> → lanjut ke Layer 2</li>
+                    </ul>
+
+                    <p style="margin: 16px 0 8px;"><strong>Layer 2 — Validasi Voucher (First Transaction)</strong></p>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Kondisi (menggunakan data dari response Layer 1):
+                    </p>
+                    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--text-gray);">
+                        <li><code>is_first_transaction = false</code> (customer sudah pernah transaksi di 1000saudara):
+                            <ul style="margin-left: 20px; margin-top: 4px;">
+                                <li>Tampilkan notif error: <em>"Voucher hanya berlaku untuk transaksi pertama. Voucher
+                                        tidak dapat digunakan."</em></li>
+                                <li>Voucher otomatis di-remove (harga kembali ke subtotal penuh)</li>
+                                <li>Kasir lanjutkan transaksi tanpa voucher</li>
+                            </ul>
+                        </li>
+                        <li style="margin-top: 8px;"><code>is_first_transaction = true</code> → voucher valid ✅:
+                            <ul style="margin-left: 20px; margin-top: 4px;">
+                                <li>Total tetap = Subtotal - Rp 30.000</li>
+                                <li>Kuota voucher toko berkurang 1</li>
+                                <li>Lanjut ke proses push cart</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;">
+
+                    <strong style="color: var(--text-dark);">5. Push Cart ke 1000saudara</strong>
+                    <p style="margin: 8px 0; color: var(--text-gray);">Setelah validasi selesai (dengan atau tanpa
+                        voucher):</p>
+                    <pre
+                        style="background: var(--bg-color); padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; color: var(--text-gray); margin-bottom: 12px;">Request: POST /cart/push
+
+Body:
+{
+  "customer_phone": "08xx",
+  "store_id": "xxx",
+  "items": [...],
+  "subtotal": 250000,
+  "voucher_applied": true/false,
+  "discount": 30000,
+  "total": 220000,
+  "fulfillment_type": "pickup" | "delivery"
+}</pre>
+                    <ul style="margin-left: 20px; margin-bottom: 24px; color: var(--text-gray);">
+                        <li>Cart masuk ke akun customer di 1000saudara</li>
+                        <li>Status awal di sisi POS: <strong>"Dalam Keranjang"</strong></li>
+                        <li>Pesanan muncul di Modul Order Management (Epic 2)</li>
+                    </ul>
+
+                    <h4 style="margin: 24px 0 12px; color: var(--text-dark);">Ringkasan API — Epic 1</h4>
+                    <table
+                        style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 13px; text-align: left;">
+                        <thead>
+                            <tr style="background: var(--bg-color); border-bottom: 1px solid var(--border-color);">
+                                <th style="padding: 10px; color: var(--text-dark);">Method</th>
+                                <th style="padding: 10px; color: var(--text-dark);">Endpoint</th>
+                                <th style="padding: 10px; color: var(--text-dark);">Trigger</th>
+                                <th style="padding: 10px; color: var(--text-dark);">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 10px; color: var(--text-gray);">GET</td>
+                                <td style="padding: 10px; color: var(--primary-blue);"><code>/customer/lookup</code>
+                                </td>
+                                <td style="padding: 10px; color: var(--text-gray);">Saat PROSES diklik</td>
+                                <td style="padding: 10px; color: var(--text-gray);">Cek status pelanggan & first
+                                    transaction</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 10px; color: var(--text-gray);">POST</td>
+                                <td style="padding: 10px; color: var(--primary-blue);"><code>/cart/push</code></td>
+                                <td style="padding: 10px; color: var(--text-gray);">Setelah validasi berhasil</td>
+                                <td style="padding: 10px; color: var(--text-gray);">Push transaksi ke cart customer</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 10px; color: var(--text-gray);">GET</td>
+                                <td style="padding: 10px; color: var(--primary-blue);">
+                                    <code>/voucher/quota?store_id=</code>
+                                </td>
+                                <td style="padding: 10px; color: var(--text-gray);">Saat halaman transaksi dibuka</td>
+                                <td style="padding: 10px; color: var(--text-gray);">Ambil sisa kuota voucher toko</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin: 24px 0 12px; color: var(--text-dark);">Error States — Epic 1</h4>
+                    <table
+                        style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 13px; text-align: left;">
+                        <thead>
+                            <tr style="background: var(--bg-color); border-bottom: 1px solid var(--border-color);">
+                                <th style="padding: 10px; color: var(--text-dark);">Kondisi</th>
+                                <th style="padding: 10px; color: var(--text-dark);">Pesan Error</th>
+                                <th style="padding: 10px; color: var(--text-dark);">Behavior</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 10px; color: var(--text-gray);">Customer tidak terdaftar di
+                                    1000saudara</td>
+                                <td style="padding: 10px; color: var(--danger);">"Pelanggan belum terdaftar di
+                                    1000saudara. Voucher tidak dapat digunakan."</td>
+                                <td style="padding: 10px; color: var(--text-gray);">Voucher di-remove, transaksi lanjut
+                                    full price</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 10px; color: var(--text-gray);">Customer sudah pernah transaksi</td>
+                                <td style="padding: 10px; color: var(--danger);">"Voucher hanya berlaku untuk transaksi
+                                    pertama."</td>
+                                <td style="padding: 10px; color: var(--text-gray);">Voucher di-remove, transaksi lanjut
+                                    full price</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 10px; color: var(--text-gray);">Kuota voucher = 0</td>
+                                <td style="padding: 10px; color: var(--text-gray);"><em>(tidak ada pesan error — tombol
+                                        disabled)</em></td>
+                                <td style="padding: 10px; color: var(--text-gray);">Tombol Apply Voucher disabled</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 10px; color: var(--text-gray);">Koneksi ke server gagal saat PROSES
+                                </td>
+                                <td style="padding: 10px; color: var(--danger);">"Koneksi bermasalah. Transaksi tidak
+                                    dapat diproses saat ini."</td>
+                                <td style="padding: 10px; color: var(--text-gray);">Tampilkan retry option</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VIEW ONLINE ORDERS (Epic 2) -->
+            <div id="view-online-orders" style="display: none; flex-direction: column; width: 100%; padding: 0 24px 100px 24px;">
+                <div style="background: #fff; padding: 24px; border-radius: 8px; border: 1px solid var(--border-color); width: 100%;">
+                    <!-- Header Penjualan Online -->
+                    <div class="orders-header">
+                        <div class="orders-title">
+                            <i class="fa-solid fa-cart-shopping" style="color: var(--primary-blue);"></i> Penjualan Online
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filters-row">
+                        <input type="text" class="filter-input" value="03/02/2026 - 03/02/2026" style="width: 220px;">
+                        <select class="filter-input" style="width: 180px;">
+                            <option>Semua Cabang</option>
+                        </select>
+                        <div class="search-wrapper">
+                            <input type="text" class="filter-input" placeholder="Cari no. transaksi, nama pembeli" style="width: 100%;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="orders-tabs">
+                        <div class="order-tab active" onclick="switchOrderTab(this, 'cart')">
+                            Dalam Keranjang <span class="tab-badge" style="background: #e1e7fc; color: var(--primary-blue);" id="badge-cart-count">1</span>
+                        </div>
+                        <div class="order-tab" onclick="switchOrderTab(this, 'confirm')">
+                            Menunggu Konfirmasi <span class="tab-badge">2</span>
+                        </div>
+                        <div class="order-tab" onclick="switchOrderTab(this, 'process')">
+                            Diproses <span class="tab-badge">2</span>
+                        </div>
+                        <div class="order-tab" onclick="switchOrderTab(this, 'shipping')">
+                            Dikirim <span class="tab-badge">1</span>
+                        </div>
+                        <div class="order-tab" onclick="switchOrderTab(this, 'pickup')">
+                            Siap Diambil <span class="tab-badge">1</span>
+                        </div>
+                        <div class="order-tab" onclick="switchOrderTab(this, 'delivered')">
+                            Terkirim <span class="tab-badge">1</span>
+                        </div>
+                        <div class="order-tab" onclick="switchOrderTab(this, 'done')">
+                            Selesai <span class="tab-badge">6</span>
+                        </div>
+                        <div class="order-tab" onclick="switchOrderTab(this, 'complaint')">
+                            Komplain <span class="tab-badge">0</span>
+                        </div>
+                        <div class="order-tab" onclick="switchOrderTab(this, 'canceled')">
+                            Dibatalkan <span class="tab-badge">1</span>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Dalam Keranjang -->
+                    <div id="tab-content-cart" class="tab-content-section">
+                        <!-- Order Card 1 -->
+                        <div class="order-card" id="cart-item-card">
+                            <div class="order-card-header">
+                                <div class="order-id">OTRN-01-20260203-0003</div>
+                                <span class="order-status-badge status-cart"><i class="fa-solid fa-cart-shopping"></i> Dalam Keranjang (1000saudara) <span class="cart-countdown-text" style="color: var(--danger); margin-left: 6px; font-weight: 700;">(23:59:59)</span></span>
+                            </div>
+                            <div class="order-grid">
+                                <div class="grid-item">
+                                    <span class="grid-label">Pemesan</span>
+                                    <span class="grid-val" id="order-cart-pemesan">Budi (08123456789)</span>
+                                </div>
+                                <div class="grid-item">
+                                    <span class="grid-label">Jasa Kirim</span>
+                                    <span class="grid-val">Kurir Toko</span>
+                                </div>
+                                <div class="grid-item">
+                                    <span class="grid-label">Total</span>
+                                    <span class="grid-val" style="color: var(--green);" id="order-cart-total">Rp720.000</span>
+                                </div>
+                                <div class="grid-item" style="align-items: flex-end; justify-content: center;">
+                                    <button class="btn btn-outline" style="padding: 6px 16px; font-size: 12px;" onclick="openOrderDetail('OTRN-01-20260203-0003')">Lihat Detail</button>
+                                </div>
+                            </div>
+                            <div class="order-items-list">
+                                <div style="font-size: 12px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px;">Pesanan</div>
+                                <div class="order-item-row">
+                                    <span class="order-item-qty">1 (Pcs)</span>
+                                    <span class="order-item-name">Yamaha Lexi 10 cc</span>
+                                </div>
+                                <div class="order-item-row">
+                                    <span class="order-item-qty">1 (Pcs)</span>
+                                    <span class="order-item-name">Yamaha XMAX 110 cc</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="cart-empty-message" style="display: none; padding: 40px; text-align: center; color: var(--text-gray);">
+                            <i class="fa-solid fa-cart-shopping" style="font-size: 48px; margin-bottom: 16px; color: #ccc;"></i>
+                            <p>Belum ada orderan baru yang masuk ke keranjang.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Menunggu Konfirmasi -->
+                    <div id="tab-content-confirm" class="tab-content-section" style="display: none;">
+                        <!-- Order Card 1 -->
+                        <div class="order-card">
+                            <div class="order-card-header">
+                                <div class="order-id">OTRN-01-20260203-0002</div>
+                                <span class="order-status-badge" style="background: #fff3e0; color: #fb8c00;"><i class="fa-solid fa-clock"></i> Menunggu Konfirmasi (23:59:59)</span>
+                            </div>
+                            <div class="order-grid">
+                                <div class="grid-item">
+                                    <span class="grid-label">Pemesan</span>
+                                    <span class="grid-val">Farhan Pratama</span>
+                                </div>
+                                <div class="grid-item">
+                                    <span class="grid-label">Jasa Kirim</span>
+                                    <span class="grid-val">Kurir Toko</span>
+                                </div>
+                                <div class="grid-item">
+                                    <span class="grid-label">Total</span>
+                                    <span class="grid-val" style="color: var(--green);">Rp3.990.000</span>
+                                </div>
+                                <div class="grid-item" style="align-items: flex-end; justify-content: center;">
+                                    <button class="btn btn-outline" style="padding: 6px 16px; font-size: 12px;" onclick="openOrderDetail('OTRN-01-20260203-0002')">Lihat Detail</button>
+                                </div>
+                            </div>
+                            <div class="order-items-list">
+                                <div style="font-size: 12px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px;">Pesanan</div>
+                                <div class="order-item-row">
+                                    <span class="order-item-qty">12 (Pcs)</span>
+                                    <span class="order-item-name">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</span>
+                                </div>
+                                <div class="order-item-row">
+                                    <span class="order-item-qty">12 (Pcs)</span>
+                                    <span class="order-item-name">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Card 2 -->
+                        <div class="order-card">
+                            <div class="order-card-header">
+                                <div class="order-id">OTRN-01-20260203-0001</div>
+                                <span class="order-status-badge" style="background: #fff3e0; color: #fb8c00;"><i class="fa-solid fa-clock"></i> Menunggu Konfirmasi (23:59:59)</span>
+                            </div>
+                            <div class="order-grid">
+                                <div class="grid-item">
+                                    <span class="grid-label">Pemesan</span>
+                                    <span class="grid-val">Ageng</span>
+                                </div>
+                                <div class="grid-item">
+                                    <span class="grid-label">Jasa Kirim</span>
+                                    <span class="grid-val">Kurir Toko</span>
+                                </div>
+                                <div class="grid-item">
+                                    <span class="grid-label">Total</span>
+                                    <span class="grid-val" style="color: var(--green);">Rp600.000</span>
+                                </div>
+                                <div class="grid-item" style="align-items: flex-end; justify-content: center;">
+                                    <button class="btn btn-outline" style="padding: 6px 16px; font-size: 12px;" onclick="openOrderDetail('OTRN-01-20260203-0001')">Lihat Detail</button>
+                                </div>
+                            </div>
+                            <div class="order-items-list">
+                                <div style="font-size: 12px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px;">Pesanan</div>
+                                <div class="order-item-row">
+                                    <span class="order-item-qty">12 (Pcs)</span>
+                                    <span class="order-item-name">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</span>
+                                </div>
+                                <div class="order-item-row">
+                                    <span class="order-item-qty">12 (Pcs)</span>
+                                    <span class="order-item-name">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Other Placeholders -->
+                    <div id="tab-content-other" class="tab-content-section" style="display: none; padding: 40px; text-align: center; color: var(--text-gray);">
+                        <i class="fa-solid fa-folder-open" style="font-size: 48px; margin-bottom: 16px; color: #ccc;"></i>
+                        <p>Data pesanan pada status ini kosong atau sedang disinkronisasikan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW ORDER DETAIL (Epic 2 Detail) -->
+            <div id="view-order-detail" style="display: none; flex-direction: column; width: 100%; padding: 0 24px 100px 24px;">
+
+                <div style="display: flex; gap: 24px; width: 100%; align-items: flex-start;">
+                    <!-- Left Side: Product List Card -->
+                    <div style="flex: 2; background: #fff; padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 20px;">
+                        <div style="font-size: 16px; font-weight: 700; color: var(--text-dark); border-bottom: 1px solid #f0f2f5; padding-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-box" style="color: var(--primary-blue);"></i> <span id="detail-product-count">4 Produk</span>
+                        </div>
+
+                        <!-- Products list container -->
+                        <div style="display: flex; flex-direction: column; gap: 16px;" id="detail-products-list">
+                            <!-- Dynamic Products injected via JS -->
+                        </div>
+
+                        <!-- Subtotal row -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f2f5; padding-top: 16px; font-size: 16px; font-weight: 700;">
+                            <span style="color: var(--text-dark);">Subtotal</span>
+                            <span style="color: var(--primary-blue);" id="detail-subtotal-val">Rp3.000.000</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Info Panel Cards -->
+                    <div style="flex: 1.2; display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Status & IDs -->
+                        <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 16px;">
+                            <div>
+                                <div style="font-size: 12px; color: var(--text-gray); margin-bottom: 4px;">Status Pesanan</div>
+                                <div style="background: #fff3e0; color: #fb8c00; font-size: 13px; font-weight: 700; padding: 8px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;" id="detail-status-badge">
+                                    <i class="fa-solid fa-clock"></i> Menunggu Konfirmasi (23:59:59)
+                                </div>
+                            </div>
+
+                            <div style="border-top: 1px solid #f0f2f5; padding-top: 12px;">
+                                <div style="font-size: 12px; color: var(--text-gray); margin-bottom: 4px;">No. Pesanan</div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 14px; font-weight: 700; color: var(--text-dark);" id="detail-order-id">OTRN-01-20260203-0002</span>
+                                    <i class="fa-regular fa-copy" style="color: var(--text-gray); cursor: pointer;" onclick="alert('No. Pesanan disalin!')"></i>
+                                </div>
+                            </div>
+
+                            <div style="border-top: 1px solid #f0f2f5; padding-top: 12px;">
+                                <div style="font-size: 12px; color: var(--text-gray); margin-bottom: 4px;">No. Referensi</div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 14px; font-weight: 500; color: var(--text-dark);">ORD / 202612 / 000001</span>
+                                    <i class="fa-regular fa-copy" style="color: var(--text-gray); cursor: pointer;" onclick="alert('No. Referensi disalin!')"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Riwayat Pesanan row -->
+                        <div style="background: #fff; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--text-dark);">
+                            <span><i class="fa-solid fa-list-ul" style="margin-right: 8px; color: var(--text-gray);"></i> Riwayat Pesanan</span>
+                            <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: var(--text-gray);"></i>
+                        </div>
+
+                        <!-- Detail Transaksi -->
+                        <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px;">
+                            <div style="font-size: 14px; font-weight: 700; color: var(--text-dark); border-bottom: 1px solid #f0f2f5; padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-regular fa-file-lines" style="color: var(--primary-blue);"></i> Detail Transaksi
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: var(--text-gray);">Nama Pelanggan</span>
+                                <span style="font-weight: 600; color: var(--text-dark);" id="detail-customer-name">Farhan Pratama</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: var(--text-gray);">Tanggal Transaksi</span>
+                                <span style="font-weight: 600; color: var(--text-dark); text-align: right;">11 Februari 2026,<br>12:00</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: var(--text-gray);">Metode Pembayaran</span>
+                                <span style="font-weight: 600; color: var(--text-dark);">Cash</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; font-size: 13px; align-items: flex-start;">
+                                <span style="color: var(--text-gray); min-width: 80px;">Alamat</span>
+                                <span style="font-weight: 600; color: var(--text-dark); text-align: right; line-height: 1.4;">Jl. Margonda Raya<br>No. 1, Kota Depok</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: var(--text-gray);">Pengiriman/Pengambilan</span>
+                                <span style="font-weight: 600; color: var(--text-dark);">Kurir Toko</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: var(--text-gray);">Jadwal</span>
+                                <span style="font-weight: 600; color: var(--text-dark);">Sore (15:00)</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: var(--text-gray);">Maks. Jam Tiba</span>
+                                <span style="font-weight: 700; color: var(--danger);">16:30</span>
+                            </div>
+                        </div>
+
+                        <!-- Riwayat Retur row -->
+                        <div style="background: #fff; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-bottom: 24px;">
+                            <span><i class="fa-solid fa-rotate-left" style="margin-right: 8px; color: var(--text-gray);"></i> Riwayat Retur</span>
+                            <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: var(--text-gray);"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM BAR -->
+            <div class="bottom-bar">
+                <div class="bottom-summary">
+                    <div class="bottom-subtotal" id="display-subtotal">Subtotal: Rp750.000</div>
+                    <div class="bottom-subtotal" id="display-voucher-discount"
+                        style="display: none; color: var(--danger); font-weight: 600;">Diskon Voucher: -Rp30.000</div>
+                    <div class="bottom-total">
+                        <i class="fa-regular fa-file-lines"></i>
+                        Total: <span class="bottom-total-val" id="display-total-val">Rp750.000</span>
+                    </div>
+                </div>
+                <div class="bottom-actions">
+                    <button class="btn btn-outline"><i class="fa-regular fa-bookmark"></i> Simpan</button>
+                    <button class="btn btn-primary" onclick="prosesTransaksi()"><i class="fa-solid fa-rotate-right"></i>
+                        Proses</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Data Global Dummy
+        let subtotalPesanan = 750000;
+        let isVoucherApplied = false;
+
+        // --- COUNTDOWN TIMER ---
+        let countdownSeconds = 24 * 60 * 60; // 24 jam
+        function startCartCountdown() {
+            setInterval(() => {
+                if (countdownSeconds > 0) {
+                    countdownSeconds--;
+                }
+                const hrs = Math.floor(countdownSeconds / 3600);
+                const mins = Math.floor((countdownSeconds % 3600) / 60);
+                const secs = countdownSeconds % 60;
+                
+                const timeString = `(${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')})`;
+                
+                // Update detail page timer if present
+                const detailTimer = document.getElementById('cart-countdown-timer');
+                if (detailTimer) {
+                    detailTimer.innerText = timeString;
+                }
+                
+                // Update list page timers if present
+                document.querySelectorAll('.cart-countdown-text').forEach(el => {
+                    el.innerText = timeString;
+                });
+            }, 1000);
+        }
+        
+        // Start countdown immediately
+        startCartCountdown();
+
+        // --- FUNGSI PELANGGAN ---
+        function bukaInputPelanggan() {
+            document.getElementById('card-pelanggan-awal').style.display = 'none';
+            document.getElementById('card-pelanggan-terpilih').style.display = 'none';
+            document.getElementById('card-pelanggan-input').style.display = 'flex';
+            document.getElementById('input-no-hp').focus();
+        }
+
+        function batalInputPelanggan() {
+            document.getElementById('card-pelanggan-input').style.display = 'none';
+            if (document.getElementById('nama-pelanggan-text').innerText === '') {
+                document.getElementById('card-pelanggan-awal').style.display = 'flex';
+            } else {
+                document.getElementById('card-pelanggan-terpilih').style.display = 'flex';
+            }
+        }
+
+        function simpanPelanggan() {
+            const noHp = document.getElementById('input-no-hp').value;
+            if (noHp) {
+                document.getElementById('nama-pelanggan-text').innerText = `Customer (${noHp})`;
+                document.getElementById('card-pelanggan-input').style.display = 'none';
+                document.getElementById('card-pelanggan-terpilih').style.display = 'flex';
+            } else {
+                batalInputPelanggan();
+            }
+        }
+
+        function hapusPelanggan() {
+            document.getElementById('nama-pelanggan-text').innerText = '';
+            document.getElementById('input-no-hp').value = '';
+            document.getElementById('card-pelanggan-terpilih').style.display = 'none';
+            document.getElementById('card-pelanggan-input').style.display = 'none';
+            document.getElementById('card-pelanggan-awal').style.display = 'flex';
+        }
+
+        // --- FUNGSI VOUCHER ---
+        function terapkanVoucher() {
+            isVoucherApplied = true;
+            document.getElementById('voucher-action-container').innerHTML = `
+                <div style="display: flex; gap: 8px; margin-top: 4px;">
+                    <button class="btn btn-outline" style="flex: 1; justify-content: center; background: #e8f5e9; color: #2e7d32; border-color: #2e7d32; cursor: default;">
+                        <i class="fa-solid fa-check"></i> Applied
+                    </button>
+                    <button class="btn btn-outline" style="border-color: var(--danger); color: var(--danger);" onclick="batalkanVoucher()">
+                        <i class="fa-solid fa-xmark"></i> Batal
+                    </button>
+                </div>
+            `;
+            kalkulasiTotal();
+        }
+
+        function batalkanVoucher() {
+            isVoucherApplied = false;
+            document.getElementById('voucher-action-container').innerHTML = `
+                <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 4px;" onclick="terapkanVoucher()">
+                    Apply Voucher Rp 30.000
+                </button>
+            `;
+            kalkulasiTotal();
+        }
+
+        function formatRupiah(angka) {
+            return 'Rp' + angka.toLocaleString('id-ID').replace(/,/g, '.');
+        }
+
+        function kalkulasiTotal() {
+            let diskon = isVoucherApplied ? 30000 : 0;
+            let totalAkhir = subtotalPesanan - diskon;
+
+            // Update UI Left Panel Subtotal section (merubah tulisan total yg di panel kiri)
+            const leftPanelTotal = document.getElementById('left-panel-total');
+            if (leftPanelTotal) leftPanelTotal.innerText = formatRupiah(totalAkhir);
+
+            // Update UI Bottom Bar
+            const bottomTotalVal = document.getElementById('display-total-val');
+            const displayVoucherDiscount = document.getElementById('display-voucher-discount');
+
+            if (bottomTotalVal) bottomTotalVal.innerText = formatRupiah(totalAkhir);
+
+            if (displayVoucherDiscount) {
+                displayVoucherDiscount.style.display = isVoucherApplied ? 'block' : 'none';
+            }
+        }
+
+        // Fungsi Bawaan (View Flow Detail)
+        // Fungsi Bawaan (View Flow Detail)
+        function showFlowDetail() {
+            switchView('flow');
+        }
+
+        // --- FUNGSI PROSES / CHECKOUT ---
+        function prosesTransaksi() {
+            document.getElementById('modal-success').style.display = 'flex';
+        }
+
+        function tutupSuccessModal() {
+            document.getElementById('modal-success').style.display = 'none';
+
+            // Ambil nomor pelanggan & total dari POS screen
+            const noHpInput = document.getElementById('input-no-hp').value || '081322334646474';
+            const customerName = `Customer (${noHpInput})`;
+            document.getElementById('order-cart-pemesan').innerText = customerName;
+
+            let diskon = isVoucherApplied ? 30000 : 0;
+            let totalAkhir = subtotalPesanan - diskon;
+            document.getElementById('order-cart-total').innerText = formatRupiah(totalAkhir);
+
+            // Perbarui badge jumlah item di keranjang
+            document.getElementById('badge-cart-count').innerText = '1';
+            document.getElementById('cart-item-card').style.display = 'block';
+            document.getElementById('cart-empty-message').style.display = 'none';
+
+            // Alihkan view ke Epic 2: Penjualan Online -> Dalam Keranjang
+            switchView('orders');
+        }
+
+        // --- NAVIGASI ANTARA POS DAN ONLINE ---
+        function switchView(viewName) {
+            const viewUi = document.getElementById('view-ui');
+            const viewFlow = document.getElementById('view-flow');
+            const viewOnlineOrders = document.getElementById('view-online-orders');
+            const viewOrderDetail = document.getElementById('view-order-detail');
+            const bottomBar = document.querySelector('.bottom-bar');
+            
+            // Header elements
+            const globalHeader = document.getElementById('global-page-header');
+            const globalBreadcrumbs = document.getElementById('global-breadcrumbs');
+            const globalTitleText = document.getElementById('global-title-text');
+            const globalBackBtn = document.getElementById('global-back-btn');
+            const extraBtns = document.getElementById('header-extra-buttons');
+
+            // Header Buttons
+            const navPenjualan = document.getElementById('nav-penjualan');
+            const navPenjualanOnline = document.getElementById('nav-penjualan-online');
+
+            // Reset active classes
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            if(navPenjualan) navPenjualan.classList.remove('active');
+            if(navPenjualanOnline) navPenjualanOnline.classList.remove('active');
+
+            if (viewName === 'pos') {
+                if(viewUi) viewUi.style.display = 'flex';
+                if(viewFlow) viewFlow.style.display = 'none';
+                if(viewOnlineOrders) viewOnlineOrders.style.display = 'none';
+                if(viewOrderDetail) viewOrderDetail.style.display = 'none';
+                
+                // Reset Page Header for POS
+                if(globalHeader) globalHeader.style.display = 'block';
+                if(globalBreadcrumbs) globalBreadcrumbs.innerHTML = 'Penjualan <span>/</span> 1.1 Proses Transaksi';
+                if(globalTitleText) globalTitleText.innerText = 'Detail Pesanan';
+                if(globalBackBtn) globalBackBtn.style.display = 'inline-block';
+                if(extraBtns) extraBtns.style.display = 'flex';
+
+                if(bottomBar) {
+                    bottomBar.style.display = 'flex';
+                    document.querySelector('.bottom-actions').style.display = 'flex';
+                    document.getElementById('display-subtotal').style.display = 'block';
+                }
+
+                if(navPenjualan) navPenjualan.classList.add('active');
+                document.getElementById('menu-proses-transaksi').classList.add('active');
+            } else if (viewName === 'orders') {
+                if(viewUi) viewUi.style.display = 'none';
+                if(viewFlow) viewFlow.style.display = 'none';
+                if(viewOnlineOrders) viewOnlineOrders.style.display = 'flex';
+                if(viewOrderDetail) viewOrderDetail.style.display = 'none';
+                
+                // Hide Page Header (Orders has its own header title)
+                if(globalHeader) globalHeader.style.display = 'none';
+                if(bottomBar) bottomBar.style.display = 'none';
+                if(extraBtns) extraBtns.style.display = 'none';
+
+                if(navPenjualanOnline) navPenjualanOnline.classList.add('active');
+                document.getElementById('menu-dalam-keranjang').classList.add('active');
+            } else if (viewName === 'detail') {
+                if(viewUi) viewUi.style.display = 'none';
+                if(viewFlow) viewFlow.style.display = 'none';
+                if(viewOnlineOrders) viewOnlineOrders.style.display = 'none';
+                if(viewOrderDetail) viewOrderDetail.style.display = 'flex';
+                
+                // Configure Page Header for Order Detail
+                if(globalHeader) globalHeader.style.display = 'block';
+                if(globalBreadcrumbs) globalBreadcrumbs.innerHTML = 'Penjualan Online <span>/</span> Detail Pesanan';
+                if(globalTitleText) globalTitleText.innerText = 'Detail Pesanan';
+                if(globalBackBtn) globalBackBtn.style.display = 'inline-block';
+                if(extraBtns) extraBtns.style.display = 'flex';
+
+                // Tampilkan bottom bar hanya sebagai info total saja (tidak ada tombol aksi)
+                if(bottomBar) {
+                    bottomBar.style.display = 'flex';
+                    document.querySelector('.bottom-actions').style.display = 'none';
+                    document.getElementById('display-subtotal').style.display = 'none';
+                    document.getElementById('display-voucher-discount').style.display = 'none';
+                }
+            } else if (viewName === 'flow') {
+                if(viewUi) viewUi.style.display = 'none';
+                if(viewFlow) viewFlow.style.display = 'block';
+                if(viewOnlineOrders) viewOnlineOrders.style.display = 'none';
+                if(viewOrderDetail) viewOrderDetail.style.display = 'none';
+                if(globalHeader) globalHeader.style.display = 'block';
+                if(extraBtns) extraBtns.style.display = 'none';
+                if(bottomBar) bottomBar.style.display = 'none';
+            }
+        }
+
+        // --- DYNAMIC ORDER DETAIL ---
+        function openOrderDetail(orderId) {
+            switchView('detail');
+            document.getElementById('detail-order-id').innerText = orderId;
+            
+            const prodList = document.getElementById('detail-products-list');
+            const prodCount = document.getElementById('detail-product-count');
+            const subtotalVal = document.getElementById('detail-subtotal-val');
+            const customerName = document.getElementById('detail-customer-name');
+            const statusBadge = document.getElementById('detail-status-badge');
+
+            if (orderId === 'OTRN-01-20260203-0003') {
+                const noHpInput = document.getElementById('input-no-hp').value || '08123456789';
+                customerName.innerText = `Budi (${noHpInput})`;
+                
+                statusBadge.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Dalam Keranjang (1000saudara) <span id="cart-countdown-timer" style="color: var(--danger); margin-left: 6px; font-weight: 700;">(23:59:59)</span>`;
+                statusBadge.style.background = "#e3f2fd";
+                statusBadge.style.color = "#1e88e5";
+                
+                prodCount.innerText = "2 Produk";
+                prodList.innerHTML = `
+                    <div class="detail-prod-card">
+                        <div class="detail-prod-img"><i class="fa-solid fa-bicycle" style="font-size: 24px; color: var(--primary-blue);"></i></div>
+                        <div class="detail-prod-info">
+                            <div class="detail-prod-title">Yamaha Lexi 10 cc</div>
+                            <div class="detail-prod-tag tag-orange">Benefit Voucher Program (-Rp30.000)</div>
+                            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Stok: 5</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 4px;">Rp250.000</div>
+                        </div>
+                        <div style="text-align: right; font-size: 13px;">
+                            <div style="color: var(--text-gray);">Jumlah Dipesan: 1 (Pcs)</div>
+                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp220.000</div>
+                        </div>
+                    </div>
+                    <div class="detail-prod-card">
+                        <div class="detail-prod-img"><i class="fa-solid fa-bicycle" style="font-size: 24px; color: var(--primary-blue);"></i></div>
+                        <div class="detail-prod-info">
+                            <div class="detail-prod-title">Yamaha XMAX 110 cc</div>
+                            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Stok: 2</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 4px;">Rp500.000</div>
+                        </div>
+                        <div style="text-align: right; font-size: 13px;">
+                            <div style="color: var(--text-gray);">Jumlah Dipesan: 1 (Pcs)</div>
+                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp500.000</div>
+                        </div>
+                    </div>
+                `;
+                
+                subtotalVal.innerText = "Rp750.000";
+                const bottomTotalSpan = document.getElementById('display-total-val');
+                if (bottomTotalSpan) bottomTotalSpan.innerText = "Rp720.000";
+                
+            } else if (orderId === 'OTRN-01-20260203-0002') {
+                customerName.innerText = "Farhan Pratama";
+                
+                statusBadge.innerHTML = `<i class="fa-solid fa-clock"></i> Menunggu Konfirmasi (23:59:59)`;
+                statusBadge.style.background = "#fff3e0";
+                statusBadge.style.color = "#fb8c00";
+                
+                prodCount.innerText = "4 Produk";
+                prodList.innerHTML = `
+                    <div class="detail-prod-card">
+                        <div class="detail-prod-img"><i class="fa-solid fa-fill-drip" style="font-size: 24px; color: var(--primary-blue);"></i></div>
+                        <div class="detail-prod-info">
+                            <div class="detail-prod-title">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</div>
+                            <div class="detail-prod-tag tag-orange">Diskon produk (-Rp10.000)</div>
+                            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Stok: 25</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 4px;">Rp50.000</div>
+                        </div>
+                        <div style="text-align: right; font-size: 13px;">
+                            <div style="color: var(--text-gray);">Jumlah Dipesan: 24 (Pcs)</div>
+                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp1.200.000</div>
+                        </div>
+                    </div>
+                    <div class="detail-prod-card">
+                        <div class="detail-prod-img"><i class="fa-solid fa-fill-drip" style="font-size: 24px; color: var(--primary-blue);"></i></div>
+                        <div class="detail-prod-info">
+                            <div class="detail-prod-title">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</div>
+                            <div class="detail-prod-tag tag-red"><i class="fa-solid fa-gift"></i> Promo Smart Point Bazaar Perayaan Ulang Tahun Toko InTechgra (-Rp10.000)</div>
+                            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Stok: 25</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 4px;">Rp50.000</div>
+                        </div>
+                        <div style="text-align: right; font-size: 13px;">
+                            <div style="color: var(--text-gray);">Jumlah Dipesan: 12 (Pcs)</div>
+                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp600.000</div>
+                        </div>
+                    </div>
+                    <div class="detail-prod-card">
+                        <div class="detail-prod-img"><i class="fa-solid fa-fill-drip" style="font-size: 24px; color: var(--primary-blue);"></i></div>
+                        <div class="detail-prod-info">
+                            <div class="detail-prod-title">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</div>
+                            <div class="detail-prod-tag tag-orange">Diskon produk (-Rp10.000)</div>
+                            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Stok: 25</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 4px;">Rp50.000</div>
+                        </div>
+                        <div style="text-align: right; font-size: 13px;">
+                            <div style="color: var(--text-gray);">Jumlah Dipesan: 12 (Pcs)</div>
+                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp600.000</div>
+                        </div>
+                    </div>
+                    <div class="detail-prod-card">
+                        <div class="detail-prod-img"><i class="fa-solid fa-fill-drip" style="font-size: 24px; color: var(--primary-blue);"></i></div>
+                        <div class="detail-prod-info">
+                            <div class="detail-prod-title">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</div>
+                            <div class="detail-prod-tag tag-orange">Diskon produk (-Rp10.000)</div>
+                            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Stok: 25</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 4px;">Rp50.000</div>
+                        </div>
+                        <div style="text-align: right; font-size: 13px;">
+                            <div style="color: var(--text-gray);">Jumlah Dipesan: 12 (Pcs)</div>
+                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp600.000</div>
+                        </div>
+                    </div>
+                `;
+                
+                subtotalVal.innerText = "Rp3.000.000";
+                const bottomTotalSpan = document.getElementById('display-total-val');
+                if (bottomTotalSpan) bottomTotalSpan.innerText = "Rp3.990.000";
+                
+            } else {
+                customerName.innerText = "Ageng";
+                
+                statusBadge.innerHTML = `<i class="fa-solid fa-clock"></i> Menunggu Konfirmasi (23:59:59)`;
+                statusBadge.style.background = "#fff3e0";
+                statusBadge.style.color = "#fb8c00";
+                
+                prodCount.innerText = "1 Produk";
+                prodList.innerHTML = `
+                    <div class="detail-prod-card">
+                        <div class="detail-prod-img"><i class="fa-solid fa-fill-drip" style="font-size: 24px; color: var(--primary-blue);"></i></div>
+                        <div class="detail-prod-info">
+                            <div class="detail-prod-title">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</div>
+                            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Stok: 25</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 4px;">Rp50.000</div>
+                        </div>
+                        <div style="text-align: right; font-size: 13px;">
+                            <div style="color: var(--text-gray);">Jumlah Dipesan: 12 (Pcs)</div>
+                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp600.000</div>
+                        </div>
+                    </div>
+                `;
+                
+                subtotalVal.innerText = "Rp600.000";
+                const bottomTotalSpan = document.getElementById('display-total-val');
+                if (bottomTotalSpan) bottomTotalSpan.innerText = "Rp600.000";
+            }
+        }
+
+        // --- FUNGSI SWITCH TAB PESANAN ONLINE ---
+        function switchOrderTab(tabEl, tabId) {
+            document.querySelectorAll('.order-tab').forEach(tab => {
+                tab.classList.remove('active');
+                const badge = tab.querySelector('.tab-badge');
+                if (badge) {
+                    badge.style.background = '#eef2f6';
+                    badge.style.color = 'var(--text-gray)';
+                }
+            });
+            
+            tabEl.classList.add('active');
+            const activeBadge = tabEl.querySelector('.tab-badge');
+            if (activeBadge) {
+                activeBadge.style.background = '#e1e7fc';
+                activeBadge.style.color = 'var(--primary-blue)';
+            }
+
+            document.querySelectorAll('.tab-content-section').forEach(content => {
+                content.style.display = 'none';
+            });
+
+            const targetContent = document.getElementById('tab-content-' + tabId);
+            if (targetContent) {
+                targetContent.style.display = 'block';
+            } else {
+                document.getElementById('tab-content-other').style.display = 'block';
+            }
+        }
+
+        function openUserflow() {
+            window.open('inTechgra_pos_userflow.html', '_blank');
+        }
+
+        function openHighLevelConcept() {
+            const modalPrd = document.getElementById('modal-prd');
+            if (modalPrd) {
+                modalPrd.style.display = 'flex';
+            }
+        }
+
+        function closePrdModal() {
+            const modalPrd = document.getElementById('modal-prd');
+            if (modalPrd) {
+                modalPrd.style.display = 'none';
+            }
+        }
+    </script>
+    <!-- MODAL SUCCESS -->
+    <div id="modal-success" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="modal-title">Transaksi Berhasil!</h3>
+            <p class="modal-desc">
+                Pesanan berhasil dikirim ke keranjang akun 1000saudara milik pelanggan.
+            </p>
+            <button class="btn btn-primary" style="justify-content: center; width: 120px;"
+                onclick="tutupSuccessModal()">Selesai</button>
+        </div>
+    </div>
+
+    <!-- MODAL HIGH LEVEL CONCEPT -->
+    <div id="modal-prd" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 1000;">
+        <div class="modal-content" style="width: 90%; max-width: 750px; max-height: 85vh; padding: 0; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; background: #fff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); text-align: left;">
+            <!-- Modal Header -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid #e2e8f0; background: #f8fafc;">
+                <span style="font-size: 14px; font-weight: 800; color: #334155; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-file-invoice text-indigo-600"></i> High Level Concept
+                </span>
+                <button onclick="closePrdModal()" style="border: none; background: transparent; font-size: 18px; color: #94a3b8; cursor: pointer; transition: color 0.2s;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <!-- Modal Body (Scrollable) -->
+            <div style="flex: 1; overflow-y: auto; padding: 32px 40px; color: #1e293b; line-height: 1.6; font-family: 'Inter', sans-serif;">
+                <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 12px; line-height: 1.3;">High-Level Concept: Modul Akuisisi Phygital (inTechgra x 1000saudara)</h1>
+                
+                <div style="font-size: 13px; color: #475569; margin-bottom: 24px; line-height: 1.8; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                    <div><strong>Author:</strong> Product Manager inTechgra</div>
+                    <div><strong>Status:</strong> <span style="background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Draft</span></div>
+                    <div><strong>Target Release:</strong> Fase 1 (Program 100 Toko Anchor Jawa)</div>
+                </div>
+
+                <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 24px; margin-bottom: 8px;">1. Latar Belakang & Konteks Bisnis (Background)</h2>
+                <p style="font-size: 13.5px; color: #334155; margin-bottom: 16px;">
+                    PT MSS mengelola dua produk: <strong>inTechgra</strong> (POS Toko Bangunan/B2B) dan <strong>1000saudara</strong> (Marketplace/B2C). Saat ini, transaksi di 100 toko bangunan <em>anchor</em> masih berjalan secara offline konvensional.
+                </p>
+                <p style="font-size: 13.5px; color: #334155; margin-bottom: 16px;">
+                    Untuk membesarkan ekosistem, kita akan menjalankan strategi <em>Phygital Acquisition</em>, yaitu memanfaatkan momentum transaksi kasir fisik di inTechgra sebagai pintu masuk untuk mendaftarkan dan memindahkan data belanja pelanggan offline ke dalam platform digital 1000saudara.
+                </p>
+
+                <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 24px; margin-bottom: 8px;">2. Objektif Produk (Product Objectives)</h2>
+                <ul style="list-style-type: disc; padding-left: 20px; font-size: 13.5px; color: #334155; margin-bottom: 16px;">
+                    <li style="margin-bottom: 8px;"><strong>Mengurangi Friction Registrasi:</strong> Membantu user mendaftar ke 1000saudara secara instan saat melakukan pembayaran di kasir toko fisik.</li>
+                    <li style="margin-bottom: 8px;"><strong>Insentif Validasi:</strong> Memberikan <em>hook</em> berupa potongan langsung Rp30.000 untuk transaksi pertama di platform.</li>
+                    <li style="margin-bottom: 8px;"><strong>Target Transisi (Fase 2):</strong> Mendorong pelanggan bertransisi menjadi pembeli online mandiri di 1000saudara setelah onboarding awal berhasil.</li>
+                </ul>
+
+                <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 24px; margin-bottom: 8px;">3. Anggaran & Benefit Toko (Investasi Program)</h2>
+                <p style="font-size: 13.5px; color: #334155; margin-bottom: 16px;">
+                    Anggaran program disetujui direksi sebesar <strong>Maks. Rp 3.3 Miliar</strong> dengan rincian:
+                </p>
+                <ul style="list-style-type: disc; padding-left: 20px; font-size: 13.5px; color: #334155; margin-bottom: 16px;">
+                    <li style="margin-bottom: 8px;"><strong>Renovasi Toko Fisik:</strong> Maksimal Rp 30.000.000 per toko untuk branding.</li>
+                    <li style="margin-bottom: 8px;"><strong>Program Voucher:</strong> 100 voucher diskon Rp 30.000 per toko (ditanggung penuh PT MSS).</li>
+                    <li style="margin-bottom: 8px;"><strong>Eksklusif Fee 0%:</strong> Potongan fee transaksi POS ke 1000saudara gratis selama 6 bulan pertama, dapat diperpanjang hingga 1-2 tahun berdasarkan performa revenue.</li>
+                </ul>
+
+                <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 24px; margin-bottom: 8px;">4. Alur Pengalaman Pengguna (App First)</h2>
+                <p style="font-size: 13.5px; color: #334155; margin-bottom: 16px;">
+                    Pelanggan instal app di kasir fisik → kasir apply voucher Rp 30.000 → potongan harga langsung didapatkan pelanggan di kasir.
+                </p>
+
+                <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 24px; margin-bottom: 8px;">5. Aturan Bisnis & Expiry</h2>
+                <ul style="list-style-type: disc; padding-left: 20px; font-size: 13.5px; color: #334155; margin-bottom: 16px;">
+                    <li style="margin-bottom: 8px;"><strong>Masa Kedaluwarsa Cart:</strong> 1x24 jam. Jika kedaluwarsa, voucher kembali ke kuota toko secara otomatis.</li>
+                    <li style="margin-bottom: 8px;"><strong>Jadwal Rekonsiliasi:</strong> Reimburse klaim diskon dicairkan 2x seminggu oleh Finance PT MSS.</li>
+                </ul>
+
+                <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 24px; margin-bottom: 8px;">6. Metrik Keberhasilan (Goals)</h2>
+                <ul style="list-style-type: disc; padding-left: 20px; font-size: 13.5px; color: #334155; margin-bottom: 16px;">
+                    <li style="margin-bottom: 8px;"><strong>Fase 1:</strong> 10.000 pendaftaran pelanggan baru dan redemption rate voucher >80%.</li>
+                </ul>
+            </div>
+            <!-- Modal Footer -->
+            <div style="display: flex; align-items: center; justify-content: flex-end; padding: 14px 24px; border-top: 1px solid #e2e8f0; background: #f8fafc; gap: 12px;">
+                <button onclick="closePrdModal()" style="padding: 8px 16px; font-size: 12px; border-radius: 6px; border: 1.5px solid var(--primary-blue); color: #fff; background: var(--primary-blue); font-weight: 700; cursor: pointer; transition: background 0.2s;">Selesai</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
