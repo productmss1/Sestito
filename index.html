@@ -1611,6 +1611,12 @@ Body:
                             <span style="color: var(--text-dark);">Subtotal</span>
                             <span style="color: var(--primary-blue);" id="detail-subtotal-val">Rp3.000.000</span>
                         </div>
+
+                        <!-- Voucher row -->
+                        <div id="detail-voucher-row" style="display: none; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border-color); padding-top: 12px; font-size: 14px; font-weight: 600; color: var(--danger);">
+                            <span>Voucher transaksi pertama 1000Saudara</span>
+                            <span id="detail-voucher-val">-Rp30.000</span>
+                        </div>
                     </div>
 
                     <!-- Right Side: Info Panel Cards -->
@@ -1709,10 +1715,15 @@ Body:
                         Total: <span class="bottom-total-val" id="display-total-val">Rp750.000</span>
                     </div>
                 </div>
-                <div class="bottom-actions">
+                <div class="bottom-actions" id="pos-actions">
                     <button class="btn btn-outline"><i class="fa-regular fa-bookmark"></i> Simpan</button>
                     <button class="btn btn-primary" onclick="prosesTransaksi()"><i class="fa-solid fa-rotate-right"></i>
                         Proses</button>
+                </div>
+                <div class="bottom-actions" id="detail-actions" style="display: none;">
+                    <button class="btn btn-outline" style="border: 1.5px solid var(--danger); color: var(--danger); background: #fff5f5; font-weight: 600; cursor: pointer; transition: all 0.2s;" onclick="konfirmasiBatalPesanan()">
+                        <i class="fa-solid fa-ban"></i> Batalkan Pesanan
+                    </button>
                 </div>
             </div>
 
@@ -1909,7 +1920,10 @@ Body:
 
                 if(bottomBar) {
                     bottomBar.style.display = 'flex';
-                    document.querySelector('.bottom-actions').style.display = 'flex';
+                    const posActions = document.getElementById('pos-actions');
+                    const detailActions = document.getElementById('detail-actions');
+                    if (posActions) posActions.style.display = 'flex';
+                    if (detailActions) detailActions.style.display = 'none';
                     document.getElementById('display-subtotal').style.display = 'block';
                 }
 
@@ -1941,10 +1955,13 @@ Body:
                 if(globalBackBtn) globalBackBtn.style.display = 'inline-block';
                 if(extraBtns) extraBtns.style.display = 'flex';
 
-                // Tampilkan bottom bar hanya sebagai info total saja (tidak ada tombol aksi)
+                // Tampilkan bottom bar hanya sebagai info total saja dan tombol pembatalan
                 if(bottomBar) {
                     bottomBar.style.display = 'flex';
-                    document.querySelector('.bottom-actions').style.display = 'none';
+                    const posActions = document.getElementById('pos-actions');
+                    const detailActions = document.getElementById('detail-actions');
+                    if (posActions) posActions.style.display = 'none';
+                    if (detailActions) detailActions.style.display = 'flex';
                     document.getElementById('display-subtotal').style.display = 'none';
                     document.getElementById('display-voucher-discount').style.display = 'none';
                 }
@@ -1984,13 +2001,12 @@ Body:
                         <div class="detail-prod-img"><i class="fa-solid fa-bicycle" style="font-size: 24px; color: var(--primary-blue);"></i></div>
                         <div class="detail-prod-info">
                             <div class="detail-prod-title">Yamaha Lexi 10 cc</div>
-                            <div class="detail-prod-tag tag-orange">Benefit Voucher Program (-Rp30.000)</div>
                             <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Stok: 5</div>
                             <div style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 4px;">Rp250.000</div>
                         </div>
                         <div style="text-align: right; font-size: 13px;">
                             <div style="color: var(--text-gray);">Jumlah Dipesan: 1 (Pcs)</div>
-                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp220.000</div>
+                            <div style="font-weight: 700; color: var(--primary-blue); margin-top: 4px;">Rp250.000</div>
                         </div>
                     </div>
                     <div class="detail-prod-card">
@@ -2008,6 +2024,7 @@ Body:
                 `;
                 
                 subtotalVal.innerText = "Rp750.000";
+                document.getElementById('detail-voucher-row').style.display = 'flex';
                 const bottomTotalSpan = document.getElementById('display-total-val');
                 if (bottomTotalSpan) bottomTotalSpan.innerText = "Rp720.000";
                 
@@ -2075,6 +2092,7 @@ Body:
                 `;
                 
                 subtotalVal.innerText = "Rp3.000.000";
+                document.getElementById('detail-voucher-row').style.display = 'none';
                 const bottomTotalSpan = document.getElementById('display-total-val');
                 if (bottomTotalSpan) bottomTotalSpan.innerText = "Rp3.990.000";
                 
@@ -2102,6 +2120,7 @@ Body:
                 `;
                 
                 subtotalVal.innerText = "Rp600.000";
+                document.getElementById('detail-voucher-row').style.display = 'none';
                 const bottomTotalSpan = document.getElementById('display-total-val');
                 if (bottomTotalSpan) bottomTotalSpan.innerText = "Rp600.000";
             }
@@ -2154,6 +2173,39 @@ Body:
                 modalPrd.style.display = 'none';
             }
         }
+
+        // --- ORDER CANCELLATION LOGIC ---
+        let activeCancelOrderId = '';
+
+        function konfirmasiBatalPesanan() {
+            const orderId = document.getElementById('detail-order-id').innerText;
+            activeCancelOrderId = orderId;
+            document.getElementById('confirm-cancel-order-id').innerText = orderId;
+            document.getElementById('modal-confirm-cancel').style.display = 'flex';
+        }
+
+        function tutupConfirmCancelModal(isApproved) {
+            document.getElementById('modal-confirm-cancel').style.display = 'none';
+            if (isApproved) {
+                // Perform cancellation logic in the simulator
+                alert('Pesanan ' + activeCancelOrderId + ' berhasil dibatalkan!\nStok barang dibebaskan kembali dan kuota voucher dikembalikan.');
+                
+                if (activeCancelOrderId === 'OTRN-01-20260203-0003') {
+                    // Update the Cart count tab badge and hide cart item
+                    const badge = document.getElementById('badge-cart-count');
+                    if (badge) badge.innerText = '0';
+                    
+                    const card = document.getElementById('cart-item-card');
+                    if (card) card.style.display = 'none';
+                    
+                    const emptyMsg = document.getElementById('cart-empty-message');
+                    if (emptyMsg) emptyMsg.style.display = 'block';
+                }
+                
+                // Return to online orders screen
+                switchView('orders');
+            }
+        }
     </script>
     <!-- MODAL SUCCESS -->
     <div id="modal-success" class="modal-overlay">
@@ -2167,6 +2219,23 @@ Body:
             </p>
             <button class="btn btn-primary" style="justify-content: center; width: 120px;"
                 onclick="tutupSuccessModal()">Selesai</button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRM CANCEL -->
+    <div id="modal-confirm-cancel" class="modal-overlay">
+        <div class="modal-content" style="max-width: 440px;">
+            <div class="modal-icon" style="color: var(--danger);">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="modal-title">Batalkan Pesanan</h3>
+            <p class="modal-desc" id="confirm-cancel-message" style="margin-bottom: 12px; font-size: 14.5px;">
+                Apakah Anda yakin akan membatalkan pesanan <strong id="confirm-cancel-order-id"></strong>?<br>Pilihan ini tidak dapat dibatalkan, stok produk akan dilepaskan, dan kuota voucher akan dikembalikan.
+            </p>
+            <div style="display: flex; gap: 12px; width: 100%; margin-top: 8px;">
+                <button class="btn btn-outline" style="flex: 1; justify-content: center; font-weight: 700;" onclick="tutupConfirmCancelModal(false)">Tidak</button>
+                <button class="btn btn-primary" style="flex: 1; justify-content: center; background-color: var(--danger); border-color: var(--danger); font-weight: 700;" onclick="tutupConfirmCancelModal(true)">Ya, Batalkan</button>
+            </div>
         </div>
     </div>
 
