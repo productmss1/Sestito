@@ -104,15 +104,22 @@
         }
 
         .n-decision {
-            width: 120px;
-            height: 120px;
-            min-width: 120px;
+            width: 140px !important;
+            height: 140px !important;
+            min-width: 140px !important;
+            min-height: 140px !important;
+            max-width: 140px !important;
+            max-height: 140px !important;
             transform: rotate(45deg);
             background: #ffedd5;
             border-color: #fdba74;
             color: #9a3412;
             padding: 0;
-            border-radius: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
         .n-decision:hover { transform: rotate(45deg) scale(1.05); }
 
@@ -120,7 +127,11 @@
             transform: rotate(-45deg);
             text-align: center;
             display: block;
-            width: 100%;
+            width: 170px;
+            position: absolute;
+            font-size: 11px;
+            line-height: 1.35;
+            font-weight: 700;
         }
 
         /* SVG Connections */
@@ -268,57 +279,57 @@
                 Klik Ikon (+) <br>Input No HP & <br>Pilih Pelanggan
             </div>
 
-            <div id="node-cek-kuota" class="node n-decision" style="left: 780px; top: 160px;">
+            <div id="node-cek-kuota" class="node n-decision" style="left: 820px; top: 160px;">
                 <span>Apakah Sisa<br>Kuota Voucher<br>Toko Ada?</span>
             </div>
 
-            <div id="node-voucher-blur" class="node n-gray" style="left: 770px; top: 380px;">
+            <div id="node-voucher-blur" class="node n-gray" style="left: 778px; top: 380px;">
                 <span class="text-amber-600 font-extrabold text-[10px] block mb-1">SYSTEM REFLECT</span>
                 Tombol Voucher Blur<br>& Disabled
             </div>
 
-            <div id="node-apply-voucher" class="node n-purple" style="left: 1040px; top: 185px;">
+            <div id="node-apply-voucher" class="node n-purple" style="left: 1060px; top: 185px;">
                 <span class="text-indigo-600 font-extrabold text-[10px] block mb-1">LANGKAH 2</span>
                 Klik Tombol<br><b>Apply Voucher</b><br>(Potongan Rp 30rb)
             </div>
 
-            <div id="node-klik-proses" class="node n-purple" style="left: 1280px; top: 185px;">
+            <div id="node-klik-proses" class="node n-purple" style="left: 1320px; top: 185px;">
                 <span class="text-indigo-600 font-extrabold text-[10px] block mb-1">LANGKAH 3</span>
                 Klik Tombol<br><b>PROSES PESANAN</b>
             </div>
 
-            <div id="node-validasi-1" class="node n-decision" style="left: 1520px; top: 160px;">
+            <div id="node-validasi-1" class="node n-decision" style="left: 1600px; top: 160px;">
                 <span>Apakah No HP<br>Terdaftar di<br>1000saudara?</span>
             </div>
 
-            <div id="node-error-1" class="node n-gray" style="left: 1510px; top: 380px;">
+            <div id="node-error-1" class="node n-gray" style="left: 1558px; top: 380px;">
                 <span class="text-red-500 font-extrabold text-[10px] block mb-1">ERROR VALIDASI</span>
                 Tampilkan Notif Error:<br>Akun belum terdaftar
             </div>
 
-            <div id="node-kembali-pos-1" class="node n-purple" style="left: 1270px; top: 380px;">
+            <div id="node-kembali-pos-1" class="node n-purple" style="left: 1310px; top: 380px;">
                 Balik ke POS &<br>Lanjut Transaksi<br>Normal Full Price
             </div>
 
-            <div id="node-validasi-2" class="node n-decision" style="left: 1820px; top: 160px;">
+            <div id="node-validasi-2" class="node n-decision" style="left: 1860px; top: 160px;">
                 <span>Apakah Akun<br>Pertama Kali<br>Transaksi?</span>
             </div>
 
-            <div id="node-error-2" class="node n-gray" style="left: 1810px; top: 380px;">
+            <div id="node-error-2" class="node n-gray" style="left: 1818px; top: 380px;">
                 <span class="text-red-500 font-extrabold text-[10px] block mb-1">ERROR VALIDASI</span>
                 Tampilkan Notif Error:<br>Bukan Transaksi Pertama
             </div>
 
-            <div id="node-kembali-pos-2" class="node n-purple" style="left: 2070px; top: 380px;">
+            <div id="node-kembali-pos-2" class="node n-purple" style="left: 2090px; top: 380px;">
                 Balik Ke POS,<br>Hapus Voucher,<br>Lanjut Full Price
             </div>
 
-            <div id="node-proses-sukses" class="node n-gray" style="left: 2080px; top: 185px;">
+            <div id="node-proses-sukses" class="node n-gray" style="left: 2100px; top: 185px;">
                 <span class="text-green-600 font-extrabold text-[10px] block mb-1">SUKSES</span>
                 Push Cart Berhasil!<br>Data Terkirim ke<br>Akun 1000saudara
             </div>
 
-            <div id="node-end-transaksi" class="node n-end" style="left: 2320px; top: 200px;">End</div>
+            <div id="node-end-transaksi" class="node n-end" style="left: 2380px; top: 200px;">End</div>
 
 
             <!-- ================= MODULE 2: PESANAN DALAM KERANJANG ================= -->
@@ -337,11 +348,36 @@
             </div>
 
             <div id="node-baca-detail" class="node n-gray" style="left: 1020px; top: 645px;">
-                <span class="text-blue-600 font-extrabold text-[10px] block mb-1">HANYA INFORMASI</span>
+                <span class="text-blue-600 font-extrabold text-[10px] block mb-1">DETAIL INFORMASI</span>
                 Tampilkan Detail Item,<br>Jumlah Qty Dipesan,<br>& Nominal Produk
             </div>
 
-            <div id="node-end-keranjang" class="node n-end" style="left: 1260px; top: 660px;">End</div>
+            <div id="node-cancel-decision" class="node n-decision" style="left: 1300px; top: 620px;">
+                <span>Apakah Admin<br>ingin membatalkan<br>pesanan?</span>
+            </div>
+
+            <div id="node-end-keranjang" class="node n-end" style="left: 1325px; top: 840px;">End</div>
+
+            <div id="node-klik-batal" class="node n-purple" style="left: 1560px; top: 645px;">
+                <span class="text-indigo-600 font-extrabold text-[10px] block mb-1">LANGKAH 4</span>
+                Klik Tombol<br><b>Batalkan Pesanan</b><br>di Floating Bar
+            </div>
+
+            <div id="node-double-validation" class="node n-decision" style="left: 1840px; top: 620px;">
+                <span>Apakah Anda yakin<br>ingin membatalkan<br>pesanan (OTRN)?</span>
+            </div>
+
+            <div id="node-proses-batal" class="node n-gray" style="left: 2080px; top: 645px;">
+                <span class="text-red-500 font-extrabold text-[10px] block mb-1">SYSTEM PROCESS</span>
+                Sistem membatalkan pesanan,<br>merilis stok barang, &<br>mengembalikan kuota voucher
+            </div>
+
+            <div id="node-update-ui" class="node n-gray" style="left: 2360px; top: 645px;">
+                <span class="text-blue-600 font-extrabold text-[10px] block mb-1">SYSTEM REFLECT</span>
+                Tab count berkurang,<br>daftar diupdate, &<br>kembali ke list keranjang
+            </div>
+
+            <div id="node-end-cancelled" class="node n-end" style="left: 2640px; top: 660px;">End</div>
 
         </div>
     </div>
@@ -378,7 +414,14 @@
             { from: 'node-start-keranjang', to: 'node-lihat-list', fromEdge: 'right', toEdge: 'left' },
             { from: 'node-lihat-list', to: 'node-klik-detail', fromEdge: 'right', toEdge: 'left' },
             { from: 'node-klik-detail', to: 'node-baca-detail', fromEdge: 'right', toEdge: 'left' },
-            { from: 'node-baca-detail', to: 'node-end-keranjang', fromEdge: 'right', toEdge: 'left' }
+            { from: 'node-baca-detail', to: 'node-cancel-decision', fromEdge: 'right', toEdge: 'left' },
+            { from: 'node-cancel-decision', to: 'node-end-keranjang', fromEdge: 'bottom', toEdge: 'top', label: 'TIDAK', labelClass: 'label-no' },
+            { from: 'node-cancel-decision', to: 'node-klik-batal', fromEdge: 'right', toEdge: 'left', label: 'YA', labelClass: 'label-yes' },
+            { from: 'node-klik-batal', to: 'node-double-validation', fromEdge: 'right', toEdge: 'left' },
+            { from: 'node-double-validation', to: 'node-baca-detail', fromEdge: 'top', toEdge: 'top', label: 'TIDAK', labelClass: 'label-no' },
+            { from: 'node-double-validation', to: 'node-proses-batal', fromEdge: 'right', toEdge: 'left', label: 'YA', labelClass: 'label-yes' },
+            { from: 'node-proses-batal', to: 'node-update-ui', fromEdge: 'right', toEdge: 'left' },
+            { from: 'node-update-ui', to: 'node-end-cancelled', fromEdge: 'right', toEdge: 'left' }
         ];
 
         // --- 2. STATE ---
@@ -453,41 +496,66 @@
                 const end = getEdgePoint(toEl, conn.toEdge);
 
                 const points = [start];
-                const offset = 25;
 
-                let p1 = { ...start };
-                if (conn.fromEdge === 'top') p1.y -= offset;
-                else if (conn.fromEdge === 'bottom') p1.y += offset;
-                else if (conn.fromEdge === 'left') p1.x -= offset;
-                else if (conn.fromEdge === 'right') p1.x += offset;
-                points.push(p1);
-
-                let p2 = { ...end };
-                if (conn.toEdge === 'top') p2.y -= offset;
-                else if (conn.toEdge === 'bottom') p2.y += offset;
-                else if (conn.toEdge === 'left') p2.x -= offset;
-                else if (conn.toEdge === 'right') p2.x += offset;
-
-                if (conn.fromEdge === 'left' || conn.fromEdge === 'right') {
-                    if (conn.toEdge === 'top' || conn.toEdge === 'bottom') {
-                        points.push({ x: p2.x, y: p1.y });
+                if (conn.fromEdge === 'right' && conn.toEdge === 'left') {
+                    if (Math.abs(start.y - end.y) < 30) {
+                        start.y = end.y;
+                        points.push(end);
                     } else {
-                        const midX = (p1.x + p2.x) / 2;
-                        points.push({ x: midX, y: p1.y });
-                        points.push({ x: midX, y: p2.y });
+                        const midX = (start.x + end.x) / 2;
+                        points.push({ x: midX, y: start.y });
+                        points.push({ x: midX, y: end.y });
+                        points.push(end);
                     }
+                } else if (conn.fromEdge === 'left' && conn.toEdge === 'right') {
+                    if (Math.abs(start.y - end.y) < 30) {
+                        start.y = end.y;
+                        points.push(end);
+                    } else {
+                        const midX = (start.x + end.x) / 2;
+                        points.push({ x: midX, y: start.y });
+                        points.push({ x: midX, y: end.y });
+                        points.push(end);
+                    }
+                } else if (conn.fromEdge === 'bottom' && conn.toEdge === 'top') {
+                    if (Math.abs(start.x - end.x) < 30) {
+                        start.x = end.x;
+                        points.push(end);
+                    } else {
+                        const midY = (start.y + end.y) / 2;
+                        points.push({ x: start.x, y: midY });
+                        points.push({ x: end.x, y: midY });
+                        points.push(end);
+                    }
+                } else if (conn.fromEdge === 'top' && conn.toEdge === 'bottom') {
+                    if (Math.abs(start.x - end.x) < 30) {
+                        start.x = end.x;
+                        points.push(end);
+                    } else {
+                        const midY = (start.y + end.y) / 2;
+                        points.push({ x: start.x, y: midY });
+                        points.push({ x: end.x, y: midY });
+                        points.push(end);
+                    }
+                } else if (conn.fromEdge === 'top' && conn.toEdge === 'top') {
+                    const minY = Math.min(start.y, end.y) - 60;
+                    points.push({ x: start.x, y: minY });
+                    points.push({ x: end.x, y: minY });
+                    points.push(end);
+                } else if (conn.fromEdge === 'bottom' && conn.toEdge === 'bottom') {
+                    const maxY = Math.max(start.y, end.y) + 60;
+                    points.push({ x: start.x, y: maxY });
+                    points.push({ x: end.x, y: maxY });
+                    points.push(end);
+                } else if ((conn.fromEdge === 'left' || conn.fromEdge === 'right') && (conn.toEdge === 'top' || conn.toEdge === 'bottom')) {
+                    points.push({ x: end.x, y: start.y });
+                    points.push(end);
+                } else if ((conn.fromEdge === 'top' || conn.fromEdge === 'bottom') && (conn.toEdge === 'left' || conn.toEdge === 'right')) {
+                    points.push({ x: start.x, y: end.y });
+                    points.push(end);
                 } else {
-                    if (conn.toEdge === 'left' || conn.toEdge === 'right') {
-                        points.push({ x: p1.x, y: p2.y });
-                    } else {
-                        const midY = (p1.y + p2.y) / 2;
-                        points.push({ x: p1.x, y: midY });
-                        points.push({ x: p2.x, y: midY });
-                    }
+                    points.push(end);
                 }
-
-                points.push(p2);
-                points.push(end);
 
                 let d = `M ${points[0].x} ${points[0].y}`;
                 for (let i = 1; i < points.length; i++) {
@@ -506,12 +574,15 @@
                     label.innerText = conn.label;
                     
                     let labelX, labelY;
-                    if (points.length === 6) {
-                        labelX = (points[2].x + points[3].x) / 2;
-                        labelY = (points[2].y + points[3].y) / 2;
+                    if (points.length === 4) {
+                        labelX = (points[1].x + points[2].x) / 2;
+                        labelY = (points[1].y + points[2].y) / 2;
+                    } else if (points.length === 3) {
+                        labelX = (points[0].x + points[1].x) / 2;
+                        labelY = (points[0].y + points[1].y) / 2;
                     } else {
-                        labelX = points[2].x;
-                        labelY = points[2].y;
+                        labelX = (points[0].x + points[points.length - 1].x) / 2;
+                        labelY = (points[0].y + points[points.length - 1].y) / 2;
                     }
                     
                     label.style.left = `${labelX}px`;
