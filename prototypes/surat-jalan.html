@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Surat Jalan Pengiriman</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Modern, clean reset and font setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11px;
+            color: #000;
+            background-color: #f3f4f6;
+            padding: 20px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Printable area styling */
+        .sheet {
+            background-color: #fff;
+            width: 210mm;
+            height: 148mm;
+            margin: 0 auto;
+            padding: 1.5mm 8mm 4mm 8mm; /* Reduced top padding to move "1 dari 1" closer to top edge */
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Print media rules */
+        @media print {
+            @page {
+                size: 210mm 148mm;
+                margin: 0; /* Zero page margin to let the sheet dictate boundaries */
+            }
+
+            body {
+                background-color: transparent;
+                padding: 0;
+            }
+
+            .sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm;
+                height: 148mm;
+                padding: 1.5mm 8mm 4mm 8mm;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        .no-print-container {
+            max-width: 210mm;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .no-print-btn {
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .no-print-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Layout elements */
+        .page-info {
+            text-align: right;
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        /* Table custom styling to match screenshot exactly */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 6px 8px;
+            vertical-align: top;
+        }
+
+        /* Header Table layout */
+        .header-table td {
+            vertical-align: middle;
+            padding: 4px 6px;
+        }
+
+        .logo-cell {
+            width: 15%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .title-cell {
+            width: 60%;
+            text-align: center;
+        }
+
+        .title-cell h1 {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .title-cell h2 {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .title-cell p {
+            font-size: 9px;
+            color: #333;
+        }
+
+        .meta-cell {
+            width: 25%;
+            font-size: 10px;
+            line-height: 1.15;
+        }
+
+        .meta-cell .label {
+            display: block;
+            margin-bottom: 0px;
+        }
+
+        .meta-cell .value {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Address Table Layout */
+        .address-table th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 10px;
+            background-color: #fff;
+            width: 50%;
+        }
+
+        .address-table td {
+            font-size: 10px;
+            line-height: 1.4;
+            height: 65px;
+        }
+
+        .address-table .field-row {
+            margin-bottom: 3px;
+        }
+
+        .address-table .field-label {
+            display: inline-block;
+            width: 45px;
+        }
+
+        /* Main Product Table Layout */
+        .product-table th {
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .product-table td {
+            font-size: 10px;
+            padding: 4px 6px;
+        }
+
+        .col-no {
+            width: 5%;
+            text-align: center;
+        }
+
+        .col-nama {
+            width: 70%;
+        }
+
+        .col-jumlah {
+            width: 12%;
+            text-align: center;
+        }
+
+        .col-satuan {
+            width: 13%;
+            text-align: center;
+        }
+
+        /* Footer / Signatures Table Layout */
+        .footer-table th {
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+            width: 25%;
+        }
+
+        .footer-table td {
+            height: 75px;
+            font-size: 10px;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .signature-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            text-align: center;
+        }
+
+        .signature-line {
+            margin-top: auto;
+            font-weight: normal;
+        }
+
+        .signature-sub {
+            font-size: 9px;
+            margin-top: 2px;
+        }
+
+        .catatan-content {
+            font-size: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Tombol Cetak / Kontrol (Hanya muncul di browser, tidak ikut tercetak) -->
+    <div class="no-print-container no-print">
+        <div>
+            <h3 style="font-weight: bold; color: #1e3a8a; font-size: 13px; margin-bottom: 2px;">Desain Surat Jalan A5 Landscape</h3>
+            <p style="color: #1d4ed8; font-size: 11px;">Tampilan presisi sesuai dengan contoh mockup yang dilampirkan.</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button onclick="window.print()" class="no-print-btn">
+                Cetak Surat Jalan
+            </button>
+            <button onclick="exportPNG()" class="no-print-btn" style="background-color: #10b981;">
+                Export PNG
+            </button>
+        </div>
+    </div>
+
+    <!-- Halaman Dokumen Utama -->
+    <div class="sheet">
+        <div>
+            <!-- Page Number -->
+            <div class="page-info">1 dari 1</div>
+
+            <!-- Header Table -->
+            <table class="header-table">
+                <tr>
+                    <td class="logo-cell">[LOGO]</td>
+                    <td class="title-cell">
+                        <h1>SURAT JALAN PENGIRIMAN</h1>
+                        <h2>PT. POS INDONESIA</h2>
+                        <p>Jl. Banda No. 30, Jakarta Pusat 10110 | Telp: (021) 384-9191</p>
+                    </td>
+                    <td class="meta-cell">
+                        <span class="label">No. Surat Jalan:</span>
+                        <span class="value" id="no-surat-jalan">PNG-01-20260101-00123</span>
+                        <span class="label">No. Transaksi:</span>
+                        <span class="value" id="no-transaksi">TRN/20260604/0002</span>
+                        <span class="label">Tanggal:</span>
+                        <span class="value" style="margin-bottom: 0;">01 Januari 2026</span>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Address Table (Pengirim / Penerima) -->
+            <table class="address-table">
+                <thead>
+                    <tr>
+                        <th>PENGIRIM</th>
+                        <th>PENERIMA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="field-row"><strong>Nama:</strong> PT. ABC Manufacturing</div>
+                            <div class="field-row"><strong>Alamat:</strong> Jl. Industri Raya No. 45, Sunter Agung, Tanjung Priok, Jakarta Utara 14350</div>
+                            <div class="field-row"><strong>HP:</strong> 0812-3456-7890</div>
+                        </td>
+                        <td>
+                            <div class="field-row"><strong>Nama:</strong> CV. XYZ Trading</div>
+                            <div class="field-row"><strong>Alamat:</strong> Jl. Merdeka No. 123, Menteng, Jakarta Pusat 10310</div>
+                            <div class="field-row"><strong>Telp:</strong> 021-3901234</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Main Product Table (10 Baris) -->
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th class="col-no">NO</th>
+                        <th class="col-nama">NAMA PRODUK</th>
+                        <th class="col-jumlah">JUMLAH</th>
+                        <th class="col-satuan">SATUAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-no">1</td>
+                        <td class="col-nama">Semen Tiga Roda 40 Kg</td>
+                        <td class="col-jumlah">1</td>
+                        <td class="col-satuan">sak</td>
+                    </tr>
+                    <tr>
+                        <td class="col-no">2</td>
+                        <td class="col-nama">Semen Tiga Roda 40 Kg</td>
+                        <td class="col-jumlah">1</td>
+                        <td class="col-satuan">sak</td>
+                    </tr>
+                    <tr>
+                        <td class="col-no">3</td>
+                        <td class="col-nama">Semen Tiga Roda 40 Kg</td>
+                        <td class="col-jumlah">1</td>
+                        <td class="col-satuan">sak</td>
+                    </tr>
+                    <tr>
+                        <td class="col-no">4</td>
+                        <td class="col-nama">Semen Tiga Roda 40 Kg</td>
+                        <td class="col-jumlah">1</td>
+                        <td class="col-satuan">sak</td>
+                    </tr>
+                    <tr>
+                        <td class="col-no">5</td>
+                        <td class="col-nama">Semen Tiga Roda 40 Kg</td>
+                        <td class="col-jumlah">1</td>
+                        <td class="col-satuan">sak</td>
+                    </tr>
+                    <tr>
+                        <td class="col-no">6</td>
+                        <td class="col-nama">Semen Tiga Roda 40 Kg</td>
+                        <td class="col-jumlah">1</td>
+                        <td class="col-satuan">sak</td>
+                    </tr>
+                    <tr>
+                        <td class="col-no">7</td>
+                        <td class="col-nama">Semen Tiga Roda 40 Kg</td>
+                        <td class="col-jumlah">1</td>
+                        <td class="col-satuan">sak</td>
+                    </tr>
+                    <tr>
+                        <td class="col-no">8</td>
+                        <td class="col-nama">Semen Tiga Roda 40 Kg</td>
+                        <td class="col-jumlah">1</td>
+                        <td class="col-satuan">sak</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer / Signatures Table -->
+        <table class="footer-table" style="margin-bottom: 0;">
+            <thead>
+                <tr>
+                    <th>CATATAN</th>
+                    <th>KEPALA GUDANG</th>
+                    <th>PENGIRIMAN</th>
+                    <th>PENERIMA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="catatan-content">
+                        Catatan disini
+                    </td>
+                    <td>
+                        <div class="signature-container">
+                            <div class="signature-line">(....................)</div>
+                            <div class="signature-sub">Nama & Tanda Tangan</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="signature-container">
+                            <div class="signature-line">(....................)</div>
+                            <div class="signature-sub">Nama & Tanda Tangan</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="signature-container">
+                            <div class="signature-line">(....................)</div>
+                            <div class="signature-sub">Nama & Tanda Tangan</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function exportPNG() {
+            const btn = document.querySelector('button[onclick="exportPNG()"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'Mengunduh...';
+            btn.disabled = true;
+
+            const sheet = document.querySelector('.sheet');
+            
+            // Simpan bayangan asli lalu hapus sementara agar tidak ikut tercetak ke dalam file PNG
+            const originalShadow = sheet.style.boxShadow;
+            sheet.style.boxShadow = 'none';
+
+            html2canvas(sheet, {
+                scale: 3, // Menggunakan resolusi tinggi (3x dpi) agar teks tidak pecah
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                // Kembalikan bayangan seperti semula
+                sheet.style.boxShadow = originalShadow;
+                
+                // Ambil nomor surat jalan dan nomor transaksi secara dinamis agar sesuai dengan dokumen yang sedang dilihat
+                const noSuratJalanElement = document.getElementById('no-surat-jalan');
+                const noTransaksiElement = document.getElementById('no-transaksi');
+                
+                const noSuratJalan = noSuratJalanElement ? noSuratJalanElement.innerText.trim().replace(/[\/\\?%*:|"<>. ]/g, '_') : 'PNG-01-20260101-00123';
+                const noTransaksi = noTransaksiElement ? noTransaksiElement.innerText.trim().replace(/[\/\\?%*:|"<>. ]/g, '_') : 'TRN_20260604_0002';
+                
+                const filename = `Surat_Jalan_${noSuratJalan}_${noTransaksi}.png`;
+
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error(err);
+                alert('Gagal mengekspor gambar.');
+                sheet.style.boxShadow = originalShadow;
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+
+</html>

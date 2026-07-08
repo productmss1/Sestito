@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup UI/UX - Notifikasi Lisensi inTechgra</title>
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            
+            /* Premium Status Colors */
+            --warning-yellow-bg: #fffbeb;
+            --warning-yellow-border: #f59e0b;
+            --warning-yellow-text: #b45309;
+            
+            --warning-orange-bg: #fff7ed;
+            --warning-orange-border: #f97316;
+            --warning-orange-text: #c2410c;
+            
+            --warning-red-bg: #fef2f2;
+            --warning-red-border: #ef4444;
+            --warning-red-text: #991b1b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, .logo-section, .btn, .banner-title, .countdown-value {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* CONTROL PANEL */
+        .brief-controls {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            border-bottom: 2px solid #1e293b;
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .control-title {
+            font-weight: 700;
+            color: #38bdf8;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-control {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-control:hover {
+            background: #334155;
+            color: white;
+        }
+
+        .btn-control.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+        }
+
+        select {
+            background: #1e293b;
+            color: white;
+            border: 1px solid #334155;
+            padding: 8px 14px;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        select:focus {
+            border-color: #38bdf8;
+        }
+
+        /* DASHBOARD CONTENT MOCKUP */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            transition: filter 0.3s ease;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 0;
+        }
+
+        .logo-section {
+            padding: 0 24px 24px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-section span {
+            color: var(--primary-blue);
+        }
+
+        .menu-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .menu-item:hover {
+            color: var(--text-dark);
+            background: #f8fafc;
+        }
+
+        .menu-item.active {
+            background: var(--primary-light);
+            color: var(--primary-blue);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .sidebar-footer {
+            padding: 0 20px;
+        }
+
+        .btn-footer {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-footer:hover {
+            background: #f1f5f9;
+        }
+        
+        .btn-footer.exit {
+            color: #ef4444;
+            border-color: #fee2e2;
+        }
+        .btn-footer.exit:hover {
+            background: #fef2f2;
+        }
+
+        /* Main Window */
+        .main-window {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--bg-light);
+        }
+
+        /* Header */
+        .header {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .header-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--text-dark);
+        }
+
+        .tab.active {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        .header-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--primary-blue);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-content {
+            padding: 32px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.01);
+        }
+
+        .card.active-blue {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+
+        .card-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.75px;
+        }
+
+        .card.active-blue .card-title {
+            color: #bfdbfe;
+        }
+
+        .card-value {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        /* MODAL OVERLAY BACKGROUND */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* MODAL BOX - Premium Redesign */
+        .license-modal {
+            width: 540px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.18);
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-overlay.show .license-modal {
+            transform: scale(1);
+        }
+
+        /* Premium Modal Header Banner */
+        .modal-banner {
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        /* State Yellow */
+        .modal-banner.state-yellow {
+            background-color: var(--warning-yellow-bg);
+            border-bottom-color: #fef08a;
+        }
+        .modal-banner.state-yellow .icon-outer-wrapper {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .modal-banner.state-yellow .banner-title {
+            color: #78350f;
+        }
+
+        /* State Orange */
+        .modal-banner.state-orange {
+            background-color: var(--warning-orange-bg);
+            border-bottom-color: #fed7aa;
+        }
+        .modal-banner.state-orange .icon-outer-wrapper {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+        .modal-banner.state-orange .banner-title {
+            color: #7c2d12;
+        }
+
+        /* State Red */
+        .modal-banner.state-red {
+            background-color: var(--warning-red-bg);
+            border-bottom-color: #fecaca;
+        }
+        .modal-banner.state-red .icon-outer-wrapper {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .modal-banner.state-red .banner-title {
+            color: #7f1d1d;
+        }
+
+        .icon-outer-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+        
+        .icon-outer-wrapper svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .banner-text {
+            flex: 1;
+        }
+
+        .banner-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.25px;
+        }
+
+        .banner-desc {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #475569;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 28px;
+        }
+
+        /* Premium Subscription Status Card */
+        .premium-status-card {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-blue);
+        }
+        
+        /* Left Column Info */
+        .package-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .package-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.75px;
+        }
+
+        .package-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .package-subtext {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Right Column Highlighted Badge */
+        .countdown-badge-wrapper {
+            text-align: right;
+        }
+
+        .countdown-value {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            display: block;
+        }
+
+        .countdown-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        /* Dynamic Badge Color Classes */
+        .text-yellow-alert {
+            color: var(--warning-yellow-border);
+        }
+        .text-orange-alert {
+            color: var(--warning-orange-border);
+        }
+        .text-red-alert {
+            color: var(--warning-red-border);
+        }
+
+        /* Modal Footer / Buttons */
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: var(--text-dark);
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* LOCKED STATE (D-0) Mockup Overlay */
+        .lock-overlay {
+            position: absolute;
+            top: 70px;
+            left: 250px;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 800;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            backdrop-filter: blur(12px);
+        }
+
+        .lock-box {
+            max-width: 480px;
+            background: white;
+            border: 1px solid #fee2e2;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 40px -10px rgba(220, 38, 38, 0.12);
+        }
+
+        .lock-icon-wrapper {
+            width: 72px;
+            height: 72px;
+            background: #fee2e2;
+            color: #ef4444;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .lock-icon-wrapper svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .lock-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #7f1d1d;
+            margin-bottom: 12px;
+        }
+
+        .lock-desc {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CONTROL PANEL BRIEF UNTUK TIM UI/UX -->
+    <div class="brief-controls">
+        <div class="control-group">
+            <span class="control-title">⚙️ UI/UX Design Brief Controls:</span>
+            
+            <!-- Switch Role Karyawan -->
+            <label for="role-select">Role User:</label>
+            <select id="role-select" onchange="updateUI()">
+                <option value="owner">Owner (Akses Manajemen Toko)</option>
+                <option value="staff">Staff Biasa (Tidak Ada Akses)</option>
+            </select>
+            
+            <!-- Switch Hari Aktif -->
+            <label for="days-select">Sisa Masa Aktif:</label>
+            <select id="days-select" onchange="updateUI()">
+                <option value="30">30 Hari Tersisa (🟡 Kuning)</option>
+                <option value="7">7 Hari Tersisa (🟠 Oranye)</option>
+                <option value="3">3 Hari Tersisa (🔴 Merah)</option>
+                <option value="0">0 Hari Tersisa (🔒 Terkunci)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <button class="btn-control active" id="btn-show-pop" onclick="toggleModal(true)">Tampilkan Pop-up</button>
+            <button class="btn-control" id="btn-hide-pop" onclick="toggleModal(false)">Sembunyikan Pop-up</button>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="app-container" id="app-wrapper">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div>
+                <div class="logo-section">
+                    in<span>techgra</span>
+                </div>
+                <ul class="menu-list">
+                    <li class="menu-item active">
+                        <!-- Dashboard Icon (SVG) -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                        Dashboard
+                    </li>
+                    <li class="menu-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                        Laporan
+                    </li>
+                    <li class="menu-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Penjualan
+                    </li>
+                    <li class="menu-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+                        Riwayat
+                    </li>
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn-footer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    Bantuan
+                </button>
+                <button class="btn-footer exit">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Keluar
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN WINDOW -->
+        <main class="main-window">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-tabs">
+                    <div class="tab active">Penjualan</div>
+                    <div class="tab">Penjualan Online</div>
+                    <div class="tab">Keuangan</div>
+                    <div class="tab">Pengaturan</div>
+                </div>
+                <div class="header-profile">
+                    <div style="text-align: right;">
+                        <div style="font-weight: 700; font-size: 14px;" id="profile-name">Sastito</div>
+                        <div style="font-size: 11px; color: var(--text-muted);" id="profile-role">Owner</div>
+                    </div>
+                    <div class="avatar-circle">S</div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <div class="dashboard-header">
+                    <h1 style="font-size: 24px; font-weight: 800;">Dashboard</h1>
+                </div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-title">Volume Transaksi</div>
+                        <div class="card-value">0</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Penjualan Kotor</div>
+                        <div class="card-value">Rp0</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Retur & Dibatalkan</div>
+                        <div class="card-value">0</div>
+                    </div>
+                    <div class="card active-blue">
+                        <div class="card-title">Penjualan Bersih</div>
+                        <div class="card-value">Rp0</div>
+                    </div>
+                </div>
+
+                <div style="background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; min-height: 200px;">
+                    <div style="font-weight: 700; margin-bottom: 20px; color: var(--text-dark);">Laporan Pendapatan</div>
+                    <div style="height: 100px; display: flex; align-items: flex-end; justify-content: space-between; border-left: 2px solid var(--border-color); border-bottom: 2px solid var(--border-color); padding-left: 8px;">
+                        <div style="width: 15%; height: 20%; background: #3b82f6; border-radius: 4px 4px 0 0;"></div>
+                        <div style="width: 15%; height: 45%; background: #10b981; border-radius: 4px 4px 0 0;"></div>
+                        <div style="width: 15%; height: 75%; background: #3b82f6; border-radius: 4px 4px 0 0;"></div>
+                        <div style="width: 15%; height: 30%; background: #10b981; border-radius: 4px 4px 0 0;"></div>
+                        <div style="width: 15%; height: 90%; background: #3b82f6; border-radius: 4px 4px 0 0;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- LOCKED SCREEN STATE (H-0) -->
+        <div class="lock-overlay" id="lock-overlay">
+            <div class="lock-box">
+                <div class="lock-icon-wrapper">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <div class="lock-title">Masa Aktif Lisensi Toko Habis</div>
+                <p class="lock-desc" id="lock-text">
+                    Aplikasi ini sementara terkunci karena masa aktif paket lisensi toko Anda telah berakhir.
+                </p>
+                <div id="lock-action-area"></div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION MODAL OVERLAY -->
+        <div class="modal-overlay" id="modal-overlay">
+            <div class="license-modal">
+                
+                <!-- Dynamic Banner (Kuning / Oranye / Merah) -->
+                <div class="modal-banner" id="modal-banner">
+                    <div class="icon-outer-wrapper">
+                        <!-- Dynamic SVG Icon inserted by JS -->
+                    </div>
+                    <div class="banner-text">
+                        <div class="banner-title" id="modal-title">Pembaruan Masa Aktif Lisensi</div>
+                        <div class="banner-desc" id="modal-desc">
+                            Harap segera lakukan perpanjangan lisensi sebelum batas waktu berakhir agar operasional toko Anda tetap berjalan dengan lancar tanpa terputus.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Info Details -->
+                <div class="modal-body">
+                    
+                    <!-- PREMIUM STATUS CARD -->
+                    <div class="premium-status-card" id="status-card">
+                        <div class="package-info-col">
+                            <span class="package-label">Paket Aktif</span>
+                            <span class="package-name">inTechgra Pro Starter</span>
+                            <span class="package-subtext">Lisensi Kuota: Maks. 3 User Login</span>
+                        </div>
+                        <div class="countdown-badge-wrapper">
+                            <span class="countdown-value" id="badge-days">30</span>
+                            <span class="countdown-label">Hari Tersisa</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="modal-footer" id="modal-footer"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MOCKUP LOGIC -->
+    <script>
+        const roleSelect = document.getElementById('role-select');
+        const daysSelect = document.getElementById('days-select');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const lockOverlay = document.getElementById('lock-overlay');
+        const appWrapper = document.getElementById('app-wrapper');
+
+        const modalBanner = document.getElementById('modal-banner');
+        const iconWrapper = document.querySelector('.icon-outer-wrapper');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const badgeDays = document.getElementById('badge-days');
+        const modalFooter = document.getElementById('modal-footer');
+        const statusCard = document.getElementById('status-card');
+
+        const profileName = document.getElementById('profile-name');
+        const profileRole = document.getElementById('profile-role');
+
+        const lockText = document.getElementById('lock-text');
+        const lockActionArea = document.getElementById('lock-action-area');
+
+        // SVG Icons for different states
+        const iconAlertTriangle = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg>`;
+        const iconClock = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
+        const iconShieldAlert = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01"></path></svg>`;
+
+        function updateUI() {
+            const role = roleSelect.value;
+            const days = parseInt(daysSelect.value);
+
+            // Update user profile preview
+            if (role === 'owner') {
+                profileName.textContent = "Sastito";
+                profileRole.textContent = "Owner (Akses Manajemen)";
+            } else {
+                profileName.textContent = "Andi Kasir";
+                profileRole.textContent = "Kasir (Staff)";
+            }
+
+            // Reset UI State
+            lockOverlay.style.display = 'none';
+            appWrapper.style.filter = 'blur(0)';
+
+            // D-0 (Expired Locked Screen)
+            if (days === 0) {
+                toggleModal(false);
+                lockOverlay.style.display = 'flex';
+                appWrapper.style.filter = 'blur(4px)';
+                
+                if (role === 'owner') {
+                    lockText.innerHTML = "Masa aktif lisensi toko Anda telah berakhir. Sebagai <strong>Owner/Administrator</strong>, silakan selesaikan pembayaran untuk mengaktifkan kembali modul operasional toko.";
+                    lockActionArea.innerHTML = `<button class="btn btn-primary" onclick="alert('Generate VA perpanjangan...')">Perpanjang Lisensi Sekarang</button>`;
+                } else {
+                    lockText.innerHTML = "Masa aktif lisensi toko Anda telah berakhir.<br>Silakan hubungi <strong>Owner / Administrator (Sastito)</strong> untuk melakukan perpanjangan agar aplikasi dapat digunakan kembali.";
+                    lockActionArea.innerHTML = `<button class="btn btn-secondary" style="cursor: not-allowed;" disabled>Hubungi Owner</button>`;
+                }
+                return;
+            }
+
+            // Update Remaining Days Badge
+            badgeDays.textContent = days;
+            
+            // Dynamic theme and icons based on days left
+            // Keterangan di atas tidak menyebutkan sisa hari lagi secara berulang untuk menghindari redundansi
+            if (days === 30) {
+                // H-30 (Kuning)
+                modalBanner.className = "modal-banner state-yellow";
+                iconWrapper.innerHTML = iconClock;
+                modalTitle.textContent = "Informasi Pembaruan Lisensi";
+                modalDesc.textContent = "Lisensi toko Anda akan memasuki masa kedaluwarsa. Lakukan perpanjangan lebih awal untuk menghindari gangguan layanan.";
+                
+                badgeDays.className = "countdown-value text-yellow-alert";
+                statusCard.style.borderLeftColor = "var(--warning-yellow-border)";
+            } else if (days === 7) {
+                // H-7 (Oranye)
+                modalBanner.className = "modal-banner state-orange";
+                iconWrapper.innerHTML = iconAlertTriangle;
+                modalTitle.textContent = "Peringatan: Masa Aktif Hampir Berakhir";
+                modalDesc.textContent = "Harap perhatikan batas akhir lisensi toko Anda. Segera lakukan perpanjangan agar sistem tetap aktif secara berkelanjutan.";
+                
+                badgeDays.className = "countdown-value text-orange-alert";
+                statusCard.style.borderLeftColor = "var(--warning-orange-border)";
+            } else if (days === 3) {
+                // H-3 (Merah)
+                modalBanner.className = "modal-banner state-red";
+                iconWrapper.innerHTML = iconShieldAlert;
+                modalTitle.textContent = "Penting: Lisensi Toko Segera Kedaluwarsa!";
+                modalDesc.textContent = "Batas waktu penggunaan hampir habis. Aplikasi akan dinonaktifkan secara otomatis jika pembayaran tidak dilakukan sebelum masa aktif berakhir.";
+                
+                badgeDays.className = "countdown-value text-red-alert";
+                statusCard.style.borderLeftColor = "var(--warning-red-border)";
+            }
+
+            // Actions mapping
+            if (role === 'owner') {
+                modalFooter.innerHTML = `
+                    <button class="btn btn-secondary" onclick="toggleModal(false)">Mengerti</button>
+                    <button class="btn btn-primary" onclick="alert('Mengarahkan ke Halaman Manajemen Toko...')">
+                        Perpanjang Sekarang
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                `;
+            } else {
+                modalFooter.innerHTML = `
+                    <button class="btn btn-primary" style="width: 100%;" onclick="toggleModal(false)">Mengerti</button>
+                `;
+            }
+        }
+
+        function toggleModal(show) {
+            if (show && parseInt(daysSelect.value) > 0) {
+                modalOverlay.classList.add('show');
+                document.getElementById('btn-show-pop').classList.add('active');
+                document.getElementById('btn-hide-pop').classList.remove('active');
+            } else {
+                modalOverlay.classList.remove('show');
+                document.getElementById('btn-show-pop').classList.remove('active');
+                document.getElementById('btn-hide-pop').classList.add('active');
+            }
+        }
+
+        // Initialize UI on load
+        updateUI();
+        toggleModal(true);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>UAT - Performa Penjualan | inTechgra POS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            padding: 32px;
+            font-size: 13px;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e3a5f, #2d6a9f);
+            color: white;
+            padding: 28px 36px;
+            border-radius: 12px;
+            margin-bottom: 28px;
+        }
+        .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .header h2 { font-size: 14px; font-weight: 400; opacity: 0.85; margin-bottom: 16px; }
+        .header-meta { display: flex; gap: 32px; font-size: 12px; opacity: 0.8; }
+        .header-meta span { display: flex; align-items: center; gap: 6px; }
+
+        /* Section */
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title .badge {
+            background: #e8f0fe;
+            color: #2d6a9f;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 99px;
+            font-weight: 600;
+        }
+        .section-desc {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #2d6a9f;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+        }
+        .formula-box strong { color: #1e3a5f; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        thead th {
+            background: #1e3a5f;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        thead th.center { text-align: center; }
+        thead th.right { text-align: right; }
+
+        tbody td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+        tbody tr:hover { background: #f8fafc; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        tbody tr:nth-child(even):hover { background: #f0f4f8; }
+
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .font-bold { font-weight: 700; }
+        .font-mono { font-family: 'Courier New', monospace; }
+
+        /* Status Cells */
+        .cell-input {
+            background: #fefce8;
+            border: 1px dashed #facc15;
+            font-weight: 600;
+        }
+        .cell-expected {
+            background: #ecfdf5;
+            color: #065f46;
+            font-weight: 700;
+        }
+        .cell-actual {
+            background: #fff7ed;
+            border: 1px dashed #f97316;
+            min-width: 100px;
+        }
+        .cell-result {
+            min-width: 70px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .pass { color: #16a34a; background: #f0fdf4; }
+        .fail { color: #dc2626; background: #fef2f2; }
+
+        /* Sub-header row */
+        .sub-header td {
+            background: #e8f0fe;
+            font-weight: 700;
+            color: #1e3a5f;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-bottom: 2px solid #2d6a9f;
+        }
+
+        /* Notes */
+        .note-box {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #92400e;
+            line-height: 1.6;
+        }
+        .note-box strong { color: #78350f; }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #6b7280;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid #d1d5db;
+        }
+
+        /* Print */
+        @media print {
+            body { background: white; padding: 16px; font-size: 11px; }
+            .header { break-after: avoid; }
+            .section { break-inside: avoid; box-shadow: none; border: 1px solid #e5e7eb; }
+            thead th { background: #374151 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+
+        .divider {
+            border: none;
+            border-top: 2px dashed #e5e7eb;
+            margin: 28px 0;
+        }
+
+        .tc-id {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #2d6a9f;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ==================== HEADER ==================== -->
+    <div class="header">
+        <h1>📋 UAT Test Sheet — Performa Penjualan</h1>
+        <h2>Modul: Ringkasan Penjualan → Tab Performa Penjualan | inTechgra POS</h2>
+        <div class="header-meta">
+            <span>📅 Tanggal Test: ____/____/________</span>
+            <span>👤 Tester: ________________________</span>
+            <span>🏪 Toko: TB. MBG</span>
+            <span>🔖 Versi Aplikasi: ________</span>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 0: RUMUS REFERENSI ==================== -->
+    <div class="section">
+        <div class="section-title">📐 Referensi Rumus Kalkulasi</div>
+        <p class="section-desc">Formula yang digunakan sebagai dasar verifikasi seluruh test case di bawah.</p>
+
+        <div class="formula-box">
+            <strong>① Penjualan Bersih</strong> = Penjualan Kotor + Ongkos Kirim + Biaya Tambahan + Pendapatan Lain-lain − Biaya Promosi − Biaya Lainnya − Biaya MDR<br><br>
+            <strong>② Laba Kotor (Margin)</strong> = Penjualan Bersih − Harga Pokok Penjualan (HPP)<br><br>
+            <strong>③ Volume Transaksi</strong> = Jumlah Transaksi pada Periode Terpilih<br><br>
+            <strong>④ % Perubahan</strong> = ((Nilai Periode Ini − Nilai Periode Sebelumnya) / Nilai Periode Sebelumnya) × 100%<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<em>*Jika Periode Sebelumnya = 0, tampilkan "+100%"</em>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-color" style="background:#fefce8; border-color:#facc15;"></div> Kolom Input (Data Dummy)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#ecfdf5; border-color:#065f46;"></div> Expected Result (Hitungan Manual)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#fff7ed; border-color:#f97316;"></div> Actual Result (Dari Web App)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#f0fdf4; border-color:#16a34a;"></div> ✅ PASS</div>
+            <div class="legend-item"><div class="legend-color" style="background:#fef2f2; border-color:#dc2626;"></div> ❌ FAIL</div>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 1: DATA TRANSAKSI DUMMY ==================== -->
+    <div class="section">
+        <div class="section-title">📦 Tabel 1 — Data Transaksi Dummy <span class="badge">INPUT DATA</span></div>
+        <p class="section-desc">Masukkan data transaksi yang akan digunakan untuk verifikasi. Data ini harus di-input ke web app terlebih dahulu.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>No. Order</th>
+                    <th>Tanggal</th>
+                    <th>Pelanggan</th>
+                    <th class="right">Penj. Kotor (Rp)</th>
+                    <th class="right">Ongkir (Rp)</th>
+                    <th class="right">Biaya Tambahan (Rp)</th>
+                    <th class="right">Pndptn Lain (Rp)</th>
+                    <th class="right">Biaya Promosi (Rp)</th>
+                    <th class="right">Biaya Lainnya (Rp)</th>
+                    <th class="right">Biaya MDR (Rp)</th>
+                    <th class="right">HPP (Rp)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Transaksi Mei 2026 -->
+                <tr class="sub-header">
+                    <td colspan="13">📅 Periode: Mei 2026</td>
+                </tr>
+                <tr>
+                    <td class="text-center">1</td>
+                    <td class="cell-input font-mono">TRN/20260510/0001</td>
+                    <td class="cell-input">10 Mei 2026</td>
+                    <td class="cell-input">Budi</td>
+                    <td class="cell-input text-right">500,000</td>
+                    <td class="cell-input text-right">15,000</td>
+                    <td class="cell-input text-right">10,000</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">25,000</td>
+                    <td class="cell-input text-right">5,000</td>
+                    <td class="cell-input text-right">5,000</td>
+                    <td class="cell-input text-right">300,000</td>
+                    <td class="cell-input text-center">Selesai</td>
+                </tr>
+                <tr>
+                    <td class="text-center">2</td>
+                    <td class="cell-input font-mono">TRN/20260515/0002</td>
+                    <td class="cell-input">15 Mei 2026</td>
+                    <td class="cell-input">Andi</td>
+                    <td class="cell-input text-right">750,000</td>
+                    <td class="cell-input text-right">20,000</td>
+                    <td class="cell-input text-right">5,000</td>
+                    <td class="cell-input text-right">10,000</td>
+                    <td class="cell-input text-right">50,000</td>
+                    <td class="cell-input text-right">10,000</td>
+                    <td class="cell-input text-right">7,500</td>
+                    <td class="cell-input text-right">380,000</td>
+                    <td class="cell-input text-center">Selesai</td>
+                </tr>
+                <tr>
+                    <td class="text-center">3</td>
+                    <td class="cell-input font-mono">TRN/20260520/0003</td>
+                    <td class="cell-input">20 Mei 2026</td>
+                    <td class="cell-input">Citra</td>
+                    <td class="cell-input text-right">300,000</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">200,000</td>
+                    <td class="cell-input text-center">Selesai</td>
+                </tr>
+
+                <!-- Transaksi April 2026 (Periode Sebelumnya) -->
+                <tr class="sub-header">
+                    <td colspan="13">📅 Periode: April 2026 (Periode Sebelumnya — untuk hitung % perubahan)</td>
+                </tr>
+                <tr>
+                    <td class="text-center">4</td>
+                    <td class="cell-input font-mono">TRN/20260405/0001</td>
+                    <td class="cell-input">05 Apr 2026</td>
+                    <td class="cell-input">Dewi</td>
+                    <td class="cell-input text-right">400,000</td>
+                    <td class="cell-input text-right">10,000</td>
+                    <td class="cell-input text-right">5,000</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">15,000</td>
+                    <td class="cell-input text-right">5,000</td>
+                    <td class="cell-input text-right">3,000</td>
+                    <td class="cell-input text-right">250,000</td>
+                    <td class="cell-input text-center">Selesai</td>
+                </tr>
+                <tr>
+                    <td class="text-center">5</td>
+                    <td class="cell-input font-mono">TRN/20260418/0002</td>
+                    <td class="cell-input">18 Apr 2026</td>
+                    <td class="cell-input">Eka</td>
+                    <td class="cell-input text-right">250,000</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">5,000</td>
+                    <td class="cell-input text-right">10,000</td>
+                    <td class="cell-input text-right">0</td>
+                    <td class="cell-input text-right">2,500</td>
+                    <td class="cell-input text-right">150,000</td>
+                    <td class="cell-input text-center">Selesai</td>
+                </tr>
+
+                <!-- Baris kosong untuk tambahan data -->
+                <tr class="sub-header">
+                    <td colspan="13">➕ Tambahan Data (isi sesuai kebutuhan testing)</td>
+                </tr>
+                <tr>
+                    <td class="text-center text-gray-400">6</td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-center"></td>
+                </tr>
+                <tr>
+                    <td class="text-center text-gray-400">7</td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-center"></td>
+                </tr>
+                <tr>
+                    <td class="text-center text-gray-400">8</td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-right"></td>
+                    <td class="cell-input text-center"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== SECTION 2: VERIFIKASI PENJUALAN BERSIH ==================== -->
+    <div class="section">
+        <div class="section-title">🧮 Tabel 2 — Verifikasi Penjualan Bersih <span class="badge">TEST CASE</span></div>
+        <p class="section-desc">Cocokkan hasil hitungan manual dengan tampilan di web app. Filter: Tahunan per Bulan, Tahun 2026.</p>
+
+        <div class="formula-box">
+            <strong>Penjualan Bersih</strong> = Penjualan Kotor + Ongkos Kirim + Biaya Tambahan + Pendapatan Lain-lain − Biaya Promosi − Biaya Lainnya − Biaya MDR
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>TC-ID</th>
+                    <th>Periode</th>
+                    <th class="right">Penj. Kotor</th>
+                    <th class="right">+ Ongkir</th>
+                    <th class="right">+ Biaya Tambahan</th>
+                    <th class="right">+ Pndptn Lain</th>
+                    <th class="right">− Biaya Promosi</th>
+                    <th class="right">− Biaya Lainnya</th>
+                    <th class="right">− Biaya MDR</th>
+                    <th class="right" style="background:#065f46;">Expected (Rp)</th>
+                    <th class="right" style="background:#9a3412;">Actual (Rp)</th>
+                    <th class="center">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ===== MEI 2026 ===== -->
+                <tr class="sub-header">
+                    <td colspan="12">📅 Mei 2026 — 3 Transaksi</td>
+                </tr>
+                <!-- TRN 1 -->
+                <tr>
+                    <td class="tc-id">PB-01</td>
+                    <td>TRN/0001</td>
+                    <td class="text-right">500,000</td>
+                    <td class="text-right">15,000</td>
+                    <td class="text-right">10,000</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">25,000</td>
+                    <td class="text-right">5,000</td>
+                    <td class="text-right">5,000</td>
+                    <td class="cell-expected text-right">490,000</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <!-- TRN 2 -->
+                <tr>
+                    <td class="tc-id">PB-02</td>
+                    <td>TRN/0002</td>
+                    <td class="text-right">750,000</td>
+                    <td class="text-right">20,000</td>
+                    <td class="text-right">5,000</td>
+                    <td class="text-right">10,000</td>
+                    <td class="text-right">50,000</td>
+                    <td class="text-right">10,000</td>
+                    <td class="text-right">7,500</td>
+                    <td class="cell-expected text-right">717,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <!-- TRN 3: Semua deduction 0 -->
+                <tr>
+                    <td class="tc-id">PB-03</td>
+                    <td>TRN/0003</td>
+                    <td class="text-right">300,000</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">0</td>
+                    <td class="cell-expected text-right">300,000</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <!-- TOTAL MEI -->
+                <tr style="background:#e0f2fe; font-weight:700;">
+                    <td class="tc-id">PB-04</td>
+                    <td class="font-bold">TOTAL MEI 2026</td>
+                    <td class="text-right">1,550,000</td>
+                    <td class="text-right">35,000</td>
+                    <td class="text-right">15,000</td>
+                    <td class="text-right">10,000</td>
+                    <td class="text-right">75,000</td>
+                    <td class="text-right">15,000</td>
+                    <td class="text-right">12,500</td>
+                    <td class="cell-expected text-right font-bold">1,507,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+
+                <!-- ===== APRIL 2026 ===== -->
+                <tr class="sub-header">
+                    <td colspan="12">📅 April 2026 — 2 Transaksi (Periode Sebelumnya)</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">PB-05</td>
+                    <td>TRN/0001</td>
+                    <td class="text-right">400,000</td>
+                    <td class="text-right">10,000</td>
+                    <td class="text-right">5,000</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">15,000</td>
+                    <td class="text-right">5,000</td>
+                    <td class="text-right">3,000</td>
+                    <td class="cell-expected text-right">392,000</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">PB-06</td>
+                    <td>TRN/0002</td>
+                    <td class="text-right">250,000</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">5,000</td>
+                    <td class="text-right">10,000</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right">2,500</td>
+                    <td class="cell-expected text-right">242,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <!-- TOTAL APRIL -->
+                <tr style="background:#e0f2fe; font-weight:700;">
+                    <td class="tc-id">PB-07</td>
+                    <td class="font-bold">TOTAL APRIL 2026</td>
+                    <td class="text-right">650,000</td>
+                    <td class="text-right">10,000</td>
+                    <td class="text-right">5,000</td>
+                    <td class="text-right">5,000</td>
+                    <td class="text-right">25,000</td>
+                    <td class="text-right">5,000</td>
+                    <td class="text-right">5,500</td>
+                    <td class="cell-expected text-right font-bold">634,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== SECTION 3: VERIFIKASI LABA KOTOR ==================== -->
+    <div class="section">
+        <div class="section-title">💰 Tabel 3 — Verifikasi Laba Kotor (Margin) <span class="badge">TEST CASE</span></div>
+        <p class="section-desc">Cocokkan nilai Margin/Laba di dashboard dengan hitungan manual.</p>
+
+        <div class="formula-box">
+            <strong>Laba Kotor</strong> = Penjualan Bersih − HPP (Harga Pokok Penjualan)
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>TC-ID</th>
+                    <th>Periode</th>
+                    <th class="right">Penjualan Bersih (Rp)</th>
+                    <th class="right">HPP (Rp)</th>
+                    <th class="right" style="background:#065f46;">Expected Laba (Rp)</th>
+                    <th class="right" style="background:#9a3412;">Actual Laba (Rp)</th>
+                    <th class="center">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="sub-header">
+                    <td colspan="7">📅 Mei 2026 — Per Transaksi</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">LB-01</td>
+                    <td>TRN/0001</td>
+                    <td class="text-right">490,000</td>
+                    <td class="text-right">300,000</td>
+                    <td class="cell-expected text-right">190,000</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">LB-02</td>
+                    <td>TRN/0002</td>
+                    <td class="text-right">717,500</td>
+                    <td class="text-right">380,000</td>
+                    <td class="cell-expected text-right">337,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">LB-03</td>
+                    <td>TRN/0003</td>
+                    <td class="text-right">300,000</td>
+                    <td class="text-right">200,000</td>
+                    <td class="cell-expected text-right">100,000</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <!-- TOTAL MEI -->
+                <tr style="background:#e0f2fe; font-weight:700;">
+                    <td class="tc-id">LB-04</td>
+                    <td class="font-bold">TOTAL MEI 2026</td>
+                    <td class="text-right font-bold">1,507,500</td>
+                    <td class="text-right font-bold">880,000</td>
+                    <td class="cell-expected text-right font-bold">627,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+
+                <tr class="sub-header">
+                    <td colspan="7">📅 April 2026 — Per Transaksi</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">LB-05</td>
+                    <td>TRN/0001</td>
+                    <td class="text-right">392,000</td>
+                    <td class="text-right">250,000</td>
+                    <td class="cell-expected text-right">142,000</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">LB-06</td>
+                    <td>TRN/0002</td>
+                    <td class="text-right">242,500</td>
+                    <td class="text-right">150,000</td>
+                    <td class="cell-expected text-right">92,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <!-- TOTAL APRIL -->
+                <tr style="background:#e0f2fe; font-weight:700;">
+                    <td class="tc-id">LB-07</td>
+                    <td class="font-bold">TOTAL APRIL 2026</td>
+                    <td class="text-right font-bold">634,500</td>
+                    <td class="text-right font-bold">400,000</td>
+                    <td class="cell-expected text-right font-bold">234,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== SECTION 4: VERIFIKASI VOLUME TRANSAKSI ==================== -->
+    <div class="section">
+        <div class="section-title">📊 Tabel 4 — Verifikasi Volume Transaksi <span class="badge">TEST CASE</span></div>
+        <p class="section-desc">Verifikasi jumlah transaksi yang ditampilkan pada card "Volume Transaksi" sesuai dengan jumlah transaksi yang tercatat.</p>
+
+        <div class="formula-box">
+            <strong>Volume Transaksi</strong> = COUNT(Transaksi dengan Status "Selesai") pada Periode Terpilih
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>TC-ID</th>
+                    <th>Periode</th>
+                    <th>Deskripsi Skenario</th>
+                    <th class="center" style="background:#065f46;">Expected</th>
+                    <th class="center" style="background:#9a3412;">Actual</th>
+                    <th class="center">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tc-id">VT-01</td>
+                    <td>Mei 2026</td>
+                    <td>3 transaksi selesai (TRN/0001, TRN/0002, TRN/0003)</td>
+                    <td class="cell-expected text-center font-bold">3</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">VT-02</td>
+                    <td>April 2026</td>
+                    <td>2 transaksi selesai (TRN/0001, TRN/0002)</td>
+                    <td class="cell-expected text-center font-bold">2</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">VT-03</td>
+                    <td>Jan 2026</td>
+                    <td>Bulan tanpa transaksi → harus tampil 0</td>
+                    <td class="cell-expected text-center font-bold">0</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">VT-04</td>
+                    <td>Mei 2026</td>
+                    <td>Transaksi BATAL/VOID tidak dihitung</td>
+                    <td class="cell-expected text-center font-bold">3</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note-box">
+            <strong>💡 Tips Testing VT-04:</strong> Buat 1 transaksi tambahan di Mei 2026 lalu batalkan/void. Volume transaksi seharusnya tetap 3, bukan 4. Ini untuk memverifikasi bahwa transaksi batal tidak ikut terhitung.
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 5: VERIFIKASI PERSENTASE PERUBAHAN ==================== -->
+    <div class="section">
+        <div class="section-title">📈 Tabel 5 — Verifikasi % Perubahan Periode Sebelumnya <span class="badge">TEST CASE</span></div>
+        <p class="section-desc">Verifikasi perhitungan persentase perubahan yang ditampilkan di masing-masing card KPI.</p>
+
+        <div class="formula-box">
+            <strong>% Perubahan</strong> = ((Nilai Periode Ini − Nilai Periode Sebelumnya) / Nilai Periode Sebelumnya) × 100%<br>
+            <em>Catatan: Jika Periode Sebelumnya = 0, tampilkan "+100%"</em>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>TC-ID</th>
+                    <th>Metrik</th>
+                    <th>Periode Ini</th>
+                    <th class="right">Nilai Periode Ini</th>
+                    <th>Periode Sebelumnya</th>
+                    <th class="right">Nilai Periode Sblmnya</th>
+                    <th class="right">Perhitungan</th>
+                    <th class="center" style="background:#065f46;">Expected %</th>
+                    <th class="center" style="background:#9a3412;">Actual %</th>
+                    <th class="center">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Penjualan Bersih -->
+                <tr class="sub-header">
+                    <td colspan="10">Penjualan Bersih</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">PC-01</td>
+                    <td>Penj. Bersih</td>
+                    <td>Mei 2026</td>
+                    <td class="text-right">1,507,500</td>
+                    <td>Apr 2026</td>
+                    <td class="text-right">634,500</td>
+                    <td class="text-right font-mono" style="font-size:11px;">((1,507,500−634,500)/634,500)×100</td>
+                    <td class="cell-expected text-center font-bold">+137.59%</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">PC-02</td>
+                    <td>Penj. Bersih</td>
+                    <td>Apr 2026</td>
+                    <td class="text-right">634,500</td>
+                    <td>Mar 2026</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right font-mono" style="font-size:11px;">Periode Sblmnya = 0</td>
+                    <td class="cell-expected text-center font-bold">+100%</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+
+                <!-- Laba Kotor -->
+                <tr class="sub-header">
+                    <td colspan="10">Laba Kotor (Margin)</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">PC-03</td>
+                    <td>Laba Kotor</td>
+                    <td>Mei 2026</td>
+                    <td class="text-right">627,500</td>
+                    <td>Apr 2026</td>
+                    <td class="text-right">234,500</td>
+                    <td class="text-right font-mono" style="font-size:11px;">((627,500−234,500)/234,500)×100</td>
+                    <td class="cell-expected text-center font-bold">+167.59%</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">PC-04</td>
+                    <td>Laba Kotor</td>
+                    <td>Apr 2026</td>
+                    <td class="text-right">234,500</td>
+                    <td>Mar 2026</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right font-mono" style="font-size:11px;">Periode Sblmnya = 0</td>
+                    <td class="cell-expected text-center font-bold">+100%</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+
+                <!-- Volume Transaksi -->
+                <tr class="sub-header">
+                    <td colspan="10">Volume Transaksi</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">PC-05</td>
+                    <td>Volume Trx</td>
+                    <td>Mei 2026</td>
+                    <td class="text-right">3</td>
+                    <td>Apr 2026</td>
+                    <td class="text-right">2</td>
+                    <td class="text-right font-mono" style="font-size:11px;">((3−2)/2)×100</td>
+                    <td class="cell-expected text-center font-bold">+50.00%</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">PC-06</td>
+                    <td>Volume Trx</td>
+                    <td>Apr 2026</td>
+                    <td class="text-right">2</td>
+                    <td>Mar 2026</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right font-mono" style="font-size:11px;">Periode Sblmnya = 0</td>
+                    <td class="cell-expected text-center font-bold">+100%</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== SECTION 6: DASHBOARD SUMMARY VERIFICATION ==================== -->
+    <div class="section">
+        <div class="section-title">🖥️ Tabel 6 — Verifikasi Tampilan Dashboard (End-to-End) <span class="badge">FINAL CHECK</span></div>
+        <p class="section-desc">Verifikasi akhir: cocokkan nilai yang tampil di dashboard web app dengan seluruh expected value. <strong>Filter: Tahun 2026 → Bulan → Tahunan</strong></p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>TC-ID</th>
+                    <th>Card / Elemen UI</th>
+                    <th>Filter</th>
+                    <th>Yang Diperiksa</th>
+                    <th class="right" style="background:#065f46;">Expected Value</th>
+                    <th class="right" style="background:#9a3412;">Actual Value</th>
+                    <th class="center">Status</th>
+                    <th>Catatan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="sub-header">
+                    <td colspan="8">📅 Filter: Tahun 2026 → Bulan → View Tahunan → Pilih Bulan Mei</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-01</td>
+                    <td>Card Penjualan Bersih</td>
+                    <td>Mei 2026</td>
+                    <td>Nilai utama (angka besar)</td>
+                    <td class="cell-expected text-right font-bold">Rp1,507,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-02</td>
+                    <td>Card Penjualan Bersih</td>
+                    <td>Mei 2026</td>
+                    <td>% perubahan periode sebelumnya</td>
+                    <td class="cell-expected text-right font-bold">+137.59%</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                    <td>vs April 2026</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-03</td>
+                    <td>Card Margin / Laba</td>
+                    <td>Mei 2026</td>
+                    <td>Nilai utama (angka besar)</td>
+                    <td class="cell-expected text-right font-bold">Rp627,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-04</td>
+                    <td>Card Margin / Laba</td>
+                    <td>Mei 2026</td>
+                    <td>% perubahan periode sebelumnya</td>
+                    <td class="cell-expected text-right font-bold">+167.59%</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                    <td>vs April 2026</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-05</td>
+                    <td>Card Volume Transaksi</td>
+                    <td>Mei 2026</td>
+                    <td>Nilai utama (angka besar)</td>
+                    <td class="cell-expected text-center font-bold">3</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-06</td>
+                    <td>Card Volume Transaksi</td>
+                    <td>Mei 2026</td>
+                    <td>% perubahan periode sebelumnya</td>
+                    <td class="cell-expected text-center font-bold">+50.00%</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                    <td>vs April 2026</td>
+                </tr>
+
+                <tr class="sub-header">
+                    <td colspan="8">📊 Chart Verification</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-07</td>
+                    <td>Grafik Garis</td>
+                    <td>Tahunan 2026</td>
+                    <td>Data point Mei menunjukkan peak Penjualan Bersih</td>
+                    <td class="cell-expected text-right">Rp1,507,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                    <td>Hover tooltip</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-08</td>
+                    <td>Grafik Garis</td>
+                    <td>Tahunan 2026</td>
+                    <td>Data point April menunjukkan Penjualan Bersih</td>
+                    <td class="cell-expected text-right">Rp634,500</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                    <td>Hover tooltip</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-09</td>
+                    <td>Grafik Garis</td>
+                    <td>Tahunan 2026</td>
+                    <td>Bulan tanpa transaksi (Jan, Feb, Mar) = Rp 0</td>
+                    <td class="cell-expected text-right">Rp0</td>
+                    <td class="cell-actual text-right"></td>
+                    <td class="cell-result"></td>
+                    <td>Hover tooltip</td>
+                </tr>
+
+                <tr class="sub-header">
+                    <td colspan="8">🔍 Filter & Edge Case</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-10</td>
+                    <td>Dropdown Toko</td>
+                    <td>-</td>
+                    <td>Ganti toko → data harus berubah sesuai toko</td>
+                    <td class="cell-expected text-center">Data berubah</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                    <td>Functional test</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-11</td>
+                    <td>Dropdown Tahun</td>
+                    <td>-</td>
+                    <td>Ganti tahun → data harus berubah sesuai tahun</td>
+                    <td class="cell-expected text-center">Data berubah</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                    <td>Functional test</td>
+                </tr>
+                <tr>
+                    <td class="tc-id">DB-12</td>
+                    <td>Toggle View</td>
+                    <td>-</td>
+                    <td>Ganti ke Triwulan → chart berubah ke quarterly</td>
+                    <td class="cell-expected text-center">Chart quarterly</td>
+                    <td class="cell-actual text-center"></td>
+                    <td class="cell-result"></td>
+                    <td>Functional test</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== SECTION 7: RINGKASAN HASIL ==================== -->
+    <div class="section">
+        <div class="section-title">✅ Tabel 7 — Ringkasan Hasil UAT</div>
+        <p class="section-desc">Rangkuman akhir seluruh test case.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Kategori Test</th>
+                    <th class="center">Total TC</th>
+                    <th class="center">✅ Pass</th>
+                    <th class="center">❌ Fail</th>
+                    <th class="center">⏭️ Skip</th>
+                    <th class="center">% Pass Rate</th>
+                    <th>Catatan / Bug</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="font-bold">Penjualan Bersih (PB-01 s/d PB-07)</td>
+                    <td class="text-center">7</td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="cell-actual"></td>
+                </tr>
+                <tr>
+                    <td class="font-bold">Laba Kotor (LB-01 s/d LB-07)</td>
+                    <td class="text-center">7</td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="cell-actual"></td>
+                </tr>
+                <tr>
+                    <td class="font-bold">Volume Transaksi (VT-01 s/d VT-04)</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="cell-actual"></td>
+                </tr>
+                <tr>
+                    <td class="font-bold">% Perubahan (PC-01 s/d PC-06)</td>
+                    <td class="text-center">6</td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="cell-actual"></td>
+                </tr>
+                <tr>
+                    <td class="font-bold">Dashboard E2E (DB-01 s/d DB-12)</td>
+                    <td class="text-center">12</td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="cell-actual"></td>
+                </tr>
+                <tr style="background:#e0f2fe; font-weight:700; font-size:13px;">
+                    <td class="font-bold">GRAND TOTAL</td>
+                    <td class="text-center font-bold">36</td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual"></td>
+                    <td class="text-center cell-actual font-bold"></td>
+                    <td class="cell-actual"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <div class="section" style="text-align:center; padding: 20px; color: #9ca3af; font-size: 11px;">
+        <p>📋 UAT Test Sheet — Performa Penjualan | inTechgra POS</p>
+        <p>Generated: Juni 2026 | Total Test Cases: 36</p>
+        <p style="margin-top: 20px; font-size: 12px;">
+            <strong>Tanda Tangan Approval</strong>
+        </p>
+        <div style="display:flex; justify-content:center; gap:80px; margin-top:20px; color:#374151;">
+            <div>
+                <div style="width:160px; border-bottom:1px solid #9ca3af; height:50px;"></div>
+                <p style="margin-top:6px;">QA / Tester</p>
+            </div>
+            <div>
+                <div style="width:160px; border-bottom:1px solid #9ca3af; height:50px;"></div>
+                <p style="margin-top:6px;">Product Owner</p>
+            </div>
+            <div>
+                <div style="width:160px; border-bottom:1px solid #9ca3af; height:50px;"></div>
+                <p style="margin-top:6px;">Developer Lead</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

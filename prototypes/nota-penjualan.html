@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nota POS A5 Landscape Phase 1 - Max 10 Produk</title>
+    <!-- Menggunakan Tailwind via CDN untuk kemudahan styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            @page {
+                size: 210mm 140mm;
+                /* Ukuran Kertas Custom (Panjang 21cm, Lebar 14cm) */
+                margin: 5mm 6mm;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* Mengunci tinggi baris tabel agar pas 8 produk konsisten */
+        .fixed-row {
+            height: 21px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 p-4 font-sans text-[11px] text-gray-800 antialiased">
+
+    <div class="relative mx-auto max-w-5xl border border-dashed border-gray-400 bg-white p-3 shadow-sm">
+        <!-- Halaman / Page Indicator -->
+        <div class="absolute top-2 right-4 text-[10px] text-gray-500 font-medium">
+            Halaman 1 dari 1
+        </div>
+
+        <!-- SECTION 1: HEADER (Identitas Toko & Pelanggan) -->
+        <div class="mb-2 grid grid-cols-2 gap-4">
+            <!-- Sisi Kiri: Profil Toko -->
+            <div>
+                <h1 class="text-base font-bold text-gray-900 leading-tight">inTechgra Official Tester</h1>
+                <h2 class="font-semibold text-gray-800 leading-tight">Graha Grc Board</h2>
+                <p class="text-gray-600">Jl. Raya Tekno No. 100, Jakarta</p>
+                <p class="text-gray-600">No. Telp : 081903738745</p>
+                <p class="mt-1 font-bold text-gray-900 text-xs">No. Order : TRN/20260604/0002</p>
+            </div>
+
+            <!-- Sisi Kanan: Metadata Transaksi -->
+            <div class="pl-8">
+                <table class="w-full table-fixed text-left">
+                    <tbody>
+                        <tr>
+                            <td class="w-32 font-bold py-0.5">Tanggal - Kasir</td>
+                            <td class="w-3 py-0.5">:</td>
+                            <td class="py-0.5">04-06-2026, 08:20 - Irfani Anggoro</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-0.5">Kepada Yth.</td>
+                            <td>:</td>
+                            <td class="font-bold py-0.5">Budi</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-0.5 align-top">Alamat Kirim</td>
+                            <td class="align-top py-0.5">:</td>
+                            <td class="py-0.5 leading-normal">Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Kebon
+                                Jeruk, Jakarta Barat</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-0.5">Pembayaran</td>
+                            <td>:</td>
+                            <td class="py-0.5">TEMPO (KREDIT)</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-0.5">Jatuh Tempo</td>
+                            <td>:</td>
+                            <td class="font-bold py-0.5"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECTION 2: TABEL PRODUK (Maksimal 8 Baris) -->
+        <div class="mb-2">
+            <table class="w-full border-collapse text-left">
+                <thead>
+                    <tr class="border-y border-gray-800 bg-gray-50 text-[11px] font-bold text-gray-900">
+                        <th class="w-[5%] px-1 py-1 text-center">No</th>
+                        <th class="w-[50%] px-2 py-1">Nama Produk</th>
+                        <th class="w-[5%] px-1 py-1 text-center">PPN</th>
+                        <th class="w-[8%] px-1 py-1 text-center">Qty</th>
+                        <th class="w-[10%] px-2 py-1">Satuan</th>
+                        <th class="w-[12%] px-2 py-1 text-right">Harga (Rp)</th>
+                        <th class="w-[10%] px-2 py-1 text-right">Diskon (Rp)</th>
+                        <th class="w-[12%] px-2 py-1 text-right">Jumlah (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <!-- Produk 1 (Non-PPN) -->
+                    <tr class="fixed-row align-middle">
+                        <td class="text-center font-medium">1</td>
+                        <td class="truncate px-2">Cairan Semen Pelapis Kedap Air Sika Top 107 Plus</td>
+                        <td class="text-center"></td>
+                        <td class="text-center">10</td>
+                        <td class="px-2">Pieces</td>
+                        <td class="text-right px-2">100,000</td>
+                        <td class="text-right px-2">10,000</td>
+                        <td class="text-right px-2 font-medium">990,000</td>
+                    </tr>
+                    <!-- Produk 2 (Kena PPN) -->
+                    <tr class="fixed-row align-middle">
+                        <td class="text-center font-medium">2</td>
+                        <td class="truncate px-2">Cairan Semen Pelapis Kedap Air Sika Top 108 Plus</td>
+                        <td class="text-center">✓</td>
+                        <td class="text-center">10</td>
+                        <td class="px-2">Pieces</td>
+                        <td class="text-right px-2">100,000</td>
+                        <td class="text-right px-2">0</td>
+                        <td class="text-right px-2 font-medium">1,000,000</td>
+                    </tr>
+                    <!-- Baris Kosong Sisa (3 s/d 8) Otomatis Menjaga Layout Halaman -->
+                    <tr class="fixed-row">
+                        <td class="text-center text-gray-400 font-medium">3</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="fixed-row">
+                        <td class="text-center text-gray-400 font-medium">4</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="fixed-row">
+                        <td class="text-center text-gray-400 font-medium">5</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="fixed-row">
+                        <td class="text-center text-gray-400 font-medium">6</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="fixed-row">
+                        <td class="text-center text-gray-400 font-medium">7</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="fixed-row">
+                        <td class="text-center text-gray-400 font-medium">8</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECTION 3: FOOTER FINANSIAL (Kolom Catatan Sisi Kiri Dikosongkan) -->
+        <div class="flex justify-between items-start">
+            <!-- Sisi Kiri Kosong (Sesuai Request Phase 1) -->
+            <div class="w-[50%]"></div>
+
+            <!-- Sisi Kanan: Alur Kalkulasi Nilai -->
+            <div class="w-[50%] text-gray-800">
+                <table class="w-full text-right">
+                    <tbody>
+                        <!-- ==================================================== -->
+                        <!-- BARIS SUB TOTAL (DISESUAIKAN BERDASARKAN KONDISI)   -->
+                        <!-- ==================================================== -->
+
+                        <!-- [KONDISI: PPN INCLUDE / NON-PPN] -->
+                        <tr class="ppn-include-row border-b border-gray-100">
+                            <td class="py-0.5 pr-2 text-gray-600 font-medium">Sub Total</td>
+                            <td class="w-32 font-semibold py-0.5">1,990,000</td>
+                        </tr>
+
+                        <!-- [KONDISI: PPN EXCLUDE] -->
+                        <tr class="ppn-exclude-row">
+                            <td class="py-0.5 pr-2 text-gray-600">Sub Total Non PPN</td>
+                            <td class="w-32 font-semibold py-0.5">990,000</td>
+                        </tr>
+                        <tr class="ppn-exclude-row border-b border-gray-100">
+                            <td class="py-0.5 pr-2 text-gray-600">Sub Total DPP PPN</td>
+                            <td class="w-32 font-semibold py-0.5">1,000,000</td>
+                        </tr>
+
+                        <!-- ==================================================== -->
+                        <!-- BIAYA-BIAYA & DISKON (BERLAKU UNTUK SEMUA KONDISI)  -->
+                        <!-- ==================================================== -->
+                        <tr>
+                            <td class="py-0.5 pr-2 text-gray-600">Diskon Pesanan (-)</td>
+                            <td class="py-0.5">-20,000</td>
+                        </tr>
+                        <tr>
+                            <td class="py-0.5 pr-2 text-gray-600">Biaya Kirim (+)</td>
+                            <td class="py-0.5">10,000</td>
+                        </tr>
+                        <tr>
+                            <td class="py-0.5 pr-2 text-gray-600">Biaya Tambahan (+)</td>
+                            <td class="py-0.5">10,000</td>
+                        </tr>
+                        <!-- Rincian Biaya Tambahan -->
+                        <tr class="text-[10px] text-gray-500 italic">
+                            <td class="py-0.5 pr-4">- Bongkat Muat</td>
+                            <td class="py-0.5">5,000</td>
+                        </tr>
+                        <tr class="text-[10px] text-gray-500 italic">
+                            <td class="py-0.5 pr-4">- Angkat angkat</td>
+                            <td class="py-0.5">5,000</td>
+                        </tr>
+
+                        <!-- ==================================================== -->
+                        <!-- PPN EXCLUDE: DIJUMLAHKAN KE TOTAL                    -->
+                        <!-- ==================================================== -->
+                        <tr class="ppn-exclude-row border-b border-gray-300">
+                            <td class="py-0.5 pr-2 text-gray-600">PPN (11%) (+)</td>
+                            <td class="py-0.5 pb-1">111,100</td>
+                        </tr>
+
+                        <!-- ==================================================== -->
+                        <!-- GRAND TOTAL & GRAND PEMBAYARAN                       -->
+                        <!-- ==================================================== -->
+                        <tr class="font-bold text-gray-900 text-xs border-t border-gray-300">
+                            <td class="pt-1.5 pr-2">TOTAL Rp.</td>
+                            <!-- Nilai jika PPN Exclude: 2,101,100 | Nilai jika PPN Include: 1,990,000 -->
+                            <td class="pt-1.5">2,101,100</td>
+                        </tr>
+                        <tr class="font-bold text-gray-900 border-b border-gray-300 pb-1">
+                            <td class="py-0.5 pr-2">Dibayar</td>
+                            <!-- Nilai jika PPN Exclude: 2,101,100 | Nilai jika PPN Include: 1,990,000 -->
+                            <td class="py-0.5">2,101,100</td>
+                        </tr>
+
+                        <!-- ==================================================== -->
+                        <!-- PPN INCLUDE: TAMPIL SEBAGAI INFORMASI DI PALING BAWA-->
+                        <!-- ==================================================== -->
+                        <tr class="ppn-include-row text-gray-500 text-[10px]">
+                            <td class="pt-2 pr-2">[Incl] DPP</td>
+                            <td class="pt-2 font-medium">900,901</td>
+                        </tr>
+                        <tr class="ppn-include-row text-gray-500 text-[10px]">
+                            <td class="py-0.5 pr-2">[Incl] PPN (11%)</td>
+                            <td class="py-0.5 font-medium">99,099</td>
+                        </tr>
+
+                        <!-- ==================================================== -->
+                        <!-- SISA PIUTANG & KEMBALIAN                             -->
+                        <!-- ==================================================== -->
+                        <tr>
+                            <td class="pt-2 pr-2 text-gray-600">Sisa Piutang</td>
+                            <td class="pt-2">0</td>
+                        </tr>
+                        <tr>
+                            <td class="py-0.5 pr-2 text-gray-600">Kembalian</td>
+                            <td class="py-0.5">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECTION 4: TANDA TANGAN & STATUS AUDIT -->
+        <div class="mt-3 grid grid-cols-4 gap-4 text-center items-start">
+            <div>
+                <p class="font-medium text-gray-900">Penerima,</p>
+                <div class="h-6"></div>
+                <div class="mx-auto w-[85%] border-b border-gray-800"></div>
+                <p class="mt-1 text-[9px] text-gray-500">( Nama Jelas )</p>
+            </div>
+            <div>
+                <p class="font-medium text-gray-900">Pengirim / Sopir,</p>
+                <div class="h-6"></div>
+                <div class="mx-auto w-[85%] border-b border-gray-800"></div>
+                <p class="mt-1 text-[9px] text-gray-500">( Armada Toko / Kurir )</p>
+            </div>
+            <div>
+                <p class="font-medium text-gray-900">Hormat Kami,</p>
+                <div class="h-6"></div>
+                <div class="mx-auto w-[85%] border-b border-gray-800"></div>
+                <p class="mt-1 text-[9px] text-gray-500">( Kasir Toko )</p>
+            </div>
+            <div></div>
+        </div>
+
+    </div>
+</body>
+
+</html>

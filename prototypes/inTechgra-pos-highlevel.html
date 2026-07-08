@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini PRD - Program 100 Toko</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .prd-nav-item.active {
+            background-color: #e0e7ff;
+            color: #4338ca;
+            font-weight: 700;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .premium-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 10px 15px -3px rgba(0, 0, 0, 0.02);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-indigo-600 tracking-wider uppercase bg-indigo-50 px-2.5 py-1 rounded">Mini PRD Blueprint</span>
+                    <span class="text-xs font-semibold text-slate-400">Versi 1.3 | PT MSS</span>
+                </div>
+                <h1 class="text-2xl font-black text-slate-900 mt-1">Program 100 Toko Komunitas Awal</h1>
+            </div>
+            <div class="flex gap-3">
+                <a href="inTechgra_pos_userflow.html" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-xs transition flex items-center gap-2 border">
+                    <i class="fa-solid fa-diagram-project"></i> Buka Userflow (Tab Baru)
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row gap-6 p-6">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 shrink-0">
+            <div class="bg-white border border-slate-200 rounded-xl p-3 sticky top-24 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 px-3 uppercase tracking-wider mb-2">Daftar Isi PRD</p>
+                <button onclick="showSection('context')" id="nav-context" class="prd-nav-item w-full text-left px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center gap-2.5 active">
+                    <i class="fa-solid fa-building"></i> 1. Latar Belakang & Konteks
+                </button>
+                <button onclick="showSection('goals')" id="nav-goals" class="prd-nav-item w-full text-left px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center gap-2.5">
+                    <i class="fa-solid fa-bullseye"></i> 2. Tujuan & Goals
+                </button>
+                <button onclick="showSection('budget')" id="nav-budget" class="prd-nav-item w-full text-left px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center gap-2.5">
+                    <i class="fa-solid fa-wallet"></i> 3. Anggaran & Benefit Toko
+                </button>
+                <button onclick="showSection('flow')" id="nav-flow" class="prd-nav-item w-full text-left px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center gap-2.5">
+                    <i class="fa-solid fa-arrows-split-up-and-left"></i> 4. Opsi Alur Akuisisi
+                </button>
+                <button onclick="showSection('rules')" id="nav-rules" class="prd-nav-item w-full text-left px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center gap-2.5">
+                    <i class="fa-solid fa-gavel"></i> 5. Aturan Bisnis & Expiry
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-white border border-slate-200 rounded-2xl p-6 md:p-8 min-h-[500px]">
+            
+            <!-- SECTION 1: CONTEXT -->
+            <section id="section-context" class="prd-section space-y-6">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-building text-indigo-600"></i> 1. Latar Belakang & Konteks Bisnis
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Sinergi ekosistem digital internal PT MSS</p>
+                </div>
+                
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 text-xs text-slate-600 leading-relaxed space-y-3">
+                    <p>
+                        PT MSS saat ini menaungi dua produk digital utama yang saling terintegrasi untuk melayani pasar konstruksi dan bahan bangunan di Indonesia:
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-2">
+                        <div class="p-3 bg-white border rounded-lg">
+                            <span class="font-bold text-indigo-600 block text-xs">inTechgra (POS All-in-One)</span>
+                            <span class="text-[11px] text-slate-400 block mt-0.5">Target: Toko Bangunan (Seller)</span>
+                            <p class="mt-1 text-[11px] text-slate-500">Membantu manajemen kasir toko, ketersediaan stok fisik, serta integrasi penjualan digital secara real-time.</p>
+                        </div>
+                        <div class="p-3 bg-white border rounded-lg">
+                            <span class="font-bold text-indigo-600 block text-xs">1000saudara (B2C Marketplace)</span>
+                            <span class="text-[11px] text-slate-400 block mt-0.5">Target: End Consumer (Pembeli)</span>
+                            <p class="mt-1 text-[11px] text-slate-500">Platform belanja online bahan bangunan langsung ke toko mitra terdekat.</p>
+                        </div>
+                    </div>
+                    <p>
+                        <b>Masalah Utama:</b> Adopsi belanja digital bagi pembeli bahan bangunan offline di toko mitra masih sangat rendah. Program ini memposisikan kasir toko bangunan fisik sebagai pendamping akuisisi digital menggunakan skema transaksi pertama.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECTION 2: GOALS -->
+            <section id="section-goals" class="prd-section space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye text-indigo-600"></i> 2. Tujuan & Goals Utama (Success Metrics)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Target pencapaian keberhasilan program</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl">
+                        <h3 class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-2">Fase 1: Akuisisi & Onboarding (Offline First Touch)</h3>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-600"></i>
+                                <span><b>100 Seller Anchor:</b> Memetakan 100 Toko Bangunan manual MoU (1 toko per kota/kab di Jawa).</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-600"></i>
+                                <span><b>10.000 Akun Digital:</b> Akuisisi 100 customer per toko yang terdaftar di 1000saudara.</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-600"></i>
+                                <span><b>Redemption Rate > 80%:</b> Penukaran quota voucher subsidi oleh pelanggan baru di toko.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-indigo-50/50 border border-indigo-100 rounded-xl">
+                        <h3 class="text-xs font-extrabold text-indigo-800 uppercase tracking-wider mb-2">Fase 2: Adopsi Digital Mandiri (Online Independent)</h3>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-indigo-600"></i>
+                                <span><b>>30% Repeat Order:</b> Customer berbelanja online secara mandiri di 1000saudara dalam 3 bulan pertama.</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-indigo-600"></i>
+                                <span><b>>40% Customer Retention:</b> Tingkat keaktifan pembeli di platform pada hari ke-30 (D30).</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: BUDGET -->
+            <section id="section-budget" class="prd-section space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-wallet text-indigo-600"></i> 3. Anggaran & Benefit Toko Terpilih
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Struktur investasi program yang telah disetujui direksi</p>
+                </div>
+
+                <div class="space-y-4 text-xs text-slate-600">
+                    <p>Total investasi PT MSS yang dialokasikan dalam program adalah <b>Maks. Rp 3.300.000.000 (3.3 Miliar)</b> dengan rincian per toko:</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-4 border rounded-xl bg-slate-50">
+                            <span class="font-bold text-slate-700 block">Renovasi Toko Fisik</span>
+                            <span class="text-lg font-black text-slate-900">Maks. Rp 30.000.000 / Toko</span>
+                            <p class="text-[11px] text-slate-400 mt-1">Bantuan perbaikan fisik toko bangunan terpilih agar meningkatkan visual toko.</p>
+                        </div>
+                        <div class="p-4 border rounded-xl bg-slate-50">
+                            <span class="font-bold text-slate-700 block">Quota Program Voucher</span>
+                            <span class="text-lg font-black text-slate-900">100 Voucher × Rp 30.000 / Toko</span>
+                            <p class="text-[11px] text-slate-400 mt-1">Subsidi potongan diskon akuisisi langsung ditanggung penuh oleh PT MSS.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                        <span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded uppercase">Privilege Transaksi</span>
+                        <h4 class="font-extrabold text-slate-800 text-sm mt-1.5">Insentif Fee Transaksi Khusus (5% → 0%)</h4>
+                        <p class="mt-1 text-slate-600 leading-relaxed">
+                            Mitra 100 Toko dibebaskan dari potongan transaksi standar 5% platform selama <b>6 bulan pertama</b>. Perpanjangan 1-2 tahun diberikan secara gratis apabila performa rata-rata revenue toko memenuhi kriteria review bisnis.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: FLOW -->
+            <section id="section-flow" class="prd-section space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-split-up-and-left text-indigo-600"></i> 4. Opsi Alur Akuisisi Customer
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Dua skema registrasi dan checkout transaksi pertama</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
+                    <!-- Flow 1 -->
+                    <div class="p-4 border rounded-xl flex flex-col justify-between space-y-4">
+                        <div>
+                            <span class="px-2 py-0.5 bg-purple-100 text-purple-800 font-bold rounded uppercase text-[10px]">Flow 1 — App First</span>
+                            <h4 class="font-bold text-slate-800 mt-2">Diskon Instan di Kasir</h4>
+                            <p class="text-slate-500 mt-1 leading-relaxed">
+                                Kasir menuntun pembeli mengunduh app 1000saudara saat bertransaksi di kasir. No HP di-lookup, kasir klik <b>Apply Voucher Rp 30.000</b>, dan subtotal pembayaran langsung terpotong di tempat.
+                            </p>
+                        </div>
+                        <div class="bg-purple-50 p-2.5 rounded-lg border border-purple-100 text-[11px] text-purple-900 font-semibold">
+                            ⚠️ Barrier lebih tinggi (pelanggan harus instalasi aplikasi di toko).
+                        </div>
+                    </div>
+
+                    <!-- Flow 2 -->
+                    <div class="p-4 border rounded-xl flex flex-col justify-between space-y-4">
+                        <div>
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded uppercase text-[10px]">Flow 2 — Web First</span>
+                            <h4 class="font-bold text-slate-800 mt-2">Cashback Saldo via Mobile Web</h4>
+                            <p class="text-slate-500 mt-1 leading-relaxed">
+                                Pelanggan mendaftar cukup melalui web browser (tanpa install app). Pembeli membayar belanja dengan harga normal. Saat status transaksi diubah menjadi <b>Selesai</b> oleh kasir, PT MSS langsung menginjek cashback Rp 30.000 ke saldo digital pembeli.
+                            </p>
+                        </div>
+                        <div class="bg-blue-50 p-2.5 rounded-lg border border-blue-100 text-[11px] text-blue-900 font-semibold">
+                            💡 Lebih cepat, mendorong download app secara organik agar saldo cashback dapat digunakan.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: RULES -->
+            <section id="section-rules" class="prd-section space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-gavel text-indigo-600"></i> 5. Aturan Bisnis & Expiry Program
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Konfigurasi batasan transaksi dan rekonsiliasi</p>
+                </div>
+
+                <div class="space-y-4 text-xs text-slate-600">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-3 bg-slate-50 rounded-lg border">
+                            <span class="font-bold text-slate-800 block mb-1">Masa Expiry Keranjang</span>
+                            <p class="text-slate-500 leading-relaxed">Keranjang belanja online kedaluwarsa otomatis dalam <b>1x24 jam</b> jika tidak diselesaikan. Quota voucher yang terpasang otomatis kembali ke toko.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border">
+                            <span class="font-bold text-slate-800 block mb-1">Jadwal Rekonsiliasi Rekening</span>
+                            <p class="text-slate-500 leading-relaxed">Proses reimburse klaim diskon voucher Rp 30.000 dilakukan rutin <b>2x seminggu</b> oleh Finance PT MSS menggunakan laporan Web Admin.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-950 text-slate-300 rounded-xl space-y-2">
+                        <h4 class="font-bold text-white text-xs">Masa Berlaku Saldo Cashback (Flow 2)</h4>
+                        <p class="leading-relaxed">
+                            Saldo cashback Rp 30.000 yang berhasil diinjeksi ke akun 1000saudara memiliki masa aktif maksimal <b>1 tahun</b> sejak tanggal masuk. Saldo hanya dapat dibelanjakan mandiri melalui <b>aplikasi 1000saudara</b> dan tidak dapat dicairkan via web.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Interactive script to show/hide sections -->
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.prd-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            // Show selected section
+            const targetSection = document.getElementById('section-' + sectionId);
+            if(targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+
+            // Reset navigation active state
+            document.querySelectorAll('.prd-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            // Set active state on clicked nav item
+            const activeNav = document.getElementById('nav-' + sectionId);
+            if(activeNav) {
+                activeNav.classList.add('active');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

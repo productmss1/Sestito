@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Simulator & Preview Nota Penjualan - inTechgra POS</title>
+    <!-- Menggunakan Tailwind via CDN untuk kemudahan styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Tampilan Layar Kertas 21cm x 14cm */
+        .print-container {
+            width: 210mm;
+            height: 140mm;
+            padding: 3.5mm 6mm;
+            box-sizing: border-box;
+            background-color: white;
+            position: relative;
+            border: 1px dashed #9ca3af;
+            box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            /* Paksa hanya preview cetak yang tampil saat printing */
+            #setup-view {
+                display: none !important;
+            }
+
+            #preview-view {
+                display: flex !important;
+                background-color: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                min-h-screen: 0 !important;
+                align-items: stretch !important;
+                justify-content: stretch !important;
+            }
+
+            .print-container {
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 3.5mm 6mm !important;
+                width: 210mm !important;
+                height: 140mm !important;
+                box-sizing: border-box !important;
+                page-break-after: always !important;
+                break-after: page !important;
+            }
+
+            .print-container:last-child {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+
+            @page {
+                size: 210mm 140mm;
+                margin: 0;
+            }
+        }
+
+        /* Tinggi baris produk dinamis yang dikunci */
+        .fixed-row {
+            height: 17px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased">
+
+    <!-- ==================================================== -->
+    <!-- VIEW 1: SETTING KONDISI (HALAMAN AWAL)               -->
+    <!-- ==================================================== -->
+    <div id="setup-view" class="max-w-xl mx-auto py-10 px-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+            <div class="text-center mb-6">
+                <span class="text-4xl">⚙️</span>
+                <h1 class="text-xl font-extrabold text-white mt-2">Simulator Nota Penjualan</h1>
+                <p class="text-xs text-slate-400 mt-1">Konfigurasikan detail transaksi sebelum melihat preview ukuran
+                    cetak</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- A. Jumlah Produk -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-semibold text-slate-300">Jumlah Produk di Nota</label>
+                        <span id="label-qty-produk"
+                            class="text-xs font-bold text-blue-400 bg-slate-900 px-2 py-0.5 rounded">2</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input id="input-qty-produk" type="range" min="1" max="12" value="2"
+                            class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    </div>
+                    <span class="text-[10px] text-amber-400 mt-1 block font-medium" id="info-limit-produk">
+                        * Kapasitas Optimal: Max 8 untuk Kompleks, Max 10 untuk Sederhana.
+                    </span>
+                </div>
+
+                <hr class="border-slate-700/60">
+
+                <!-- A. Status PPN Toko -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Status PPN Toko</label>
+                    <select id="select-ppn-toko"
+                        class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <option value="aktif" selected>PPN Toko Aktif</option>
+                        <option value="tidak">PPN Toko Tidak Aktif (Non-PPN)</option>
+                    </select>
+                </div>
+
+                <!-- B. Tipe Pajak (PPN) -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tipe Transaksi PPN</label>
+                    <select id="select-ppn"
+                        class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <option value="non">Non-PPN (Tanpa Pajak)</option>
+                        <option value="include">PPN Include (Sudah Termasuk Pajak)</option>
+                        <option value="exclude" selected>PPN Exclude (Ditambah Pajak)</option>
+                    </select>
+                </div>
+
+                <!-- C. Set Pajak per Item secara Acak -->
+                <div id="wrapper-item-ppn" class="flex items-center gap-2 pl-1">
+                    <input type="checkbox" id="checkbox-mix-ppn" checked
+                        class="w-3.5 h-3.5 rounded accent-blue-500 bg-slate-900 border-slate-700">
+                    <label for="checkbox-mix-ppn" class="text-[11px] font-medium text-slate-400">Simulasikan Campuran
+                        Pajak (Ada barang Non-PPN)</label>
+                </div>
+
+                <hr class="border-slate-700/60">
+
+                <!-- D. Diskon Pesanan & Diskon Item -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Diskon Pesanan</label>
+                        <input id="input-diskon" type="number" value="20000" step="5000"
+                            class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-xs text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Diskon Item 1</label>
+                        <input id="input-diskon-item" type="number" value="10000" step="5000"
+                            class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-xs text-white focus:outline-none">
+                    </div>
+                </div>
+
+                <hr class="border-slate-700/60">
+
+                <!-- E. Biaya Kirim -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="check-kirim" checked
+                            class="w-3.5 h-3.5 rounded accent-blue-500 bg-slate-900 border-slate-700">
+                        <label for="check-kirim" class="text-xs font-semibold text-slate-300">Biaya Kirim</label>
+                    </div>
+                    <input id="input-kirim" type="number" value="10000" step="5000"
+                        class="w-28 bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-xs text-white focus:outline-none text-right">
+                </div>
+
+                <!-- F. Biaya Tambahan (Dinamis +/-) -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="check-tambahan" checked
+                                class="w-3.5 h-3.5 rounded accent-blue-500 bg-slate-900 border-slate-700">
+                            <label for="check-tambahan" class="text-xs font-semibold text-slate-300">Biaya
+                                Tambahan</label>
+                        </div>
+                        <span id="label-total-tambahan" class="text-xs text-slate-400">Rp 10.000</span>
+                    </div>
+                    <div id="sub-tambahan-fields" class="pl-4 space-y-2 border-l border-slate-700">
+                        <!-- Container untuk baris dinamis -->
+                        <div id="dynamic-tambahan-list" class="space-y-2">
+                            <!-- Baris 1 (Default) -->
+                            <div class="flex items-center gap-2 tambahan-item">
+                                <input type="text" value="Bongkar Muat" placeholder="Nama Biaya"
+                                    class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-white flex-grow focus:outline-none tambahan-nama">
+                                <input type="number" value="5000" placeholder="Nilai"
+                                    class="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-white text-right focus:outline-none tambahan-nilai">
+                                <button type="button"
+                                    class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-tambahan">✕</button>
+                            </div>
+                            <!-- Baris 2 (Default) -->
+                            <div class="flex items-center gap-2 tambahan-item">
+                                <input type="text" value="Angkat-angkat" placeholder="Nama Biaya"
+                                    class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-white flex-grow focus:outline-none tambahan-nama">
+                                <input type="number" value="5000" placeholder="Nilai"
+                                    class="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-white text-right focus:outline-none tambahan-nilai">
+                                <button type="button"
+                                    class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-tambahan">✕</button>
+                            </div>
+                        </div>
+                        <!-- Tombol Tambah Row -->
+                        <button type="button" id="btn-tambah-tambahan"
+                            class="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 mt-1">
+                            ➕ Tambah Rincian Biaya
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="border-slate-700/60">
+
+                <!-- G. Metode Pembayaran -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-300">Metode Pembayaran (Multi-Payment)</label>
+                    <!-- Row Indikator Tagihan Real-time -->
+                    <div
+                        class="grid grid-cols-3 gap-2 bg-slate-900/60 p-2.5 rounded border border-slate-700/50 text-center select-none">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-medium">Total Tagihan</p>
+                            <p id="setup-total-tagihan" class="text-xs font-bold text-white mt-0.5">Rp 0</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-medium">Total Terbayar</p>
+                            <p id="setup-total-terbayar" class="text-xs font-bold text-blue-400 mt-0.5">Rp 0</p>
+                        </div>
+                        <div>
+                            <p id="setup-sisa-label" class="text-[10px] text-slate-400 font-medium">Sisa Tagihan</p>
+                            <p id="setup-sisa-tagihan" class="text-xs font-bold text-amber-400 mt-0.5">Rp 0</p>
+                        </div>
+                    </div>
+                    <div id="payment-fields" class="space-y-2">
+                        <div id="dynamic-payment-list" class="space-y-2">
+                            <!-- Baris pembayaran pertama (default) -->
+                            <div
+                                class="flex flex-col gap-1.5 bg-slate-900/40 p-2 border border-slate-700/60 rounded payment-item">
+                                <div class="flex items-center gap-2">
+                                    <select
+                                        class="bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 payment-metode flex-grow">
+                                        <option value="cash">Cash (Tunai)</option>
+                                        <option value="tempo" selected>Tempo (Kredit)</option>
+                                        <option value="qris">QRIS</option>
+                                        <option value="debit">EDC (Debit Card)</option>
+                                        <option value="credit">EDC (Credit Card)</option>
+                                    </select>
+                                    <input type="number" placeholder="Jumlah (Rp)"
+                                        class="w-28 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-white text-right focus:outline-none focus:border-blue-500 payment-jumlah">
+                                    <button type="button"
+                                        class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-payment">✕</button>
+                                </div>
+                                <div
+                                    class="flex justify-between items-center pl-2 text-[10px] text-slate-400 payment-mdr-row hidden">
+                                    <span>Persentase MDR (%)</span>
+                                    <input type="number" value="1.0" step="0.1" min="0" max="100"
+                                        class="w-16 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-right text-white focus:outline-none payment-mdr-rate">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-tambah-payment"
+                            class="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 mt-1">
+                            ➕ Tambah Metode Pembayaran
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- H. Tombol Pemicu Preview -->
+                <button id="btn-preview"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 px-4 rounded-xl text-sm transition duration-200 shadow-lg mt-6 flex items-center justify-center gap-2">
+                    👁️ Lihat Preview Nota (21x14)
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- VIEW 2: PREVIEW NOTA PENUH (HIDDEN BY DEFAULT)       -->
+    <!-- ==================================================== -->
+    <div id="preview-view" class="hidden min-h-screen flex-col items-center justify-center p-6 bg-slate-950">
+
+        <!-- Container untuk Halaman-Halaman Struk -->
+        <div id="pages-container" class="flex flex-col gap-6 items-center justify-center">
+            <!-- Halaman-halaman akan di-render di sini secara dinamis oleh Javascript -->
+        </div>
+
+        <!-- Tombol Aksi Layar (Hidden saat di-print) -->
+        <div class="no-print mt-6 flex gap-4">
+            <button onclick="window.print()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg text-xs shadow-md transition duration-200">
+                🖨️ Cetak / Save PDF
+            </button>
+            <button id="btn-save-image"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-lg text-xs shadow-md transition duration-200">
+                🖼️ Save Image (PNG)
+            </button>
+            <button id="btn-tutup-preview"
+                class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 px-6 rounded-lg text-xs shadow-md transition duration-200">
+                Tutup
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- JAVASCRIPT LOGIC                                     -->
+    <!-- ==================================================== -->
+    <script>
+        // Data Produk Dummy untuk simulasi
+        const dummyProducts = [
+            { name: "Cairan Semen Pelapis Kedap Air Sika Top 107 Plus", price: 100000, qty: 10, unit: "Pieces", diskon: 10000, ppn: false },
+            { name: "Paket Bundling Merdeka (Cairan semen pelapis kedap air sika top 107 plus)", price: 100000, qty: 10, unit: "Pieces", diskon: 5000, ppn: false },
+            { name: "Paket Bundling Merdeka (Cairan semen pelapis kedap air sika top 105 plus)", price: 100000, qty: 10, unit: "Pieces", diskon: 5000, ppn: false },
+            { name: "Semen Tiga Roda Portland Pozzolan Cement 50kg", price: 72000, qty: 20, unit: "Sak", diskon: 0, ppn: true },
+            { name: "Besi Beton Polos Diamater 10mm SNI Pjg 12m", price: 89000, qty: 15, unit: "Batang", diskon: 15000, ppn: true },
+            { name: "Cat Tembok Dulux Catylac Interior Putih 5kg", price: 165000, qty: 2, unit: "Galon", diskon: 0, ppn: false },
+            { name: "Kayu Kaso Borneo Ukuran 4x6 Pjg 4m (Isi 6)", price: 120000, qty: 3, unit: "Ikat", diskon: 10000, ppn: false },
+            { name: "Pipa PVC Wavin AW Ukuran 1/2 Inch Biru", price: 18000, qty: 10, unit: "Batang", diskon: 0, ppn: true },
+            { name: "Kawat Ikat Beton (Kawat Bendrat) Roll Kecil", price: 22000, qty: 8, unit: "Roll", diskon: 2000, ppn: false },
+            { name: "Semen Mortar MU-301 Plesteran & Pasang Bata 40kg", price: 68000, qty: 12, unit: "Sak", diskon: 0, ppn: true },
+            { name: "Kuas Cat Tembok Ukuran 4 Inch Gagang Kayu", price: 12500, qty: 6, unit: "Pieces", diskon: 1500, ppn: false },
+            { name: "Papan Gypsum Knauf Plasterboard 9mm x 1.2m x 2.4m", price: 58000, qty: 8, unit: "Lembar", diskon: 3000, ppn: true }
+        ];
+
+        // Elemen Input Setup
+        const inputQtyProduk = document.getElementById("input-qty-produk");
+        const labelQtyProduk = document.getElementById("label-qty-produk");
+        const selectPpnToko = document.getElementById("select-ppn-toko");
+        const selectPpn = document.getElementById("select-ppn");
+        const checkboxMixPpn = document.getElementById("checkbox-mix-ppn");
+        const inputDiskon = document.getElementById("input-diskon");
+        const inputDiskonItem = document.getElementById("input-diskon-item");
+        const checkKirim = document.getElementById("check-kirim");
+        const inputKirim = document.getElementById("input-kirim");
+        const checkTambahan = document.getElementById("check-tambahan");
+        const labelTotalTambahan = document.getElementById("label-total-tambahan");
+        const dynamicPaymentList = document.getElementById("dynamic-payment-list");
+        const btnTambahPayment = document.getElementById("btn-tambah-payment");
+        const setupTotalTagihan = document.getElementById("setup-total-tagihan");
+        const setupTotalTerbayar = document.getElementById("setup-total-terbayar");
+        const setupSisaLabel = document.getElementById("setup-sisa-label");
+        const setupSisaTagihan = document.getElementById("setup-sisa-tagihan");
+        const subTambahanFields = document.getElementById("sub-tambahan-fields");
+        const dynamicTambahanList = document.getElementById("dynamic-tambahan-list");
+        const btnTambahTambahan = document.getElementById("btn-tambah-tambahan");
+        const infoLimitProduk = document.getElementById("info-limit-produk");
+
+        // Tombol Navigasi SPA
+        const btnPreview = document.getElementById("btn-preview");
+        const btnSaveImage = document.getElementById("btn-save-image");
+        const btnTutupPreview = document.getElementById("btn-tutup-preview");
+        const setupView = document.getElementById("setup-view");
+        const previewView = document.getElementById("preview-view");
+
+        // Elemen Preview Nota
+        const pagesContainer = document.getElementById("pages-container");
+
+        // Helper Format Angka
+        function formatRupiah(num) {
+            return num.toLocaleString('en-US');
+        }
+
+        // Dapatkan data biaya tambahan dinamis
+        function getTambahanData() {
+            const items = [];
+            const isTambahan = checkTambahan.checked;
+            if (!isTambahan) return items;
+
+            const rows = dynamicTambahanList.querySelectorAll(".tambahan-item");
+            rows.forEach(row => {
+                const nama = row.querySelector(".tambahan-nama").value.trim();
+                const nilai = Math.max(0, parseInt(row.querySelector(".tambahan-nilai").value) || 0);
+                if (nama || nilai > 0) {
+                    items.push({ nama: nama || "Biaya Tambahan", nilai });
+                }
+            });
+            return items;
+        }
+
+        // Dapatkan data metode pembayaran dinamis
+        function getPaymentData() {
+            const items = [];
+            const rows = dynamicPaymentList.querySelectorAll(".payment-item");
+            rows.forEach(row => {
+                const metode = row.querySelector(".payment-metode").value;
+                const jumlah = Math.max(0, parseInt(row.querySelector(".payment-jumlah").value) || 0);
+                const mdrRate = (metode === 'qris' || metode === 'debit' || metode === 'credit')
+                    ? Math.max(0, parseFloat(row.querySelector(".payment-mdr-rate").value) || 0)
+                    : 0;
+                items.push({ metode, jumlah, mdrRate });
+            });
+            return items;
+        }
+
+        // Update visibilitas baris input MDR pada metode pembayaran
+        function updatePaymentItemMdrVisibility(row) {
+            const metode = row.querySelector(".payment-metode").value;
+            const mdrRow = row.querySelector(".payment-mdr-row");
+            const mdrRateInput = row.querySelector(".payment-mdr-rate");
+            if (metode === 'qris' || metode === 'debit' || metode === 'credit') {
+                mdrRow.classList.remove("hidden");
+                if (!mdrRateInput.dataset.edited) {
+                    if (metode === 'qris') mdrRateInput.value = '0.7';
+                    else if (metode === 'debit') mdrRateInput.value = '1.0';
+                    else if (metode === 'credit') mdrRateInput.value = '2.0';
+                }
+            } else {
+                mdrRow.classList.add("hidden");
+            }
+        }
+
+        // Bind event listeners ke komponen baris pembayaran
+        function bindPaymentItemEvents(row) {
+            const select = row.querySelector(".payment-metode");
+            const jumlahInput = row.querySelector(".payment-jumlah");
+            const mdrInput = row.querySelector(".payment-mdr-rate");
+            const btnHapus = row.querySelector(".btn-hapus-payment");
+
+            select.addEventListener("change", () => {
+                mdrInput.removeAttribute("data-edited");
+                updatePaymentItemMdrVisibility(row);
+                calculateSettingState();
+            });
+
+            mdrInput.addEventListener("input", () => {
+                mdrInput.dataset.edited = "true";
+                calculateSettingState();
+            });
+
+            jumlahInput.addEventListener("input", calculateSettingState);
+
+            btnHapus.addEventListener("click", () => {
+                const rows = dynamicPaymentList.querySelectorAll(".payment-item");
+                if (rows.length > 1) {
+                    row.remove();
+                    calculateSettingState();
+                } else {
+                    alert("Minimal harus ada 1 metode pembayaran.");
+                }
+            });
+        }
+
+        // Live calculation di halaman setting
+        function calculateSettingState() {
+            const qty = parseInt(inputQtyProduk.value);
+            labelQtyProduk.textContent = qty;
+
+            const isPpnTokoAktif = selectPpnToko.value === 'aktif';
+            if (isPpnTokoAktif) {
+                selectPpn.disabled = false;
+                document.getElementById("wrapper-item-ppn").classList.remove("hidden");
+            } else {
+                selectPpn.disabled = true;
+                document.getElementById("wrapper-item-ppn").classList.add("hidden");
+            }
+
+            const ppnType = isPpnTokoAktif ? selectPpn.value : 'non';
+            const diskonPesanan = Math.max(0, parseInt(inputDiskon.value) || 0);
+            const diskonItem1 = Math.max(0, parseInt(inputDiskonItem.value) || 0);
+            const isMixPpn = checkboxMixPpn.checked;
+            const isKirim = checkKirim.checked;
+            const biayaKirim = isKirim ? (Math.max(0, parseInt(inputKirim.value) || 0)) : 0;
+            const isTambahan = checkTambahan.checked;
+
+            if (isTambahan) {
+                subTambahanFields.classList.remove("hidden");
+            } else {
+                subTambahanFields.classList.add("hidden");
+            }
+
+            const tambahanData = getTambahanData();
+            const totalTambahan = tambahanData.reduce((sum, item) => sum + item.nilai, 0);
+            labelTotalTambahan.textContent = "Rp " + formatRupiah(totalTambahan);
+
+            // Hitung subtotal produk
+            let subtotalNonPpn = 0;
+            let subtotalDppPpn = 0;
+            for (let i = 0; i < qty; i++) {
+                if (dummyProducts[i]) {
+                    const prod = dummyProducts[i];
+                    const diskon = (i === 0) ? diskonItem1 : (prod.diskon || 0);
+                    const totalBaris = (prod.price * prod.qty) - diskon;
+                    let barangKenaPpn = false;
+                    if (ppnType !== 'non') {
+                        barangKenaPpn = isMixPpn ? prod.ppn : false;
+                    }
+                    if (barangKenaPpn) {
+                        subtotalDppPpn += totalBaris;
+                    } else {
+                        subtotalNonPpn += totalBaris;
+                    }
+                }
+            }
+
+            // Hitung PPN
+            let nominalPpn = 0;
+            if (ppnType === 'exclude') {
+                nominalPpn = Math.round((subtotalDppPpn + biayaKirim + totalTambahan) * 0.11);
+            } else if (ppnType === 'include') {
+                nominalPpn = Math.round((biayaKirim + totalTambahan) * 0.11);
+            }
+
+            const baseTotal = (subtotalNonPpn + subtotalDppPpn) - diskonPesanan + biayaKirim + totalTambahan;
+            const grandTotal = baseTotal + nominalPpn;
+
+            // Hitung MDR dari paymentData
+            const paymentData = getPaymentData();
+            let totalMdr = 0;
+            paymentData.forEach(p => {
+                if ((p.metode === 'qris' || p.metode === 'debit' || p.metode === 'credit') && p.mdrRate > 0 && p.jumlah > 0) {
+                    totalMdr += Math.round(p.jumlah * (p.mdrRate / 100));
+                }
+            });
+
+            const targetTagihan = grandTotal;
+            const totalBayar = paymentData.reduce((sum, item) => sum + item.jumlah, 0);
+
+            // Update DOM element
+            setupTotalTagihan.textContent = "Rp " + formatRupiah(targetTagihan);
+            setupTotalTerbayar.textContent = "Rp " + formatRupiah(totalBayar);
+
+            // Tentukan apakah ada sisa tagihan atau kembalian
+            const diff = targetTagihan - totalBayar;
+            if (diff > 0) {
+                setupSisaLabel.textContent = "Sisa Tagihan";
+                setupSisaLabel.className = "text-[10px] text-slate-400 font-medium";
+                setupSisaTagihan.textContent = "Rp " + formatRupiah(diff);
+                setupSisaTagihan.className = "text-xs font-bold text-amber-400 mt-0.5";
+            } else if (diff < 0) {
+                const kembalian = Math.abs(diff);
+                setupSisaLabel.textContent = "Kembalian";
+                setupSisaLabel.className = "text-[10px] text-slate-400 font-medium";
+                setupSisaTagihan.textContent = "Rp " + formatRupiah(kembalian);
+                setupSisaTagihan.className = "text-xs font-bold text-emerald-400 mt-0.5";
+            } else {
+                setupSisaLabel.textContent = "Lunas";
+                setupSisaLabel.className = "text-[10px] text-slate-400 font-medium";
+                setupSisaTagihan.textContent = "Rp 0";
+                setupSisaTagihan.className = "text-xs font-bold text-emerald-500 mt-0.5";
+            }
+
+            const hasMdr = paymentData.some(p => (p.metode === 'qris' || p.metode === 'debit' || p.metode === 'credit') && p.mdrRate > 0);
+            const isComplexFooter = (ppnType !== 'non' || diskonPesanan > 0 || biayaKirim > 0 || tambahanData.length > 0 || hasMdr || paymentData.length > 1);
+
+            // Hitung sisa kapasitas baris berdasarkan jumlah rincian biaya tambahan & pembayaran
+            let currentLimit = 10;
+            if (isComplexFooter) {
+                let extraLines = Math.max(0, tambahanData.length - 2);
+
+                // Tambahan baris akibat pembayaran split (> 1 metode) atau MDR
+                if (paymentData.length > 1) {
+                    extraLines += (paymentData.length - 1);
+                }
+                paymentData.forEach(p => {
+                    if ((p.metode === 'qris' || p.metode === 'debit' || p.metode === 'credit') && p.mdrRate > 0 && p.jumlah > 0) {
+                        extraLines += 1; // 1 baris untuk MDR per metode
+                    }
+                });
+
+                currentLimit = Math.max(4, 8 - extraLines);
+            }
+
+            if (qty > currentLimit) {
+                infoLimitProduk.textContent = `⚠️ Peringatan: Melebihi kapasitas (${currentLimit} produk untuk skema saat ini). Nota rawan tumpah ke Halaman 2!`;
+                infoLimitProduk.className = "text-[10px] text-rose-400 mt-1 block font-bold";
+            } else {
+                infoLimitProduk.textContent = `✅ Aman: Maksimal ${currentLimit} produk untuk skema saat ini.`;
+                infoLimitProduk.className = "text-[10px] text-emerald-400 mt-1 block font-medium";
+            }
+        }
+
+        // Tambah Baris Biaya Tambahan
+        btnTambahTambahan.addEventListener("click", () => {
+            const newRow = document.createElement("div");
+            newRow.className = "flex items-center gap-2 tambahan-item";
+            newRow.innerHTML = `
+                <input type="text" placeholder="Nama Biaya Baru" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-white flex-grow focus:outline-none tambahan-nama">
+                <input type="number" value="0" placeholder="Nilai" class="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-white text-right focus:outline-none tambahan-nilai">
+                <button type="button" class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-tambahan">✕</button>
+            `;
+
+            // Bind input listener
+            newRow.querySelectorAll("input").forEach(inp => {
+                inp.addEventListener("input", calculateSettingState);
+            });
+
+            // Bind delete button
+            newRow.querySelector(".btn-hapus-tambahan").addEventListener("click", () => {
+                newRow.remove();
+                calculateSettingState();
+            });
+
+            dynamicTambahanList.appendChild(newRow);
+            calculateSettingState();
+        });
+
+        // Tambah Baris Metode Pembayaran
+        btnTambahPayment.addEventListener("click", () => {
+            const newRow = document.createElement("div");
+            newRow.className = "flex flex-col gap-1.5 bg-slate-900/40 p-2 border border-slate-700/60 rounded payment-item";
+            newRow.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 payment-metode flex-grow">
+                        <option value="cash">Cash (Tunai)</option>
+                        <option value="tempo">Tempo (Kredit)</option>
+                        <option value="qris">QRIS</option>
+                        <option value="debit">EDC (Debit Card)</option>
+                        <option value="credit">EDC (Credit Card)</option>
+                    </select>
+                    <input type="number" placeholder="Jumlah (Rp)" class="w-28 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-white text-right focus:outline-none focus:border-blue-500 payment-jumlah">
+                    <button type="button" class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-payment">✕</button>
+                </div>
+                <div class="flex justify-between items-center pl-2 text-[10px] text-slate-400 payment-mdr-row hidden">
+                    <span>Persentase MDR (%)</span>
+                    <input type="number" value="1.0" step="0.1" min="0" max="100" class="w-16 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-right text-white focus:outline-none payment-mdr-rate">
+                </div>
+            `;
+            dynamicPaymentList.appendChild(newRow);
+            bindPaymentItemEvents(newRow);
+            calculateSettingState();
+        });
+
+        // Bind delete button default
+        function bindDefaultHapusButtons() {
+            dynamicTambahanList.querySelectorAll(".btn-hapus-tambahan").forEach(btn => {
+                // Remove existing to avoid double bindings
+                btn.replaceWith(btn.cloneNode(true));
+            });
+            dynamicTambahanList.querySelectorAll(".btn-hapus-tambahan").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    e.target.closest(".tambahan-item").remove();
+                    calculateSettingState();
+                });
+            });
+        }
+
+        // Render data ke dalam Preview Nota 21x14 dengan pagination
+        function renderPreviewNota() {
+            const qty = parseInt(inputQtyProduk.value);
+            const isPpnTokoAktif = selectPpnToko.value === 'aktif';
+            const ppnType = isPpnTokoAktif ? selectPpn.value : 'non';
+            const isMixPpn = checkboxMixPpn.checked;
+            const diskonPesanan = Math.max(0, parseInt(inputDiskon.value) || 0);
+            const diskonItem1 = Math.max(0, parseInt(inputDiskonItem.value) || 0);
+            const isKirim = checkKirim.checked;
+            const biayaKirim = isKirim ? (Math.max(0, parseInt(inputKirim.value) || 0)) : 0;
+            const tambahanData = getTambahanData();
+            const totalTambahan = tambahanData.reduce((sum, item) => sum + item.nilai, 0);
+            const paymentData = getPaymentData();
+
+            let totalMdr = 0;
+            const mdrItems = [];
+            paymentData.forEach(p => {
+                if ((p.metode === 'qris' || p.metode === 'debit' || p.metode === 'credit') && p.mdrRate > 0 && p.jumlah > 0) {
+                    const mdrNominal = Math.round(p.jumlah * (p.mdrRate / 100));
+                    totalMdr += mdrNominal;
+                    mdrItems.push({ metode: p.metode.toUpperCase(), rate: p.mdrRate, nominal: mdrNominal });
+                }
+            });
+
+            // Hitung subtotal keseluruhan produk terlebih dahulu
+            let subtotalNonPpn = 0;
+            let subtotalDppPpn = 0;
+            for (let i = 0; i < qty; i++) {
+                if (dummyProducts[i]) {
+                    const prod = dummyProducts[i];
+                    const diskon = (i === 0) ? diskonItem1 : 0;
+                    const totalBaris = (prod.price * prod.qty) - diskon;
+                    let barangKenaPpn = false;
+                    if (ppnType !== 'non') {
+                        barangKenaPpn = isMixPpn ? prod.ppn : false;
+                    }
+                    if (barangKenaPpn) {
+                        subtotalDppPpn += totalBaris;
+                    } else {
+                        subtotalNonPpn += totalBaris;
+                    }
+                }
+            }
+
+            let nominalPpn = 0;
+            let showPpnRow = false;
+            if (ppnType === 'exclude') {
+                nominalPpn = Math.round((subtotalDppPpn + biayaKirim + totalTambahan) * 0.11);
+                const adaProdukPpn = qty > 0 && dummyProducts.slice(0, qty).some((prod, i) => isMixPpn ? prod.ppn : false);
+                if (adaProdukPpn || biayaKirim > 0 || totalTambahan > 0) {
+                    showPpnRow = true;
+                }
+            } else if (ppnType === 'include') {
+                nominalPpn = Math.round((biayaKirim + totalTambahan) * 0.11);
+                if (biayaKirim > 0 || totalTambahan > 0) {
+                    showPpnRow = true;
+                }
+            }
+
+            const baseTotal = (subtotalNonPpn + subtotalDppPpn) - diskonPesanan + biayaKirim + totalTambahan;
+            const grandTotal = baseTotal + nominalPpn;
+            const grandTotalWithMdr = grandTotal + totalMdr;
+
+            let totalCashPaid = 0;
+            let totalElectronicPaid = 0;
+            let totalTempoAllocated = 0;
+            paymentData.forEach(p => {
+                if (p.metode === 'cash') totalCashPaid += p.jumlah;
+                else if (p.metode === 'tempo') totalTempoAllocated += p.jumlah;
+                else totalElectronicPaid += p.jumlah;
+            });
+            const totalPaidBeforeCashChange = totalCashPaid + totalElectronicPaid + totalTempoAllocated;
+            let kembalianVal = 0;
+            if (totalPaidBeforeCashChange > grandTotalWithMdr) {
+                kembalianVal = Math.min(totalCashPaid, totalPaidBeforeCashChange - grandTotalWithMdr);
+            }
+            const sisaPiutangVal = Math.max(0, grandTotalWithMdr - (totalElectronicPaid + (totalCashPaid - kembalianVal)));
+
+            let footerSpaceInRows = 4.5;
+            if (tambahanData.length > 0) footerSpaceInRows += 1 + tambahanData.length * 0.6;
+            if (showPpnRow) footerSpaceInRows += 1;
+            if (mdrItems.length > 0) footerSpaceInRows += mdrItems.length;
+            if (paymentData.length > 1) footerSpaceInRows += 1 + (paymentData.length - 1) * 0.6;
+            if (sisaPiutangVal > 0) footerSpaceInRows += 1;
+            if (kembalianVal > 0) footerSpaceInRows += 1;
+
+            const footerRowsNeeded = Math.ceil(footerSpaceInRows);
+            const lastPageCapacity = Math.max(3, 10 - footerRowsNeeded);
+
+            const pages = [];
+            if (qty <= 10 - footerRowsNeeded) {
+                pages.push({ pageIndex: 1, productsStart: 0, productsEnd: qty, showFooter: true, pageLimit: 10 - footerRowsNeeded });
+            } else {
+                const lastPageProductsCount = Math.min(qty, lastPageCapacity);
+                const remainingProductsCount = qty - lastPageProductsCount;
+                const tempProducts = [];
+                let idx = 0;
+                while (idx < remainingProductsCount) {
+                    const end = Math.min(remainingProductsCount, idx + 10);
+                    tempProducts.push({ start: idx, end: end });
+                    idx = end;
+                }
+                tempProducts.forEach((p, index) => {
+                    pages.push({ pageIndex: index + 1, productsStart: p.start, productsEnd: p.end, showFooter: false, pageLimit: 10 });
+                });
+                pages.push({ pageIndex: pages.length + 1, productsStart: remainingProductsCount, productsEnd: qty, showFooter: true, pageLimit: lastPageCapacity });
+            }
+
+            const hasTempo = paymentData.some(p => p.metode === 'tempo');
+            let pembayaranText = (paymentData.length === 1) ? (paymentData[0].metode === 'tempo' ? "TEMPO (KREDIT)" : paymentData[0].metode === 'cash' ? "CASH (TUNAI)" : paymentData[0].metode.toUpperCase()) : "MULTIPLE PEMBAYARAN";
+            const jatuhTempoRow = hasTempo ? `<tr><td class="font-bold py-[3px]">Jatuh Tempo</td><td class="py-[3px]">:</td><td class="font-bold py-[3px]">18-06-2026</td></tr>` : '';
+
+            let pagesHtml = "";
+            pages.forEach(page => {
+                let htmlProduk = "";
+                for (let i = 0; i < page.pageLimit; i++) {
+                    const prodIdx = page.productsStart + i;
+                    if (prodIdx < page.productsEnd && dummyProducts[prodIdx]) {
+                        const prod = dummyProducts[prodIdx];
+                        const diskon = (prodIdx === 0) ? diskonItem1 : (prod.diskon || 0);
+                        const totalBaris = (prod.price * prod.qty) - diskon;
+                        let barangKenaPpn = (ppnType !== 'non') ? (isMixPpn ? prod.ppn : false) : false;
+                        htmlProduk += `<tr class="align-middle text-[10px]"><td class="text-center font-medium">${prodIdx + 1}</td><td class="px-2 max-w-[360px] line-clamp-2 break-words whitespace-normal leading-[10px] py-[2px]" title="${prod.name}">${prod.name}</td><td class="text-center font-semibold text-gray-700">${barangKenaPpn ? '✓' : ''}</td><td class="text-center">${prod.qty}</td><td class="px-2">${prod.unit}</td><td class="text-right px-2">${formatRupiah(prod.price)}</td><td class="text-right px-2">${diskon > 0 ? formatRupiah(diskon) : '0'}</td><td class="text-right px-2 font-medium">${formatRupiah(totalBaris)}</td></tr>`;
+                    } else {
+                        htmlProduk += `<tr class="fixed-row"><td class="text-center text-gray-400 font-medium">${prodIdx + 1}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+                    }
+                }
+
+                let footerHtml = "";
+                if (page.showFooter) {
+                    if (ppnType === 'exclude') {
+                        const adaNonPpn = qty > 0 && dummyProducts.slice(0, qty).some(p => isMixPpn ? !p.ppn : true);
+                        const adaPpn = qty > 0 && dummyProducts.slice(0, qty).some(p => isMixPpn ? p.ppn : false);
+                        if (adaNonPpn) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Sub Total Non PPN</td><td class="w-32 font-semibold py-[2px]">${formatRupiah(subtotalNonPpn)}</td></tr>`;
+                        if (adaPpn) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Sub Total DPP PPN</td><td class="w-32 font-semibold py-[2px]">${formatRupiah(subtotalDppPpn)}</td></tr>`;
+                    } else {
+                        footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600 font-medium">Sub Total</td><td class="w-32 font-semibold py-[2px]">${formatRupiah(subtotalNonPpn + subtotalDppPpn)}</td></tr>`;
+                    }
+                    if (diskonPesanan > 0) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Diskon Pesanan (-)</td><td class="py-[2px] text-rose-600">-${formatRupiah(diskonPesanan)}</td></tr>`;
+                    if (biayaKirim > 0) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Biaya Kirim (+)</td><td class="py-[2px]">${formatRupiah(biayaKirim)}</td></tr>`;
+                    if (totalTambahan > 0) {
+                        footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Biaya Tambahan (+)</td><td class="py-[2px]">${formatRupiah(totalTambahan)}</td></tr>`;
+                        tambahanData.forEach(item => { footerHtml += `<tr class="text-[9px] text-gray-500 italic"><td class="py-[1px] pr-4">- ${item.nama}</td><td class="py-[1px]">${formatRupiah(item.nilai)}</td></tr>`; });
+                    }
+                    if (ppnType === 'exclude' && showPpnRow) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">PPN (11%) (+)</td><td class="py-[2px]">${formatRupiah(nominalPpn)}</td></tr>`;
+                    footerHtml += `<tr class="font-bold text-gray-900 text-[10px] border-t border-gray-300"><td class="py-[3px] pr-2">Total</td><td class="py-[3px]">${formatRupiah(grandTotal)}</td></tr>`;
+                    if (ppnType === 'include' && showPpnRow) {
+                        const nominalPpnInclude = Math.round(subtotalDppPpn * 11 / 111);
+                        footerHtml += `<tr class="text-gray-600 text-[10px]"><td class="py-[2px] pr-2">DPP</td><td class="py-[2px] font-medium">${formatRupiah(subtotalDppPpn - nominalPpnInclude)}</td></tr><tr class="text-gray-600 text-[10px]"><td class="py-[2px] pr-2">PPN (11%)</td><td class="py-[2px] font-medium">${formatRupiah(nominalPpnInclude)}</td></tr>`;
+                    }
+                    mdrItems.forEach(item => { footerHtml += `<tr class="text-gray-900 text-[10px]"><td class="py-[2px] pr-2">MDR ${item.metode} (${item.rate}%)</td><td class="py-[2px]">${formatRupiah(item.nominal)}</td></tr>`; });
+                    if (paymentData.length === 1 && totalMdr === 0) {
+                        let val = (paymentData[0].metode === 'cash') ? totalCashPaid : (paymentData[0].metode === 'tempo' ? 0 : paymentData[0].jumlah);
+                        footerHtml += `<tr class="font-bold text-gray-900 border-b border-gray-300"><td class="py-[3px] pr-2">Dibayar</td><td class="py-[3px]">${formatRupiah(val)}</td></tr>`;
+                    } else {
+                        footerHtml += `<tr class="font-bold text-gray-900 border-b border-gray-300"><td class="py-[3px] pr-2">Total Dibayar</td><td class="py-[3px]">${formatRupiah(grandTotalWithMdr)}</td></tr>`;
+                        if (totalCashPaid > 0) footerHtml += `<tr class="text-gray-600 text-[9px]"><td class="py-[1px] pr-2">- Cash (Tunai)</td><td class="py-[1px]">${formatRupiah(totalCashPaid)}</td></tr>`;
+                        paymentData.forEach(p => { if (p.metode !== 'cash' && p.metode !== 'tempo' && p.jumlah > 0) footerHtml += `<tr class="text-gray-600 text-[9px]"><td class="py-[1px] pr-2">- ${p.metode.toUpperCase()}</td><td class="py-[1px]">${formatRupiah(p.jumlah)}</td></tr>`; });
+                    }
+                    if (sisaPiutangVal > 0) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-500 font-light">Sisa Piutang</td><td class="py-[2px] font-light">${formatRupiah(sisaPiutangVal)}</td></tr>`;
+                    if (kembalianVal > 0) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-500 font-light">Kembalian</td><td class="py-[2px] font-light">${formatRupiah(kembalianVal)}</td></tr>`;
+                }
+
+                pagesHtml += `<div class="print-container text-gray-800 relative flex flex-col justify-between flex-shrink-0"><div class="absolute top-2 right-4 text-[10px] text-gray-500 font-medium no-print">Halaman ${page.pageIndex} dari ${pages.length}</div><div><div class="mb-1 grid grid-cols-2 gap-4 border-b border-gray-100 pb-1"><div><h1 class="text-sm font-bold text-gray-900 leading-tight">inTechgra Official Tester</h1><h2 class="font-semibold text-gray-800 leading-tight">Graha Grc Board</h2><p class="text-[9px] text-gray-500">Jl. Raya Tekno No. 100, Jakarta</p><p class="text-[9px] text-gray-500">No. Telp : 081903738745</p><p class="mt-0.5 font-bold text-gray-900 text-[10px]">No. Order : TRN/20260604/0002</p></div><div class="pl-8 text-[9px]"><table class="w-full table-fixed text-left"><tbody><tr><td class="w-24 font-bold py-[3px]">Tanggal - Kasir</td><td class="w-2 py-[3px]">:</td><td class="py-[3px] truncate">04-06-2026, 08:20 - Irfani</td></tr><tr><td class="font-bold py-[3px]">Kepada Yth.</td><td class="py-[3px]">:</td><td class="font-bold py-[3px]">Budi</td></tr><tr><td class="font-bold py-[3px] align-top">Alamat Kirim</td><td class="align-top py-[3px]">:</td><td class="py-[3px] leading-tight">Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Kebon Jeruk, Jakarta Barat</td></tr><tr><td class="font-bold py-[3px]">Pembayaran</td><td class="py-[3px]">:</td><td class="py-[3px]">${pembayaranText}</td></tr>${jatuhTempoRow}</tbody></table></div></div><div class="mb-1"><table class="w-full border-collapse text-left text-[10px]"><thead><tr class="border-y border-gray-800 bg-gray-50 font-bold text-gray-900 whitespace-nowrap"><th class="w-[5%] px-1 py-1 text-center">No</th><th class="w-[50%] px-2 py-1">Nama Produk</th><th class="w-[5%] px-1 py-1 text-center">PPN</th><th class="w-[8%] px-1 py-1 text-center">Qty</th><th class="w-[10%] px-2 py-1">Satuan</th><th class="w-[12%] px-2 py-1 text-right">Harga (Rp)</th><th class="w-[10%] px-2 py-1 text-right">Diskon (Rp)</th><th class="w-[12%] px-2 py-1 text-right">Jumlah (Rp)</th></tr></thead><tbody class="divide-y divide-gray-200">${htmlProduk}</tbody></table></div></div><div>${page.showFooter ? `<div class="flex justify-between items-start"><div class="w-[50%]"></div><div class="w-[50%] text-gray-800"><table class="w-full text-right text-[10px]"><tbody>${footerHtml}</tbody></table></div></div><div class="mt-2.5 grid grid-cols-4 gap-4 text-center items-start text-[9px]"><div><p class="font-medium text-gray-900">Penerima,</p><div class="h-4"></div><div class="mx-auto w-[80%] border-b border-gray-800"></div><p class="mt-0.5 text-[8px] text-gray-500">( Nama Jelas )</p></div><div><p class="font-medium text-gray-900">Pengirim / Sopir,</p><div class="h-4"></div><div class="mx-auto w-[80%] border-b border-gray-800"></div><p class="mt-0.5 text-[8px] text-gray-500">( Armada Toko / Sopir )</p></div><div><p class="font-medium text-gray-900">Hormat Kami,</p><div class="h-4"></div><div class="mx-auto w-[80%] border-b border-gray-800"></div><p class="mt-0.5 text-[8px] text-gray-500">( Kasir Toko )</p></div><div></div></div>` : `<div class="text-[10px] text-gray-400 italic text-right py-2 border-t border-gray-100">Bersambung ke Halaman ${page.pageIndex + 1}...</div>`}</div></div>`;
+            });
+            pagesContainer.innerHTML = pagesHtml;
+        }
+
+        btnTutupPreview.addEventListener("click", () => {
+            previewView.classList.add("hidden");
+            previewView.classList.remove("flex");
+            setupView.classList.remove("hidden");
+        });
+
+        // Navigasi State (SPA)
+        btnPreview.addEventListener("click", () => {
+            renderPreviewNota();
+            setupView.classList.add("hidden");
+            previewView.classList.remove("hidden");
+            previewView.classList.add("flex");
+        });
+
+        btnSaveImage.addEventListener("click", () => {
+            const containers = document.querySelectorAll('.print-container');
+            containers.forEach((container, index) => {
+                const originalBorder = container.style.border;
+                const originalShadow = container.style.boxShadow;
+                container.style.border = "none";
+                container.style.boxShadow = "none";
+                html2canvas(container, { scale: 3, useCORS: true }).then(canvas => {
+                    container.style.border = originalBorder;
+                    container.style.boxShadow = originalShadow;
+                    const link = document.createElement('a');
+                    link.download = `Nota_Penjualan_inTechgra_Hal_${index + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }).catch(err => {
+                    container.style.border = originalBorder;
+                    container.style.boxShadow = originalShadow;
+                });
+            });
+        });
+
+        // Event listener untuk update halaman setting real-time
+        const controlElements = [inputQtyProduk, selectPpnToko, selectPpn, checkboxMixPpn, inputDiskon, inputDiskonItem, checkKirim, inputKirim, checkTambahan];
+        controlElements.forEach(el => el.addEventListener("input", calculateSettingState));
+        controlElements.forEach(el => el.addEventListener("change", calculateSettingState));
+
+        // Sinkronisasi Status PPN Toko dengan Tipe Pajak PPN
+        selectPpnToko.addEventListener("change", () => {
+            if (selectPpnToko.value === 'tidak') {
+                selectPpn.value = 'non';
+            } else if (selectPpnToko.value === 'aktif' && selectPpn.value === 'non') {
+                selectPpn.value = 'exclude';
+            }
+            calculateSettingState();
+        });
+
+        selectPpn.addEventListener("change", () => {
+            if (selectPpn.value === 'non') {
+                selectPpnToko.value = 'tidak';
+            } else {
+                selectPpnToko.value = 'aktif';
+            }
+            calculateSettingState();
+        });
+
+        // Bind default input untuk tambahan awal
+        dynamicTambahanList.querySelectorAll("input").forEach(inp => {
+            inp.addEventListener("input", calculateSettingState);
+        });
+
+        bindDefaultHapusButtons();
+
+        // Bind default input untuk payment awal
+        dynamicPaymentList.querySelectorAll(".payment-item").forEach(row => {
+            bindPaymentItemEvents(row);
+            updatePaymentItemMdrVisibility(row);
+        });
+
+        // Inisialisasi awal
+        calculateSettingState();
+    </script>
+</body>
+
+</html>
