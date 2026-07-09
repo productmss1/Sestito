@@ -927,7 +927,7 @@
 
 <body class="min-h-screen flex flex-col">
   <!-- Back to Hub Banner -->
-  <div style="background-color: #0f172a; color: #ffffff; padding: 8px 24px; font-size: 12px; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: space-between; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;">
+  <div style="background-color: #0f172a; color: #ffffff; padding: 8px 24px; font-size: 12px; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: space-between; z-index: 9999; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; position: relative;">
     <a href="../index.html" style="color: #f97316; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 6px;">
       ← Kembali ke Workspace Hub
     </a>
@@ -2147,7 +2147,7 @@ Body:
         }
 
         function openUserflow() {
-            window.open('inTechgra_pos_userflow.html', '_blank');
+            window.location.href = 'inTechgra_pos_userflow.html';
         }
 
         function openHighLevelConcept() {
