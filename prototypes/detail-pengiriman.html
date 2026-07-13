@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Pengiriman Pending – inTechgra Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* ── TOP NAV ── */
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid #e8edf3;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 2px;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #2563eb;
+        }
+
+        .back-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* ── MAIN CONTENT ── */
+        .page-wrapper {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e8edf3;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        /* ── ORDER HEADER (TRN badge + toko) ── */
+        .order-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trn-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .trn-badge svg {
+            width: 16px;
+            height: 16px;
+            color: #2563eb;
+        }
+
+        .toko-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* ── SHIPMENT SECTION ── */
+        .shipment-section {
+            padding: 16px 18px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .shipment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .shipment-label-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shipment-icon {
+            width: 32px;
+            height: 32px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+        }
+
+        .shipment-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .shipment-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .shipment-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+
+        /* ── TOMBOL AREA ── */
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-cetak-sj {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1.5px solid #2563eb;
+            background: #eff6ff;
+            color: #2563eb;
+            white-space: nowrap;
+        }
+
+        .btn-cetak-sj:hover {
+            background: #dbeafe;
+            border-color: #1d4ed8;
+            color: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-cetak-sj svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-proses {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1.5px solid #2563eb;
+            background: #fff;
+            color: #2563eb;
+            white-space: nowrap;
+        }
+
+        .btn-proses:hover {
+            background: #eff6ff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-proses svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ── PRODUCT ITEM ── */
+        .product-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 18px;
+        }
+
+        .product-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .product-meta {
+            font-size: 11px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .product-meta span {
+            display: block;
+        }
+
+
+        /* ═══════════════════════════════════════════════
+           SURAT JALAN MODAL
+        ═══════════════════════════════════════════════ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .modal-box {
+            background: #f3f4f6;
+            border-radius: 16px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 880px;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+            animation: slideUp 0.25s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        /* Modal Top Bar */
+        .modal-topbar {
+            background: #1e293b;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .modal-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-topbar-left svg {
+            color: #f97316;
+            width: 20px;
+            height: 20px;
+        }
+
+        .modal-topbar-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .modal-topbar-sub {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 1px;
+        }
+
+        .modal-topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-modal-print {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: #2563eb;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .btn-modal-print:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-modal-print svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-modal-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: #10b981;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .btn-modal-export:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-modal-export svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-modal-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #334155;
+            background: transparent;
+            color: #94a3b8;
+        }
+
+        .btn-modal-close:hover {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        .btn-modal-close svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Modal Scroll Area */
+        .modal-body {
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            background: #e2e8f0;
+            flex: 1;
+        }
+
+        /* ═══════════════════════════════════════════════
+           SURAT JALAN DOCUMENT (A5 Landscape)
+        ═══════════════════════════════════════════════ */
+        .sheet {
+            background-color: #fff;
+            width: 210mm;
+            height: 148mm;
+            padding: 1.5mm 8mm 4mm 8mm;
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-shrink: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11px;
+            color: #000;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        @media print {
+            @page {
+                size: 210mm 148mm;
+                margin: 0;
+            }
+
+            body {
+                background-color: transparent;
+                padding: 0;
+            }
+
+            .sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm;
+                height: 148mm;
+                padding: 1.5mm 8mm 4mm 8mm;
+            }
+
+            .no-print { display: none !important; }
+            .modal-overlay { display: none !important; }
+        }
+
+        /* Print trigger: show only sheet */
+        body.printing .modal-topbar,
+        body.printing .modal-body {
+            padding: 0;
+        }
+
+        .page-info {
+            text-align: right;
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        /* ── SURAT JALAN Tables ── */
+        .sj-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .sj-table, .sj-table th, .sj-table td {
+            border: 1px solid #000;
+        }
+
+        .sj-table th, .sj-table td {
+            padding: 6px 8px;
+            vertical-align: top;
+        }
+
+        /* Header Table */
+        .sj-header-table td {
+            vertical-align: middle;
+            padding: 4px 6px;
+        }
+
+        .sj-logo-cell {
+            width: 15%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .sj-title-cell {
+            width: 60%;
+            text-align: center;
+        }
+
+        .sj-title-cell h1 {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .sj-title-cell h2 {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .sj-title-cell p {
+            font-size: 9px;
+            color: #333;
+        }
+
+        .sj-meta-cell {
+            width: 25%;
+            font-size: 10px;
+            line-height: 1.15;
+        }
+
+        .sj-meta-cell .label {
+            display: block;
+            margin-bottom: 0px;
+        }
+
+        .sj-meta-cell .value {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Address Table */
+        .sj-address-table th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 10px;
+            background-color: #fff;
+            width: 50%;
+        }
+
+        .sj-address-table td {
+            font-size: 10px;
+            line-height: 1.4;
+            height: 65px;
+        }
+
+        .sj-address-table .field-row {
+            margin-bottom: 3px;
+        }
+
+        /* Product Table */
+        .sj-product-table th {
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .sj-product-table td {
+            font-size: 10px;
+            padding: 4px 6px;
+        }
+
+        .col-no   { width: 5%;  text-align: center; }
+        .col-nama { width: 70%; }
+        .col-jumlah { width: 12%; text-align: center; }
+        .col-satuan { width: 13%; text-align: center; }
+
+        /* Footer / Signature Table */
+        .sj-footer-table th {
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+            width: 25%;
+        }
+
+        .sj-footer-table td {
+            height: 75px;
+            font-size: 10px;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .signature-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            text-align: center;
+        }
+
+        .signature-line {
+            margin-top: auto;
+            font-weight: normal;
+        }
+
+        .signature-sub {
+            font-size: 9px;
+            margin-top: 2px;
+        }
+
+        .catatan-content {
+            font-size: 10px;
+            color: #333;
+        }
+
+        /* ── HUB LINK ── */
+        .hub-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #1e293b;
+            color: #f97316;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            text-decoration: none;
+            border: 1px solid #334155;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+            margin-top: 4px;
+        }
+
+        .hub-link:hover {
+            background-color: #334155;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════════
+         HALAMAN DETAIL PENGIRIMAN PENDING
+    ══════════════════════════════════════════════ -->
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <button class="back-btn" onclick="history.back()">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        <span class="topbar-title">Detail Pengiriman Pending</span>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-wrapper">
+
+        <!-- Hub link (prototype only) -->
+        <a href="../index.html" class="hub-link">
+            ← Kembali ke Hub
+        </a>
+
+        <!-- Card -->
+        <div class="card">
+
+            <!-- Order Header: TRN badge + Toko -->
+            <div class="order-header">
+                <span class="trn-badge">
+                    <!-- Delivery icon -->
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 0M13 16H9m4 0h2m0 0h2a2 2 0 00.18-3.995L16 6h-3v10h2zM3 10h10"/>
+                    </svg>
+                    TRN-02-20260713-00034
+                </span>
+                <span style="color:#94a3b8; font-size:13px;">|</span>
+                <span class="toko-label">Oslo</span>
+            </div>
+
+            <!-- Shipment Section -->
+            <div class="shipment-section">
+                <div class="shipment-header">
+                    <div class="shipment-label-group">
+                        <!-- Truck icon -->
+                        <div class="shipment-icon">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <rect x="1" y="3" width="15" height="13" rx="1"/>
+                                <path d="M16 8h4l3 5v3h-7V8z"/>
+                                <circle cx="5.5" cy="18.5" r="2.5"/>
+                                <circle cx="18.5" cy="18.5" r="2.5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="shipment-title">Dikirim &nbsp;<span style="font-weight:400; color:#64748b;">1 Produk</span></div>
+                            <div class="shipment-sub">TB. Pro Jaya 2</div>
+                        </div>
+                    </div>
+
+                    <!-- ✅ TOMBOL CETAK SURAT JALAN & PROSES sejajar -->
+                    <div class="action-buttons">
+                        <button class="btn-cetak-sj" onclick="openSuratJalan()">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a1 1 0 001-1v-6H9v6a1 1 0 001 1zm1-11V5a1 1 0 00-1-1H9a1 1 0 00-1 1v1"/>
+                            </svg>
+                            Cetak Surat Jalan
+                        </button>
+                        <button class="btn-proses">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/>
+                            </svg>
+                            Proses
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product -->
+                <div class="product-item">
+                    <div class="product-img">🪨</div>
+                    <div class="product-info">
+                        <div class="product-name">Semen Bima PPC 50 kg (Sak)</div>
+                        <div class="product-meta">
+                            <span>Brand: <strong>Bima</strong></span>
+                            <span>Qty: <strong>10 (Sak)</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /shipment-section -->
+
+        </div><!-- /card -->
+
+    </div><!-- /page-wrapper -->
+
+
+    <!-- ══════════════════════════════════════════════
+         SURAT JALAN MODAL
+    ══════════════════════════════════════════════ -->
+    <div class="modal-overlay" id="suratJalanModal">
+        <div class="modal-box">
+
+            <!-- Modal Topbar -->
+            <div class="modal-topbar no-print">
+                <div class="modal-topbar-left">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <div>
+                        <div class="modal-topbar-title">Surat Jalan Pengiriman — A5 Landscape</div>
+                        <div class="modal-topbar-sub">TRN-02-20260713-00034 · TB. Pro Jaya 2</div>
+                    </div>
+                </div>
+                <div class="modal-topbar-actions">
+                    <button class="btn-modal-export" onclick="exportPNG()">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Export PNG
+                    </button>
+                    <button class="btn-modal-print" onclick="window.print()">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a1 1 0 001-1v-6H9v6a1 1 0 001 1zm1-11V5a1 1 0 00-1-1H9a1 1 0 00-1 1v1"/>
+                        </svg>
+                        Cetak
+                    </button>
+                    <button class="btn-modal-close" onclick="closeSuratJalan()">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body: Surat Jalan Document -->
+            <div class="modal-body">
+
+                <div class="sheet" id="surat-jalan-sheet">
+                    <div>
+                        <!-- Page Number -->
+                        <div class="page-info">1 dari 1</div>
+
+                        <!-- Header Table -->
+                        <table class="sj-table sj-header-table">
+                            <tr>
+                                <td class="sj-logo-cell">[LOGO]</td>
+                                <td class="sj-title-cell">
+                                    <h1>SURAT JALAN PENGIRIMAN</h1>
+                                    <h2>TB. PRO JAYA 2</h2>
+                                    <p>Jl. Industri Raya No. 45, Jakarta Utara 14350 | Telp: 0812-3456-7890</p>
+                                </td>
+                                <td class="sj-meta-cell">
+                                    <span class="label">No. Surat Jalan:</span>
+                                    <span class="value" id="no-surat-jalan">SJ-02-20260713-00034</span>
+                                    <span class="label">No. Transaksi:</span>
+                                    <span class="value" id="no-transaksi">TRN-02-20260713-00034</span>
+                                    <span class="label">Tanggal:</span>
+                                    <span class="value" style="margin-bottom:0;">13 Juli 2026</span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Address Table (Pengirim / Penerima) -->
+                        <table class="sj-table sj-address-table">
+                            <thead>
+                                <tr>
+                                    <th>PENGIRIM</th>
+                                    <th>PENERIMA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="field-row"><strong>Nama:</strong> TB. Pro Jaya 2</div>
+                                        <div class="field-row"><strong>Alammat:</strong> Jl. Industri Raya No. 45, Sunter Agung, Jakarta Utara 14350</div>
+                                        <div class="field-row"><strong>HP:</strong> 0812-3456-7890</div>
+                                    </td>
+                                    <td>
+                                        <div class="field-row"><strong>Nama:</strong> Oslo</div>
+                                        <div class="field-row"><strong>Alamat:</strong> Jl. Merdeka No. 12, Menteng, Jakarta Pusat 10310</div>
+                                        <div class="field-row"><strong>Telp:</strong> 021-3901234</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Product Table (selalu 8 baris sesuai PRD) -->
+                        <table class="sj-table sj-product-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-no">NO</th>
+                                    <th class="col-nama">NAMA PRODUK</th>
+                                    <th class="col-jumlah">JUMLAH</th>
+                                    <th class="col-satuan">SATUAN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="col-no">1</td>
+                                    <td class="col-nama">Semen Bima PPC 50 kg</td>
+                                    <td class="col-jumlah">10</td>
+                                    <td class="col-satuan">Sak</td>
+                                </tr>
+                                <tr><td class="col-no">2</td><td class="col-nama">&nbsp;</td><td class="col-jumlah">&nbsp;</td><td class="col-satuan">&nbsp;</td></tr>
+                                <tr><td class="col-no">3</td><td class="col-nama">&nbsp;</td><td class="col-jumlah">&nbsp;</td><td class="col-satuan">&nbsp;</td></tr>
+                                <tr><td class="col-no">4</td><td class="col-nama">&nbsp;</td><td class="col-jumlah">&nbsp;</td><td class="col-satuan">&nbsp;</td></tr>
+                                <tr><td class="col-no">5</td><td class="col-nama">&nbsp;</td><td class="col-jumlah">&nbsp;</td><td class="col-satuan">&nbsp;</td></tr>
+                                <tr><td class="col-no">6</td><td class="col-nama">&nbsp;</td><td class="col-jumlah">&nbsp;</td><td class="col-satuan">&nbsp;</td></tr>
+                                <tr><td class="col-no">7</td><td class="col-nama">&nbsp;</td><td class="col-jumlah">&nbsp;</td><td class="col-satuan">&nbsp;</td></tr>
+                                <tr><td class="col-no">8</td><td class="col-nama">&nbsp;</td><td class="col-jumlah">&nbsp;</td><td class="col-satuan">&nbsp;</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Footer / Signatures -->
+                    <table class="sj-table sj-footer-table" style="margin-bottom:0;">
+                        <thead>
+                            <tr>
+                                <th>CATATAN</th>
+                                <th>KEPALA GUDANG</th>
+                                <th>PENGIRIMAN</th>
+                                <th>PENERIMA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="catatan-content">–</td>
+                                <td>
+                                    <div class="signature-container">
+                                        <div class="signature-line">(....................)</div>
+                                        <div class="signature-sub">Nama &amp; Tanda Tangan</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="signature-container">
+                                        <div class="signature-line">(....................)</div>
+                                        <div class="signature-sub">Nama &amp; Tanda Tangan</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="signature-container">
+                                        <div class="signature-line">(....................)</div>
+                                        <div class="signature-sub">Nama &amp; Tanda Tangan</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div><!-- /sheet -->
+
+            </div><!-- /modal-body -->
+
+        </div><!-- /modal-box -->
+    </div><!-- /modal-overlay -->
+
+
+    <script>
+        // Open modal
+        function openSuratJalan() {
+            const modal = document.getElementById('suratJalanModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeSuratJalan() {
+            const modal = document.getElementById('suratJalanModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close on overlay click
+        document.getElementById('suratJalanModal').addEventListener('click', function(e) {
+            if (e.target === this) closeSuratJalan();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeSuratJalan();
+        });
+
+        // Export PNG
+        function exportPNG() {
+            const btn = document.querySelector('.btn-modal-export');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Mengunduh...';
+            btn.disabled = true;
+
+            const sheet = document.getElementById('surat-jalan-sheet');
+            const originalShadow = sheet.style.boxShadow;
+            sheet.style.boxShadow = 'none';
+
+            html2canvas(sheet, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                sheet.style.boxShadow = originalShadow;
+                const noSJ  = document.getElementById('no-surat-jalan').innerText.trim().replace(/[\/\\?%*:|"<>. ]/g, '_');
+                const noTRN = document.getElementById('no-transaksi').innerText.trim().replace(/[\/\\?%*:|"<>. ]/g, '_');
+                const filename = `Surat_Jalan_${noSJ}_${noTRN}.png`;
+
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error(err);
+                alert('Gagal mengekspor gambar.');
+                sheet.style.boxShadow = originalShadow;
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+    </script>
+
+</body>
+</html>
