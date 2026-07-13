@@ -179,14 +179,13 @@
 
       <!-- PROJECT 2: inTechgra Pro Phase 1 -->
       <div class="modular-card bg-white border border-slate-100 rounded-2xl flex flex-col justify-between p-6"
-        data-search="intechgra pro phase 1 simulator nota penjualan surat jalan">
+        data-search="intechgra pro phase 1 spesifikasi dasar kasir stok">
         <div>
           <div class="flex justify-between items-start mb-4">
             <h3 class="font-display text-base font-bold text-slate-900">inTechgra Pro · Phase 1</h3>
           </div>
           <p class="text-xs text-slate-500 leading-relaxed mb-4">
-            Spesifikasi dasar platform Pro. Menyediakan simulator nota interaktif &amp; layout surat jalan pengiriman
-            barang.
+            Spesifikasi dasar platform Pro. Mencakup modul kasir POS, manajemen stok, dan laporan penjualan inti.
           </p>
 
           <!-- Accordion Toggle -->
@@ -203,11 +202,54 @@
             <div class="space-y-2.5 pt-3 text-[11px] text-slate-500">
               <div>
                 <span class="block font-bold text-slate-700">Scope:</span>
-                <span>Nota POS A5, Surat Jalan Gudang, Ringkasan testing penjualan</span>
+                <span>Modul Kasir POS, Manajemen Stok, Laporan Penjualan</span>
               </div>
               <div>
                 <span class="block font-bold text-slate-700">Status UAT:</span>
                 <span>5 Juni 2026 — Verified & Sign-off</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-50">
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-1">
+            <span>Last update</span>
+            <span class="font-medium text-slate-600">Juni 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 3: inTechgra Pro Phase 1.1 -->
+      <div class="modular-card bg-white border border-slate-100 rounded-2xl flex flex-col justify-between p-6"
+        data-search="intechgra pro phase 1.1 license expiry notifikasi lisensi nota penjualan surat jalan cetak pengiriman pending">
+        <div>
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="font-display text-base font-bold text-slate-900">inTechgra Pro · Phase 1.1</h3>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            Penyempurnaan pasca Phase 1: UX notifikasi lisensi, simulator nota penjualan, surat jalan &amp; cetak pengiriman.
+          </p>
+
+          <!-- Accordion Toggle -->
+          <button
+            class="accordion-btn flex items-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-brand-blue border-t border-slate-50 pt-3 transition-colors w-full"
+            onclick="toggleAccordion(this)">
+            <span>Lihat Detail Scope</span>
+            <svg class="w-3 h-3 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="3">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="space-y-2.5 pt-3 text-[11px] text-slate-500">
+              <div>
+                <span class="block font-bold text-slate-700">Scope:</span>
+                <span>Notifikasi Lisensi Expired, Nota POS A5, Surat Jalan Gudang, Detail Pengiriman &amp; Cetak Surat Jalan</span>
+              </div>
+              <div>
+                <span class="block font-bold text-slate-700">User:</span>
+                <span>Merchant Owner, Administrator Outlet, Kasir</span>
               </div>
             </div>
           </div>
@@ -222,67 +264,19 @@
             </svg>
           </a>
 
-          <div class="grid grid-cols-2 gap-2 mt-2">
-            <a href="prototypes/nota-penjualan.html"
-              class="inline-flex items-center justify-center py-1.5 px-2 border border-slate-200 hover:bg-slate-50 hover:border-brand-orange text-slate-700 hover:text-brand-orange rounded-lg text-[11px] font-bold transition">
-              Nota POS A5
-            </a>
-            <a href="prototypes/surat-jalan.html"
-              class="inline-flex items-center justify-center py-1.5 px-2 border border-slate-200 hover:bg-slate-50 hover:border-brand-orange text-slate-700 hover:text-brand-orange rounded-lg text-[11px] font-bold transition">
-              Surat Jalan
-            </a>
-          </div>
+          <a href="prototypes/detail-pengiriman.html"
+            class="w-full inline-flex items-center justify-center py-1.5 px-2 border border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-brand-blue text-brand-blue rounded-lg text-[11px] font-bold transition mt-2">
+            🚚 Cetak Surat Jalan
+          </a>
 
-          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-3.5">
-            <span>Last update</span>
-            <span class="font-medium text-slate-600">Juni 2026</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- PROJECT 3: inTechgra Pro Phase 1.1 -->
-      <div class="modular-card bg-white border border-slate-100 rounded-2xl flex flex-col justify-between p-6"
-        data-search="intechgra pro phase 1.1 license expiry mockup notifikasi lisensi">
-        <div>
-          <div class="flex justify-between items-start mb-4">
-            <h3 class="font-display text-base font-bold text-slate-900">inTechgra Pro · Phase 1.1</h3>
-          </div>
-          <p class="text-xs text-slate-500 leading-relaxed mb-4">
-            Fokus pada penyempurnaan setelah rilis intechgra phase 1.0 (UX notifikasi expired lisensi toko).
-          </p>
-
-          <!-- Accordion Toggle -->
-          <button
-            class="accordion-btn flex items-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-brand-blue border-t border-slate-50 pt-3 transition-colors w-full"
-            onclick="toggleAccordion(this)">
-            <span>Lihat Detail Scope</span>
-            <svg class="w-3 h-3 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="3">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-          <div class="accordion-body">
-            <div class="space-y-2.5 pt-3 text-[11px] text-slate-500">
-              <div>
-                <span class="block font-bold text-slate-700">Scope:</span>
-                <span>Pemberitahuan Lisensi Expired, Trigger Call-to-Action pembayaran</span>
-              </div>
-              <div>
-                <span class="block font-bold text-slate-700">User:</span>
-                <span>Merchant Owner, Administrator Outlet</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-6 pt-4 border-t border-slate-50">
           <a href="prototypes/license-expiry.html"
-            class="w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 bg-brand-orange hover:bg-brand-orangeDark text-white rounded-xl text-xs font-bold transition">
-            Prototype Pop up Notifikasi Lisensi
+            class="w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 border border-slate-200 hover:bg-slate-50 hover:border-brand-orange text-slate-700 hover:text-brand-orange rounded-xl text-xs font-bold transition mt-2">
+            Pop up Notifikasi Lisensi
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </a>
+
           <div class="flex items-center justify-between text-[10px] text-slate-400 mt-3.5">
             <span>Last update</span>
             <span class="font-medium text-slate-600">Juli 2026</span>
