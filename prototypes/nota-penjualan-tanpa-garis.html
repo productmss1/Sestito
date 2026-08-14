@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Nota POS A5 Landscape Phase 1 - Max 10 Produk</title>
+    <title>Nota POS A5 Landscape Phase 1 - Tanpa Garis Produk</title>
     <!-- Menggunakan Google Font Inter untuk estetika premium -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,8 +27,7 @@
         }
 
         /* Kompresi padding dan line-height sel tabel secara ketat agar muat A5 (line-height diset 1.25 untuk html2canvas) */
-        .invoice-card td,
-        .invoice-card th {
+        .invoice-card td, .invoice-card th {
             padding-top: 1px !important;
             padding-bottom: 1px !important;
             line-height: 1.25 !important;
@@ -42,8 +41,7 @@
         @media print {
             @page {
                 size: 210mm 140mm;
-                margin: 0;
-                /* Margin dinonaktifkan di page agar presisi */
+                margin: 0; /* Margin dinonaktifkan di page agar presisi */
             }
 
             body {
@@ -63,8 +61,7 @@
                 max-width: 210mm !important;
                 border: none !important;
                 box-shadow: none !important;
-                padding: 3mm 4mm !important;
-                /* Dioptimalkan agar muat */
+                padding: 3mm 4mm !important; /* Dioptimalkan agar muat */
                 margin: 0 !important;
                 border-radius: 0 !important;
             }
@@ -91,7 +88,7 @@
                 🖼️ Unduh PNG
             </button>
         </div>
-        <span style="color: rgba(255,255,255,0.4); font-weight: 500;">Preview Mode</span>
+        <span style="color: rgba(255,255,255,0.4); font-weight: 500;">Preview Mode (Tanpa Garis Produk)</span>
     </div>
 
     <div id="invoice-card"
@@ -143,7 +140,7 @@
                         <tr>
                             <td class="font-bold text-slate-500 py-0.5">Pembayaran</td>
                             <td>:</td>
-                            <td class="py-0.5 font-medium text-slate-800">TEMPO (KASBON)</td>
+                            <td class="py-0.5 font-medium text-slate-800">TEMPO (KREDIT)</td>
                         </tr>
                         <tr>
                             <td class="font-bold text-slate-500 py-0.5">Jatuh Tempo</td>
@@ -155,12 +152,12 @@
             </div>
         </div>
 
-        <!-- SECTION 2: TABEL PRODUK (Maksimal 8 Baris) -->
+        <!-- SECTION 2: TABEL PRODUK (Maksimal 8 Baris - Garis Tabel Dihilangkan) -->
         <div class="mb-2">
             <table class="w-full border-collapse text-left">
                 <thead>
                     <tr
-                        class="border-y border-slate-700 bg-slate-50 text-[10px] font-bold text-slate-800 uppercase tracking-wider">
+                        class="border-y-2 border-slate-800 bg-slate-50 text-[10px] font-bold text-slate-800 uppercase tracking-wider">
                         <th class="w-[5%] px-2 py-1.5 text-center">No</th>
                         <th class="w-[50%] px-3 py-1.5">Nama Produk</th>
                         <th class="w-[5%] px-2 py-1.5 text-center">PPN</th>
@@ -171,7 +168,7 @@
                         <th class="w-[12%] px-3 py-1.5 text-right">Jumlah (Rp)</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody>
                     <!-- Produk 1 (Non-PPN) -->
                     <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
                         <td class="text-center font-medium text-slate-500">1</td>
@@ -196,66 +193,71 @@
                         <td class="text-right px-3 text-slate-400">0</td>
                         <td class="text-right px-3 font-semibold text-slate-900">1,000,000</td>
                     </tr>
-                    <!-- Baris Kosong Sisa (3 s/d 8) Otomatis Menjaga Layout Halaman -->
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">3</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <!-- Produk 3 (Kena PPN) -->
+                    <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                        <td class="text-center font-medium text-slate-500">3</td>
+                        <td class="truncate px-3 font-medium text-slate-800">Semen Tiga Roda Portland Cement 50kg</td>
+                        <td class="text-center text-emerald-600 font-bold">✓</td>
+                        <td class="text-center font-semibold text-slate-800">20</td>
+                        <td class="px-3 text-slate-600">Sak</td>
+                        <td class="text-right px-3 text-slate-600">72,000</td>
+                        <td class="text-right px-3 text-slate-400">0</td>
+                        <td class="text-right px-3 font-semibold text-slate-900">1,440,000</td>
                     </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">4</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <!-- Produk 4 (Kena PPN) -->
+                    <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                        <td class="text-center font-medium text-slate-500">4</td>
+                        <td class="truncate px-3 font-medium text-slate-800">Besi Beton Polos Diameter 10mm SNI Pjg 12m</td>
+                        <td class="text-center text-emerald-600 font-bold">✓</td>
+                        <td class="text-center font-semibold text-slate-800">15</td>
+                        <td class="px-3 text-slate-600">Batang</td>
+                        <td class="text-right px-3 text-slate-600">89,000</td>
+                        <td class="text-right px-3 text-slate-400">15,000</td>
+                        <td class="text-right px-3 font-semibold text-slate-900">1,320,000</td>
                     </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">5</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <!-- Produk 5 (Non-PPN) -->
+                    <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                        <td class="text-center font-medium text-slate-500">5</td>
+                        <td class="truncate px-3 font-medium text-slate-800">Cat Tembok Dulux Catylac Interior Putih 5kg</td>
+                        <td class="text-center text-slate-400"></td>
+                        <td class="text-center font-semibold text-slate-800">2</td>
+                        <td class="px-3 text-slate-600">Galon</td>
+                        <td class="text-right px-3 text-slate-600">165,000</td>
+                        <td class="text-right px-3 text-slate-400">0</td>
+                        <td class="text-right px-3 font-semibold text-slate-900">330,000</td>
                     </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">6</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <!-- Produk 6 (Non-PPN) -->
+                    <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                        <td class="text-center font-medium text-slate-500">6</td>
+                        <td class="truncate px-3 font-medium text-slate-800">Kayu Kaso Borneo Ukuran 4x6 Pjg 4m</td>
+                        <td class="text-center text-slate-400"></td>
+                        <td class="text-center font-semibold text-slate-800">3</td>
+                        <td class="px-3 text-slate-600">Ikat</td>
+                        <td class="text-right px-3 text-slate-600">120,000</td>
+                        <td class="text-right px-3 text-slate-400">10,000</td>
+                        <td class="text-right px-3 font-semibold text-slate-900">350,000</td>
                     </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">7</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <!-- Produk 7 (Kena PPN) -->
+                    <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                        <td class="text-center font-medium text-slate-500">7</td>
+                        <td class="truncate px-3 font-medium text-slate-800">Pipa PVC Wavin AW Ukuran 1/2 Inch Biru</td>
+                        <td class="text-center text-emerald-600 font-bold">✓</td>
+                        <td class="text-center font-semibold text-slate-800">10</td>
+                        <td class="px-3 text-slate-600">Batang</td>
+                        <td class="text-right px-3 text-slate-600">18,000</td>
+                        <td class="text-right px-3 text-slate-400">0</td>
+                        <td class="text-right px-3 font-semibold text-slate-900">180,000</td>
                     </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">8</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <!-- Produk 8 (Kena PPN) -->
+                    <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                        <td class="text-center font-medium text-slate-500">8</td>
+                        <td class="truncate px-3 font-medium text-slate-800">Semen Mortar MU-301 Plesteran 40kg</td>
+                        <td class="text-center text-emerald-600 font-bold">✓</td>
+                        <td class="text-center font-semibold text-slate-800">5</td>
+                        <td class="px-3 text-slate-600">Sak</td>
+                        <td class="text-right px-3 text-slate-600">68,000</td>
+                        <td class="text-right px-3 text-slate-400">0</td>
+                        <td class="text-right px-3 font-semibold text-slate-900">340,000</td>
                     </tr>
                 </tbody>
             </table>
@@ -493,7 +495,7 @@
                 container.style.border = originalBorder;
                 container.style.boxShadow = originalShadow;
                 const link = document.createElement('a');
-                link.download = `Nota_Penjualan_inTechgra.png`;
+                link.download = `Nota_Penjualan_Tanpa_Garis_inTechgra.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             }).catch(err => {

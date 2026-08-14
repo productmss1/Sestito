@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowchart Update Status Pengiriman – inTechgra Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            padding: 24px;
+        }
+
+        .header {
+            max-width: 1000px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2563eb;
+            text-decoration: none;
+            padding: 8px 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: #dbeafe;
+        }
+
+        .diagram-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="header-title">
+            <h1>Flowchart Process: Diproses ➔ Dikirim / Terkirim</h1>
+            <p>Alur Pemrosesan Pesanan, Riwayat Pengiriman PNG, hingga Konfirmasi Pesanan Terkirim</p>
+        </div>
+        <a href="../index.html" class="back-link">
+            ← Kembali ke Workspace Hub
+        </a>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+        flowchart TD
+            Start([Mulai: User di Tab 'Diproses']) --> ViewDetail[User klik Pesanan untuk buka 'Detail Pesanan']
+            ViewDetail --> OrderDetailState[Tampil Detail Pesanan<br/>Status: Diproses]
+            
+            OrderDetailState --> ClickRiwayat[User klik 'Riwayat Pesanan' di sidebar kanan]
+            ClickRiwayat --> OpenRiwayat[Masuk ke Halaman 'Riwayat Pesanan'<br/>Tampil List PNG Penjual / Pengiriman]
+            
+            OpenRiwayat --> ListPNG[Tampil Card PNG Status: Dikirim<br/>Tampil Tombol 'Status Pesanan' & 'Perbarui']
+            
+            %% Branch: Lihat Timeline Status
+            ListPNG --> ClickStatus[User klik tombol 'Status Pesanan']
+            ClickStatus --> ShowTimeline[Tampilkan Modal Pop-up:<br/>'Status & Timeline Pesanan']
+            ShowTimeline --> CheckTimelineDetail{User klik 'Lihat Detail'<br/>di Timeline Step Terkirim?}
+            CheckTimelineDetail -- "Ya" --> ShowFotoNotesModal[Tampilkan Pop-up Modal:<br/>Detail Foto Bukti & Catatan Terkirim]
+            CheckTimelineDetail -- "Tidak / Tutup" --> ListPNG
+            ShowFotoNotesModal --> ListPNG
+
+            %% Branch: Perbarui Status
+            ListPNG --> ClickPerbarui[User klik tombol 'Perbarui']
+            ClickPerbarui --> ShowPopUp[Sistem menampilkan Pop-up Modal:<br/>'Konfirmasi pesanan terkirim']
+            
+            ShowPopUp --> InputForm[User mengisi Data Pop-up:<br/>1. Tanggal & Waktu Diterima *Wajib*<br/>2. Nama Penerima *Wajib*<br/>3. Upload Bukti Terkirim *Opsional*<br/>4. Catatan Pengiriman *Opsional*]
+            
+            InputForm --> ActionChoice{User Memilih Aksi?}
+            
+            ActionChoice -- "Klik Batal" --> CloseModal[Pop-up Tertutup<br/>Status PNG & Pesanan Tetap Dikirim]
+            CloseModal --> ListPNG
+
+            ActionChoice -- "Klik Proses" --> ValidateInput{Validasi Input Wajib?<br/>Tgl/Waktu & Nama Penerima}
+            
+            ValidateInput -- "Tidak Valid / Kosong" --> ShowError[Tampilkan Error Indicator pada Form]
+            ShowError --> InputForm
+            
+            ValidateInput -- "Valid" --> SubmitData[Sistem Submit Data Konfirmasi Penerimaan]
+            
+            SubmitData --> UpdateDB[1. Update Status PNG & Pesanan ke 'Terkirim'<br/>2. Simpan Tgl Diterima & Nama Penerima pada Card PNG<br/>3. Simpan Bukti & Catatan ke Timeline Detail]
+            
+            UpdateDB --> CheckAllDelivered{Apakah Seluruh Item<br/>Pesanan Sudah Terkirim?}
+            
+            CheckAllDelivered -- "Ya" --> UpdateOrderDelivered[Update Status Pesanan Utama ke 'Terkirim']
+            CheckAllDelivered -- "Tidak (Parsial)" --> KeepOrderDikirim[Status Pesanan Utama Tetap 'Dikirim']
+            
+            UpdateOrderDelivered --> ToastSuccess[Tampilkan Toast Success: 'Pesanan Berhasil Diperbarui']
+            KeepOrderDikirim --> ToastSuccess
+            
+            ToastSuccess --> Finish([Selesai: Pesanan Berstatus Terkirim])
+
+            %% Styling Nodes
+            style Start fill:#2563eb,color:#fff,stroke-width:0px
+            style Finish fill:#16a34a,color:#fff,stroke-width:0px
+            style ShowPopUp fill:#fef3c7,stroke:#f59e0b,color:#78350f
+            style ShowTimeline fill:#e0f2fe,stroke:#0284c7,color:#0369a1
+            style ShowFotoNotesModal fill:#fef3c7,stroke:#f59e0b,color:#78350f
+            style ValidateInput fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
+            style ActionChoice fill:#e0e7ff,stroke:#6366f1,color:#1e1b4b
+            style CheckAllDelivered fill:#e0e7ff,stroke:#6366f1,color:#1e1b4b
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+
+</html>
