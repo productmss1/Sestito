@@ -72,6 +72,13 @@
         .fixed-row {
             height: 15px;
         }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -105,16 +112,13 @@
                         class="w-[50px] h-[50px] flex-shrink-0 border border-slate-800 flex items-center justify-center font-bold text-[12px] text-slate-800 bg-white">
                         [LOGO]
                     </div>
-                    <div class="flex flex-col justify-between">
+                    <div class="flex flex-col justify-between overflow-hidden">
                         <div>
-                            <h1 class="text-[14px] font-extrabold text-slate-900 leading-tight">TB inTechgra Tumbuh
-                                Bersama</h1>
-                            <p class="text-slate-600 text-[10.5px] mt-0.5 leading-tight">Jalan Raya Pemogan Gang Mutiara
-                                Indah 1 No. 11, Banjar Sakah, Denpasar Selatan, Bali 80221</p>
-                            <p class="text-slate-500 text-[10.5px] leading-tight">No. Telp : 081903738745</p>
+                            <h1 class="text-[14px] font-extrabold text-slate-900 leading-tight truncate" title="TB inTechgra Tumbuh Bersama">TB inTechgra Tumbuh Bersama</h1>
+                            <p class="text-slate-600 text-[10.5px] mt-0.5 leading-tight line-clamp-2" title="Jalan Raya Pemogan Gang Mutiara Indah 1 No. 11, Banjar Sakah, Denpasar Selatan, Bali 80221">Jalan Raya Pemogan Gang Mutiara Indah 1 No. 11, Banjar Sakah, Denpasar Selatan, Bali 80221</p>
+                            <p class="text-slate-500 text-[10.5px] leading-tight truncate">No. Telp : 081903738745</p>
                         </div>
-                        <p class="font-bold text-slate-900 text-[11px] mt-0.5 leading-tight">No. Order :
-                            TRN/20260604/0002</p>
+                        <p class="font-bold text-slate-900 text-[11px] mt-0.5 leading-tight truncate">No. Order : TRN/20260604/0002</p>
                     </div>
                 </div>
 
@@ -125,28 +129,29 @@
                             <tr>
                                 <td class="w-28 font-bold text-slate-500 py-0.5">Tanggal - Kasir</td>
                                 <td class="w-3 py-0.5">:</td>
-                                <td class="py-0.5 text-slate-800 font-medium">04-06-2026, 08:20 - Irfani Anggoro</td>
+                                <td class="py-0.5 text-slate-800 font-medium truncate">04-06-2026, 08:20 - Irfani Anggoro</td>
                             </tr>
                             <tr>
                                 <td class="font-bold text-slate-500 py-0.5">Kepada Yth.</td>
                                 <td>:</td>
-                                <td class="font-bold text-slate-900 py-0.5">Budi</td>
+                                <td class="font-bold text-slate-900 py-0.5 truncate" title="Budi">Budi</td>
                             </tr>
                             <tr>
                                 <td class="font-bold text-slate-500 py-0.5 align-top">Alamat Kirim</td>
                                 <td class="align-top py-0.5">:</td>
-                                <td class="py-0.5 leading-tight text-slate-800">Jl. Anggrek No. 5, Blok C, RT 05/03,
-                                    Kedoya Utara, Jakarta Barat</td>
+                                <td class="py-0.5 leading-tight text-slate-800">
+                                    <div class="line-clamp-2 leading-tight" title="Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Jakarta Barat">Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Jakarta Barat</div>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="font-bold text-slate-500 py-0.5">Pembayaran</td>
                                 <td>:</td>
-                                <td class="py-0.5 font-semibold text-slate-800">TEMPO (KASBON)</td>
+                                <td class="py-0.5 font-semibold text-slate-800 truncate">TEMPO (KASBON)</td>
                             </tr>
                             <tr>
                                 <td class="font-bold text-slate-500 py-0.5">Jatuh Tempo</td>
                                 <td>:</td>
-                                <td class="font-bold py-0.5 text-slate-800">18-06-2026</td>
+                                <td class="font-bold py-0.5 text-slate-800 truncate">18-06-2026</td>
                             </tr>
                         </tbody>
                     </table>

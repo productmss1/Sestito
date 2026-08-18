@@ -94,6 +94,13 @@
             text-overflow: ellipsis;
             display: block;
         }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -271,13 +278,30 @@
                                         <option value="tempo" selected>Tempo (Kasbon)</option>
                                         <option value="transfer">Bank Transfer</option>
                                         <option value="qris">QRIS</option>
-                                        <option value="debit">EDC (Debit Card)</option>
-                                        <option value="credit">EDC (Credit Card)</option>
+                                        <option value="edc">EDC</option>
                                     </select>
                                     <input type="number" placeholder="Jumlah (Rp)"
                                         class="w-28 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-white text-right focus:outline-none focus:border-blue-500 payment-jumlah">
                                     <button type="button"
                                         class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-payment">✕</button>
+                                </div>
+                                <!-- Sub-opsi EDC: Tipe Kartu & Bank -->
+                                <div class="flex items-center gap-3 pl-2 text-[10px] text-slate-300 payment-edc-row hidden">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-slate-400 font-medium">Tipe:</span>
+                                        <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none payment-edc-type">
+                                            <option value="DEBIT" selected>Debit</option>
+                                            <option value="KREDIT">Kredit</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-slate-400 font-medium">Bank:</span>
+                                        <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none payment-edc-bank">
+                                            <option value="BCA" selected>BCA</option>
+                                            <option value="MANDIRI">Mandiri</option>
+                                            <option value="BNI">BNI</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div
                                     class="flex justify-between items-center pl-2 text-[10px] text-slate-400 payment-mdr-row hidden">
@@ -440,7 +464,7 @@
             rows.forEach(row => {
                 const metode = row.querySelector(".payment-metode").value;
                 const jumlah = Math.max(0, parseInt(row.querySelector(".payment-jumlah").value) || 0);
-                const isMdrMethod = (metode === 'qris' || metode === 'debit' || metode === 'credit');
+                const isMdrMethod = (metode === 'qris' || metode === 'edc');
                 const mdrRate = isMdrMethod
                     ? Math.max(0, parseFloat(row.querySelector(".payment-mdr-rate").value) || 0)
                     : 0;
@@ -454,27 +478,40 @@
 
                 const bankName = (metode === 'transfer') ? (row.querySelector(".payment-bank-name").value.trim() || "BCA") : "";
                 const accNum = (metode === 'transfer') ? (row.querySelector(".payment-acc-num").value.trim() || "") : "";
-                items.push({ metode, jumlah, mdrRate, mdrNominal, totalWithMdr, bankName, accNum });
+                const edcType = (metode === 'edc') ? (row.querySelector(".payment-edc-type") ? row.querySelector(".payment-edc-type").value : "DEBIT") : "";
+                const edcBank = (metode === 'edc') ? (row.querySelector(".payment-edc-bank") ? row.querySelector(".payment-edc-bank").value : "BCA") : "";
+                items.push({ metode, jumlah, mdrRate, mdrNominal, totalWithMdr, bankName, accNum, edcType, edcBank });
             });
             return items;
         }
 
-        // Update visibilitas baris input MDR/Transfer pada metode pembayaran
+        // Update visibilitas baris input MDR/Transfer/EDC pada metode pembayaran
         function updatePaymentItemMdrVisibility(row) {
             const metode = row.querySelector(".payment-metode").value;
             const mdrRow = row.querySelector(".payment-mdr-row");
             const mdrRateInput = row.querySelector(".payment-mdr-rate");
             const transferRow = row.querySelector(".payment-transfer-row");
+            const edcRow = row.querySelector(".payment-edc-row");
+            const edcTypeSelect = row.querySelector(".payment-edc-type");
 
-            if (metode === 'qris' || metode === 'debit' || metode === 'credit') {
+            if (metode === 'qris' || metode === 'edc') {
                 mdrRow.classList.remove("hidden");
                 if (!mdrRateInput.dataset.edited) {
-                    if (metode === 'qris') mdrRateInput.value = '0.7';
-                    else if (metode === 'debit') mdrRateInput.value = '1.0';
-                    else if (metode === 'credit') mdrRateInput.value = '2.0';
+                    if (metode === 'qris') {
+                        mdrRateInput.value = '0.7';
+                    } else if (metode === 'edc') {
+                        const typeVal = edcTypeSelect ? edcTypeSelect.value : 'DEBIT';
+                        mdrRateInput.value = (typeVal === 'KREDIT') ? '2.0' : '1.0';
+                    }
                 }
             } else {
                 mdrRow.classList.add("hidden");
+            }
+
+            if (metode === 'edc') {
+                edcRow.classList.remove("hidden");
+            } else {
+                edcRow.classList.add("hidden");
             }
 
             if (metode === 'transfer') {
@@ -491,6 +528,8 @@
             const mdrInput = row.querySelector(".payment-mdr-rate");
             const bankInput = row.querySelector(".payment-bank-name");
             const accInput = row.querySelector(".payment-acc-num");
+            const edcTypeSelect = row.querySelector(".payment-edc-type");
+            const edcBankSelect = row.querySelector(".payment-edc-bank");
             const btnHapus = row.querySelector(".btn-hapus-payment");
 
             select.addEventListener("change", () => {
@@ -498,6 +537,19 @@
                 updatePaymentItemMdrVisibility(row);
                 calculateSettingState();
             });
+
+            if (edcTypeSelect) {
+                edcTypeSelect.addEventListener("change", () => {
+                    if (!mdrInput.dataset.edited) {
+                        mdrInput.value = (edcTypeSelect.value === 'KREDIT') ? '2.0' : '1.0';
+                    }
+                    calculateSettingState();
+                });
+            }
+
+            if (edcBankSelect) {
+                edcBankSelect.addEventListener("change", calculateSettingState);
+            }
 
             mdrInput.addEventListener("input", () => {
                 mdrInput.dataset.edited = "true";
@@ -662,11 +714,28 @@
                         <option value="tempo">Tempo (Kasbon)</option>
                         <option value="transfer">Bank Transfer</option>
                         <option value="qris">QRIS</option>
-                        <option value="debit">EDC (Debit Card)</option>
-                        <option value="credit">EDC (Credit Card)</option>
+                        <option value="edc">EDC</option>
                     </select>
                     <input type="number" placeholder="Jumlah (Rp)" class="w-28 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-white text-right focus:outline-none focus:border-blue-500 payment-jumlah">
                     <button type="button" class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-payment">✕</button>
+                </div>
+                <!-- Sub-opsi EDC: Tipe Kartu & Bank -->
+                <div class="flex items-center gap-3 pl-2 text-[10px] text-slate-300 payment-edc-row hidden">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-slate-400 font-medium">Tipe:</span>
+                        <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none payment-edc-type">
+                            <option value="DEBIT" selected>Debit</option>
+                            <option value="KREDIT">Kredit</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-slate-400 font-medium">Bank:</span>
+                        <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none payment-edc-bank">
+                            <option value="BCA" selected>BCA</option>
+                            <option value="MANDIRI">Mandiri</option>
+                            <option value="BNI">BNI</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="flex justify-between items-center pl-2 text-[10px] text-slate-400 payment-mdr-row hidden">
                     <div class="flex items-center gap-1.5">
@@ -812,6 +881,10 @@
                     pembayaranText = "CASH (TUNAI)";
                 } else if (p.metode === 'transfer') {
                     pembayaranText = `TRANSFER ${p.bankName.toUpperCase()} ${p.accNum}`;
+                } else if (p.metode === 'edc') {
+                    pembayaranText = `EDC ${p.edcType} ${p.edcBank}`;
+                } else if (p.metode === 'qris') {
+                    pembayaranText = "QRIS";
                 } else {
                     pembayaranText = p.metode.toUpperCase();
                 }
@@ -903,13 +976,13 @@
                                 <div class="w-[50px] h-[50px] flex-shrink-0 border border-slate-800 flex items-center justify-center font-bold text-[12px] text-slate-800 bg-white">
                                     [LOGO]
                                 </div>
-                                <div class="flex flex-col justify-between">
+                                <div class="flex flex-col justify-between overflow-hidden">
                                     <div>
-                                        <h1 class="text-[14px] font-extrabold text-slate-900 leading-tight">TB inTechgra Tumbuh Bersama</h1>
-                                        <p class="text-slate-600 text-[10.5px] mt-0.5 leading-tight">Jalan Raya Pemogan Gang Mutiara Indah 1 No. 11, Banjar Sakah, Denpasar Selatan, Bali 80221</p>
-                                        <p class="text-slate-500 text-[10.5px] leading-tight">No. Telp : 081903738745</p>
+                                        <h1 class="text-[14px] font-extrabold text-slate-900 leading-tight truncate" title="TB inTechgra Tumbuh Bersama">TB inTechgra Tumbuh Bersama</h1>
+                                        <p class="text-slate-600 text-[10.5px] mt-0.5 leading-tight line-clamp-2" title="Jalan Raya Pemogan Gang Mutiara Indah 1 No. 11, Banjar Sakah, Denpasar Selatan, Bali 80221">Jalan Raya Pemogan Gang Mutiara Indah 1 No. 11, Banjar Sakah, Denpasar Selatan, Bali 80221</p>
+                                        <p class="text-slate-500 text-[10.5px] leading-tight truncate">No. Telp : 081903738745</p>
                                     </div>
-                                    <p class="font-bold text-slate-900 text-[11px] mt-0.5 leading-tight">No. Order : TRN/20260604/0002</p>
+                                    <p class="font-bold text-slate-900 text-[11px] mt-0.5 leading-tight truncate">No. Order : TRN/20260604/0002</p>
                                 </div>
                             </div>
 
@@ -920,22 +993,24 @@
                                         <tr>
                                             <td class="w-28 font-bold text-slate-500 py-0.5">Tanggal - Kasir</td>
                                             <td class="w-3 py-0.5">:</td>
-                                            <td class="py-0.5 text-slate-800 font-medium">04-06-2026, 08:20 - Irfani Anggoro</td>
+                                            <td class="py-0.5 text-slate-800 font-medium truncate">04-06-2026, 08:20 - Irfani Anggoro</td>
                                         </tr>
                                         <tr>
                                             <td class="font-bold text-slate-500 py-0.5">Kepada Yth.</td>
                                             <td>:</td>
-                                            <td class="font-bold text-slate-900 py-0.5">Budi</td>
+                                            <td class="font-bold text-slate-900 py-0.5 truncate" title="Budi">Budi</td>
                                         </tr>
                                         <tr>
                                             <td class="font-bold text-slate-500 py-0.5 align-top">Alamat Kirim</td>
                                             <td class="align-top py-0.5">:</td>
-                                            <td class="py-0.5 leading-tight text-slate-800">Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Jakarta Barat</td>
+                                            <td class="py-0.5 leading-tight text-slate-800">
+                                                <div class="line-clamp-2 leading-tight" title="Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Jakarta Barat">Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Jakarta Barat</div>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td class="font-bold text-slate-500 py-0.5">Pembayaran</td>
                                             <td>:</td>
-                                            <td class="py-0.5 font-semibold text-slate-800">${pembayaranText}</td>
+                                            <td class="py-0.5 font-semibold text-slate-800 truncate">${pembayaranText}</td>
                                         </tr>
                                         ${jatuhTempoRow}
                                     </tbody>
