@@ -4,20 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Simulator & Preview Nota Penjualan - inTechgra POS</title>
+    <!-- Menggunakan Google Font Inter untuk estetika premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Menggunakan Tailwind via CDN untuk kemudahan styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
         /* Tampilan Layar Kertas 21cm x 14cm */
         .print-container {
             width: 210mm;
             height: 140mm;
-            padding: 3.5mm 6mm;
+            max-width: 210mm;
+            min-height: 140mm;
+            padding: 2.5mm 4mm;
             box-sizing: border-box;
             background-color: white;
             position: relative;
             border: 1px dashed #9ca3af;
             box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+            overflow: hidden;
         }
 
         @media print {
@@ -35,7 +46,7 @@
                 background-color: white !important;
                 padding: 0 !important;
                 margin: 0 !important;
-                min-h-screen: 0 !important;
+                min-height: 0 !important;
                 align-items: stretch !important;
                 justify-content: stretch !important;
             }
@@ -44,7 +55,7 @@
                 border: none !important;
                 box-shadow: none !important;
                 margin: 0 !important;
-                padding: 3.5mm 6mm !important;
+                padding: 2.5mm 4mm !important;
                 width: 210mm !important;
                 height: 140mm !important;
                 box-sizing: border-box !important;
@@ -63,16 +74,18 @@
             }
         }
 
-        /* Baris kosong pelengkap tabel */
+        /* Baris produk dan baris kosong pelengkap tabel */
         .fixed-row td {
-            height: 16px;
+            height: 15px;
         }
 
         /* Rule baku agar teks tabel nota tidak pernah terpotong atas/bawah */
         .print-container table td,
         .print-container table th {
-            line-height: 1.25 !important;
+            line-height: 1.2 !important;
             vertical-align: middle !important;
+            padding-top: 1px !important;
+            padding-bottom: 1px !important;
         }
 
         .truncate-text {
@@ -92,7 +105,7 @@
             style="color: #f97316; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 6px;">
             ← Kembali ke Workspace Hub
         </a>
-        <span style="color: rgba(255,255,255,0.4); font-weight: 500;">Preview Mode</span>
+        <span style="color: rgba(255,255,255,0.4); font-weight: 500;">Preview Mode (Format 10 Produk / Hal)</span>
     </div>
 
     <!-- ==================================================== -->
@@ -104,7 +117,7 @@
                 <span class="text-4xl">⚙️</span>
                 <h1 class="text-xl font-extrabold text-white mt-2">Simulator Nota Penjualan</h1>
                 <p class="text-xs text-slate-400 mt-1">Konfigurasikan detail transaksi sebelum melihat preview ukuran
-                    cetak</p>
+                    cetak A5 Landscape (10 Produk/Hal)</p>
             </div>
 
             <div class="space-y-4">
@@ -116,11 +129,11 @@
                             class="text-xs font-bold text-blue-400 bg-slate-900 px-2 py-0.5 rounded">2</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <input id="input-qty-produk" type="range" min="1" max="12" value="2"
+                        <input id="input-qty-produk" type="range" min="1" max="25" value="2"
                             class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
                     </div>
-                    <span class="text-[10px] text-amber-400 mt-1 block font-medium" id="info-limit-produk">
-                        * Kapasitas Optimal: Max 8 untuk Kompleks, Max 10 untuk Sederhana.
+                    <span class="text-[10px] text-emerald-400 mt-1 block font-medium" id="info-limit-produk">
+                        * Kapasitas Optimal: 10 produk per halaman.
                     </span>
                 </div>
 
@@ -294,7 +307,6 @@
                     </div>
                 </div>
 
-
                 <!-- H. Tombol Pemicu Preview -->
                 <button id="btn-preview"
                     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 px-4 rounded-xl text-sm transition duration-200 shadow-lg mt-6 flex items-center justify-center gap-2">
@@ -337,11 +349,10 @@
     <!-- JAVASCRIPT LOGIC                                     -->
     <!-- ==================================================== -->
     <script>
-        // Data Produk Dummy untuk simulasi
+        // Data Produk Dummy untuk simulasi (hingga 25 produk)
         const dummyProducts = [
             { name: "Cairan Semen Pelapis Kedap Air Sika Top 107 Plus", price: 100000, qty: 10, unit: "Pieces", diskon: 10000, ppn: false },
-            { name: "Paket Bundling Merdeka (Cairan semen pelapis kedap air sika top 107 plus)", price: 100000, qty: 10, unit: "Pieces", diskon: 5000, ppn: false },
-            { name: "Paket Bundling Merdeka (Cairan semen pelapis kedap air sika top 105 plus)", price: 100000, qty: 10, unit: "Pieces", diskon: 5000, ppn: false },
+            { name: "Cairan Semen Pelapis Kedap Air Sika Top 108 Plus", price: 100000, qty: 10, unit: "Pieces", diskon: 0, ppn: true },
             { name: "Semen Tiga Roda Portland Pozzolan Cement 50kg", price: 72000, qty: 20, unit: "Sak", diskon: 0, ppn: true },
             { name: "Besi Beton Polos Diamater 10mm SNI Pjg 12m", price: 89000, qty: 15, unit: "Batang", diskon: 15000, ppn: true },
             { name: "Cat Tembok Dulux Catylac Interior Putih 5kg", price: 165000, qty: 2, unit: "Galon", diskon: 0, ppn: false },
@@ -350,7 +361,21 @@
             { name: "Kawat Ikat Beton (Kawat Bendrat) Roll Kecil", price: 22000, qty: 8, unit: "Roll", diskon: 2000, ppn: false },
             { name: "Semen Mortar MU-301 Plesteran & Pasang Bata 40kg", price: 68000, qty: 12, unit: "Sak", diskon: 0, ppn: true },
             { name: "Kuas Cat Tembok Ukuran 4 Inch Gagang Kayu", price: 12500, qty: 6, unit: "Pieces", diskon: 1500, ppn: false },
-            { name: "Papan Gypsum Knauf Plasterboard 9mm x 1.2m x 2.4m", price: 58000, qty: 8, unit: "Lembar", diskon: 3000, ppn: true }
+            { name: "Papan Gypsum Knauf Plasterboard 9mm x 1.2m x 2.4m", price: 58000, qty: 8, unit: "Lembar", diskon: 3000, ppn: true },
+            { name: "Keramik Platinum 40x40 Bianco Putih Polos", price: 65000, qty: 15, unit: "Dus", diskon: 0, ppn: true },
+            { name: "Seng Gelombang BJLS Gajah 0.20 x 180cm", price: 47000, qty: 10, unit: "Lembar", diskon: 0, ppn: false },
+            { name: "Paku Kayu Ukuran 5cm (Per Dus 10kg)", price: 140000, qty: 1, unit: "Dus", diskon: 5000, ppn: false },
+            { name: "Pasir Pasang Bangunan Ekstra Halus", price: 250000, qty: 2, unit: "Rit/PickUp", diskon: 0, ppn: false },
+            { name: "Batu Split Cor Ukuran 2/3 (Per Kubik)", price: 320000, qty: 1, unit: "M3", diskon: 0, ppn: false },
+            { name: "Triplek Meranti 12mm x 1.22m x 2.44m", price: 145000, qty: 4, unit: "Lembar", diskon: 5000, ppn: true },
+            { name: "Lem Silikon Sealant Netral Dextone Clear", price: 28000, qty: 5, unit: "Tube", diskon: 0, ppn: false },
+            { name: "Kran Air Tembok Stainless 1/2 Inch Onda", price: 42000, qty: 3, unit: "Pieces", diskon: 2000, ppn: true },
+            { name: "Kabel Listrik Eterna NYM 2x1.5mm (50m)", price: 310000, qty: 1, unit: "Roll", diskon: 10000, ppn: true },
+            { name: "Stop Kontak Arde Broco Galleo Putih", price: 19500, qty: 6, unit: "Pieces", diskon: 0, ppn: false },
+            { name: "Saklar Ganda Outbow Broco Seri", price: 21000, qty: 4, unit: "Pieces", diskon: 0, ppn: false },
+            { name: "Tandon Air Plastik Penguin 500 Liter", price: 950000, qty: 1, unit: "Unit", diskon: 25000, ppn: true },
+            { name: "Waterproofing No Drop Abu-Abu 4kg", price: 185000, qty: 2, unit: "Pail", diskon: 0, ppn: false },
+            { name: "Thinner A Special Super Glossy 1 Liter", price: 24000, qty: 4, unit: "Botol", diskon: 0, ppn: false }
         ];
 
         // Elemen Input Setup
@@ -593,13 +618,13 @@
                 setupSisaTagihan.className = "text-xs font-bold text-emerald-500 mt-0.5";
             }
 
-            const limitHalaman = 8;
+            const limitHalaman = 10;
             if (qty > limitHalaman) {
                 const totalPages = Math.ceil(qty / limitHalaman);
-                infoLimitProduk.textContent = `⚠️ Nota akan dibagi menjadi ${totalPages} halaman (karena melebihi 8 produk).`;
+                infoLimitProduk.textContent = `⚠️ Nota akan dibagi menjadi ${totalPages} halaman (karena melebihi 10 produk).`;
                 infoLimitProduk.className = "text-[10px] text-amber-400 mt-1 block font-bold";
             } else {
-                infoLimitProduk.textContent = `✅ Aman: Muat dalam 1 halaman nota (maksimal 8 produk per halaman).`;
+                infoLimitProduk.textContent = `✅ Aman: Muat dalam 1 halaman nota (maksimal 10 produk per halaman).`;
                 infoLimitProduk.className = "text-[10px] text-emerald-400 mt-1 block font-medium";
             }
         }
@@ -614,12 +639,10 @@
                 <button type="button" class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-tambahan">✕</button>
             `;
 
-            // Bind input listener
             newRow.querySelectorAll("input").forEach(inp => {
                 inp.addEventListener("input", calculateSettingState);
             });
 
-            // Bind delete button
             newRow.querySelector(".btn-hapus-tambahan").addEventListener("click", () => {
                 newRow.remove();
                 calculateSettingState();
@@ -669,7 +692,6 @@
         // Bind delete button default
         function bindDefaultHapusButtons() {
             dynamicTambahanList.querySelectorAll(".btn-hapus-tambahan").forEach(btn => {
-                // Remove existing to avoid double bindings
                 btn.replaceWith(btn.cloneNode(true));
             });
             dynamicTambahanList.querySelectorAll(".btn-hapus-tambahan").forEach(btn => {
@@ -680,7 +702,7 @@
             });
         }
 
-        // Render data ke dalam Preview Nota 21x14 dengan pagination
+        // Render data ke dalam Preview Nota 21x14 dengan pagination (10 Produk per Halaman)
         function renderPreviewNota() {
             const qty = parseInt(inputQtyProduk.value);
             const isPpnTokoAktif = selectPpnToko.value === 'aktif';
@@ -750,23 +772,17 @@
                 else if (p.metode === 'tempo') totalTempoAllocated += p.totalWithMdr;
                 else totalElectronicPaid += p.totalWithMdr;
             });
-            const totalPaidBeforeCashChange = totalCashPaid + totalElectronicPaid + totalTempoAllocated;
+            // Tempo (Kasbon) tidak masuk ke hitungan 'Dibayar' (hanya pembayaran nyata kas/elektronik)
+            const totalActualPaid = totalCashPaid + totalElectronicPaid;
             let kembalianVal = 0;
-            if (totalPaidBeforeCashChange > grandTotalWithMdr) {
-                kembalianVal = Math.min(totalCashPaid, totalPaidBeforeCashChange - grandTotalWithMdr);
+            if (totalCashPaid > 0 && totalActualPaid > grandTotalWithMdr) {
+                kembalianVal = Math.min(totalCashPaid, totalActualPaid - grandTotalWithMdr);
             }
-            const sisaPiutangVal = Math.max(0, grandTotalWithMdr - (totalElectronicPaid + (totalCashPaid - kembalianVal)));
+            const uangMasukBersih = totalElectronicPaid + Math.max(0, totalCashPaid - kembalianVal);
+            const sisaPiutangVal = Math.max(0, grandTotalWithMdr - uangMasukBersih);
 
-            let footerSpaceInRows = 4.5;
-            if (tambahanData.length > 0) footerSpaceInRows += 1 + tambahanData.length * 0.6;
-            if (showPpnRow) footerSpaceInRows += 1;
-            if (mdrItems.length > 0) footerSpaceInRows += mdrItems.length;
-            if (paymentData.length > 1) footerSpaceInRows += 1 + (paymentData.length - 1) * 0.6;
-            if (sisaPiutangVal > 0) footerSpaceInRows += 1;
-            if (kembalianVal > 0) footerSpaceInRows += 1;
-
+            const itemsPerPage = 10;
             const pages = [];
-            const itemsPerPage = 8;
             if (qty <= itemsPerPage) {
                 pages.push({ pageIndex: 1, productsStart: 0, productsEnd: qty, showFooter: true, pageLimit: itemsPerPage });
             } else {
@@ -774,12 +790,11 @@
                 let pageNumber = 1;
                 while (tempIdx < qty) {
                     const end = Math.min(qty, tempIdx + itemsPerPage);
-                    const isLastPage = (end === qty);
                     pages.push({
                         pageIndex: pageNumber,
                         productsStart: tempIdx,
                         productsEnd: end,
-                        showFooter: isLastPage,
+                        showFooter: true,
                         pageLimit: itemsPerPage
                     });
                     tempIdx = end;
@@ -803,106 +818,7 @@
             } else {
                 pembayaranText = "MULTIPLE PEMBAYARAN";
             }
-            const jatuhTempoRow = hasTempo ? `<tr><td class="font-bold py-[3px]">Jatuh Tempo</td><td class="py-[3px]">:</td><td class="font-bold py-[3px]">18-06-2026</td></tr>` : '';
-
-            // Generate Rincian Kiri
-            let leftFooterHtml = "";
-            let rincianRowHtml = "";
-            let visiblePayments = paymentData.filter(p => p.jumlah > 0);
-
-            let pembayaranBoxHtml = "";
-            if (visiblePayments.length > 1) {
-                let rowsHtml = "";
-                if (visiblePayments.length <= 3) {
-                    visiblePayments.forEach(p => {
-                        let label = p.metode === 'cash' ? 'Tunai' : p.metode === 'tempo' ? 'Tempo (Kasbon)' : p.metode.toUpperCase();
-                        rowsHtml += `<tr class="border-b border-slate-100/50"><td class="py-[1px] font-medium text-gray-500">${label}</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(p.totalWithMdr)}</td></tr>`;
-                    });
-                } else {
-                    for (let idx = 0; idx < 2; idx++) {
-                        let p = visiblePayments[idx];
-                        let label = p.metode === 'cash' ? 'Tunai' : p.metode === 'tempo' ? 'Tempo (Kasbon)' : p.metode.toUpperCase();
-                        rowsHtml += `<tr class="border-b border-slate-100/50"><td class="py-[1px] font-medium text-gray-500">${label}</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(p.totalWithMdr)}</td></tr>`;
-                    }
-                    let totalOthers = visiblePayments.slice(2).reduce((sum, p) => sum + p.totalWithMdr, 0);
-                    rowsHtml += `<tr><td class="py-[1px] font-medium text-gray-500">Lainnya</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(totalOthers)}</td></tr>`;
-                }
-                pembayaranBoxHtml = `
-                <div class="border border-slate-200 rounded p-1.5 bg-slate-50/50 flex-1">
-                    <p class="font-bold text-gray-800 text-[8px] uppercase tracking-wider mb-1 border-b border-slate-200 pb-0.5 text-left">
-                        Rincian Pembayaran
-                    </p>
-                    <table class="w-full text-[8.5px] text-gray-600">
-                        <tbody>${rowsHtml}</tbody>
-                    </table>
-                </div>`;
-            }
-
-            let mdrBoxHtml = "";
-            if (mdrItems.length > 0) {
-                let rowsHtml = "";
-                if (mdrItems.length <= 3) {
-                    mdrItems.forEach(item => {
-                        rowsHtml += `<tr class="border-b border-slate-100/50"><td class="py-[1px] font-medium text-gray-500">MDR ${item.metode} (${item.rate}%)</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(item.nominal)}</td></tr>`;
-                    });
-                } else {
-                    for (let idx = 0; idx < 2; idx++) {
-                        let item = mdrItems[idx];
-                        rowsHtml += `<tr class="border-b border-slate-100/50"><td class="py-[1px] font-medium text-gray-500">MDR ${item.metode} (${item.rate}%)</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(item.nominal)}</td></tr>`;
-                    }
-                    let totalOthers = mdrItems.slice(2).reduce((sum, item) => sum + item.nominal, 0);
-                    rowsHtml += `<tr><td class="py-[1px] font-medium text-gray-500">Lainnya</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(totalOthers)}</td></tr>`;
-                }
-                mdrBoxHtml = `
-                <div class="border border-slate-200 rounded p-1.5 bg-slate-50/50 flex-1">
-                    <p class="font-bold text-gray-800 text-[8px] uppercase tracking-wider mb-1 border-b border-slate-200 pb-0.5 text-left">
-                        Rincian MDR
-                    </p>
-                    <table class="w-full text-[8.5px] text-gray-600">
-                        <tbody>${rowsHtml}</tbody>
-                    </table>
-                </div>`;
-            }
-
-            if (pembayaranBoxHtml || mdrBoxHtml) {
-                leftFooterHtml += `
-                <div class="flex gap-2 w-full mb-1.5">
-                    ${pembayaranBoxHtml || '<div class="flex-1"></div>'}
-                    ${mdrBoxHtml || '<div class="flex-1"></div>'}
-                </div>`;
-            }
-
-            if (tambahanData.length > 0) {
-                let rowsHtml = "";
-                if (tambahanData.length <= 3) {
-                    tambahanData.forEach(item => {
-                        rowsHtml += `<tr class="border-b border-slate-100/50"><td class="py-[1px] font-medium text-gray-500">${item.nama}</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(item.nilai)}</td></tr>`;
-                    });
-                } else {
-                    for (let idx = 0; idx < 2; idx++) {
-                        let item = tambahanData[idx];
-                        rowsHtml += `<tr class="border-b border-slate-100/50"><td class="py-[1px] font-medium text-gray-500">${item.nama}</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(item.nilai)}</td></tr>`;
-                    }
-                    let totalOthers = tambahanData.slice(2).reduce((sum, item) => sum + item.nilai, 0);
-                    rowsHtml += `<tr><td class="py-[1px] font-medium text-gray-500">Lainnya</td><td class="py-[1px] text-right font-semibold text-gray-800">${formatRupiah(totalOthers)}</td></tr>`;
-                }
-                leftFooterHtml += `
-                <div class="border border-slate-200 rounded p-1.5 bg-slate-50/50 mb-1.5 w-full">
-                    <p class="font-bold text-gray-800 text-[8px] uppercase tracking-wider mb-1 border-b border-slate-200 pb-0.5 text-left">
-                        Rincian Biaya Tambahan
-                    </p>
-                    <table class="w-full text-[8.5px] text-gray-600">
-                        <tbody>${rowsHtml}</tbody>
-                    </table>
-                </div>`;
-            }
-
-            leftFooterHtml += `
-            <div class="border border-slate-200 rounded p-1.5 bg-white w-full h-[52px]">
-                <p class="font-bold text-gray-400 text-[8px] uppercase tracking-wider text-left">
-                    Catatan:
-                </p>
-            </div>`;
+            const jatuhTempoRow = hasTempo ? `<tr><td class="font-bold py-0.5">Jatuh Tempo</td><td class="py-0.5">:</td><td class="font-bold py-0.5 text-slate-800">18-06-2026</td></tr>` : '';
 
             let pagesHtml = "";
             pages.forEach(page => {
@@ -914,9 +830,29 @@
                         const diskon = (prodIdx === 0) ? diskonItem1 : (prod.diskon || 0);
                         const totalBaris = (prod.price * prod.qty) - diskon;
                         let barangKenaPpn = (ppnType !== 'non') ? (isMixPpn ? prod.ppn : false) : false;
-                        htmlProduk += `<tr class="align-middle text-[9px] border-b border-gray-100"><td class="text-center font-medium py-[1px]">${prodIdx + 1}</td><td class="px-2 py-[1px]"><span class="truncate-text max-w-[260px]" title="${prod.name}">${prod.name}</span></td><td class="text-center font-semibold text-gray-700 py-[1px]">${barangKenaPpn ? '✓' : ''}</td><td class="text-center py-[1px]">${prod.qty}</td><td class="px-2 py-[1px]">${prod.unit}</td><td class="text-right px-2 py-[1px]">${formatRupiah(prod.price)}</td><td class="text-right px-2 py-[1px]">${diskon > 0 ? formatRupiah(diskon) : '0'}</td><td class="text-right px-2 font-medium py-[1px]">${formatRupiah(totalBaris)}</td></tr>`;
+                        htmlProduk += `
+                        <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                            <td class="text-center font-medium text-slate-500">${prodIdx + 1}</td>
+                            <td class="truncate px-3 font-medium text-slate-800"><span class="truncate-text max-w-[280px]" title="${prod.name}">${prod.name}</span></td>
+                            <td class="text-center text-emerald-600 font-bold">${barangKenaPpn ? '✓' : ''}</td>
+                            <td class="text-center font-semibold text-slate-800">${prod.qty}</td>
+                            <td class="px-3 text-slate-600">${prod.unit}</td>
+                            <td class="text-right px-3 text-slate-600">${formatRupiah(prod.price)}</td>
+                            <td class="text-right px-3 text-slate-400">${diskon > 0 ? formatRupiah(diskon) : '0'}</td>
+                            <td class="text-right px-3 font-semibold text-slate-900">${formatRupiah(totalBaris)}</td>
+                        </tr>`;
                     } else {
-                        htmlProduk += `<tr class="fixed-row"><td class="text-center text-gray-400 font-medium">${prodIdx + 1}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+                        htmlProduk += `
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">${prodIdx + 1}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>`;
                     }
                 }
 
@@ -925,32 +861,162 @@
                     if (ppnType === 'exclude') {
                         const adaNonPpn = qty > 0 && dummyProducts.slice(0, qty).some(p => isMixPpn ? !p.ppn : true);
                         const adaPpn = qty > 0 && dummyProducts.slice(0, qty).some(p => isMixPpn ? p.ppn : false);
-                        if (adaNonPpn) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Sub Total Non PPN</td><td class="w-32 font-semibold py-[2px]">${formatRupiah(subtotalNonPpn)}</td></tr>`;
-                        if (adaPpn) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Sub Total DPP PPN</td><td class="w-32 font-semibold py-[2px]">${formatRupiah(subtotalDppPpn)}</td></tr>`;
+                        if (adaNonPpn) footerHtml += `<tr class="ppn-exclude-row"><td class="py-0.5 pr-3 text-slate-500">Sub Total Non PPN</td><td class="w-28 font-semibold py-0.5 text-slate-800">${formatRupiah(subtotalNonPpn)}</td></tr>`;
+                        if (adaPpn) footerHtml += `<tr class="ppn-exclude-row border-b border-slate-100"><td class="py-0.5 pr-3 text-slate-500">Sub Total DPP PPN</td><td class="w-28 font-semibold py-0.5 text-slate-800">${formatRupiah(subtotalDppPpn)}</td></tr>`;
                     } else {
-                        footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600 font-medium">Sub Total</td><td class="w-32 font-semibold py-[2px]">${formatRupiah(subtotalNonPpn + subtotalDppPpn)}</td></tr>`;
+                        footerHtml += `<tr class="ppn-include-row border-b border-slate-100"><td class="py-0.5 pr-3 text-slate-500 font-medium">Sub Total</td><td class="w-28 font-bold py-0.5 text-slate-800 text-[12px]">${formatRupiah(subtotalNonPpn + subtotalDppPpn)}</td></tr>`;
                     }
-                    if (diskonPesanan > 0) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Diskon Pesanan (-)</td><td class="py-[2px] text-rose-600">-${formatRupiah(diskonPesanan)}</td></tr>`;
-                    if (biayaKirim > 0) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Biaya Kirim (+)</td><td class="py-[2px]">${formatRupiah(biayaKirim)}</td></tr>`;
+                    if (diskonPesanan > 0) {
+                        footerHtml += `<tr><td class="py-0.5 pr-3 text-slate-500">Diskon Pesanan (-)</td><td class="py-0.5 text-slate-700 font-medium">-${formatRupiah(diskonPesanan)}</td></tr>`;
+                    }
+                    if (biayaKirim > 0) {
+                        footerHtml += `<tr><td class="py-0.5 pr-3 text-slate-500">Biaya Kirim (+)</td><td class="py-0.5 text-slate-800 font-medium">${formatRupiah(biayaKirim)}</td></tr>`;
+                    }
                     if (totalTambahan > 0) {
-                        footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">Biaya Tambahan (+)</td><td class="py-[2px]">${formatRupiah(totalTambahan)}</td></tr>`;
+                        footerHtml += `<tr><td class="py-0.5 pr-3 text-slate-500">Biaya Tambahan (+)</td><td class="py-0.5 text-slate-800 font-medium">${formatRupiah(totalTambahan)}</td></tr>`;
                     }
-                    if (ppnType === 'exclude' && showPpnRow) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-600">PPN (11%) (+)</td><td class="py-[2px]">${formatRupiah(nominalPpn)}</td></tr>`;
-                    footerHtml += `<tr class="font-bold text-gray-900 text-[10px] border-t border-gray-300"><td class="py-[3px] pr-2">Total</td><td class="py-[3px]">${formatRupiah(grandTotal)}</td></tr>`;
+                    if (ppnType === 'exclude' && showPpnRow) {
+                        footerHtml += `<tr class="ppn-exclude-row border-b border-slate-200"><td class="py-0.5 pr-3 text-slate-500">PPN (11%) (+)</td><td class="py-0.5 pb-0.5 text-slate-800 font-semibold">${formatRupiah(nominalPpn)}</td></tr>`;
+                    }
+                    if (totalMdr > 0) {
+                        footerHtml += `<tr><td class="py-0.5 pr-3 text-slate-500">Total MDR (+)</td><td class="py-0.5 text-slate-800 font-semibold">${formatRupiah(totalMdr)}</td></tr>`;
+                    }
+                    footerHtml += `<tr class="font-bold text-slate-900 border-t border-slate-300 text-[12px]"><td class="pt-0.5 pr-3">TOTAL Rp.</td><td class="pt-0.5 text-slate-950 font-extrabold text-[12px]">${formatRupiah(grandTotalWithMdr)}</td></tr>`;
+                    footerHtml += `<tr class="font-bold text-slate-900 border-b border-slate-200 pb-0.5 text-[12px]"><td class="py-0.5 pr-3">Dibayar</td><td class="py-0.5 text-slate-900 text-[12px]">${formatRupiah(totalActualPaid)}</td></tr>`;
+
                     if (ppnType === 'include' && showPpnRow) {
                         const nominalPpnInclude = Math.round(subtotalDppPpn * 11 / 111);
-                        footerHtml += `<tr class="text-gray-600 text-[10px]"><td class="py-[2px] pr-2">DPP</td><td class="py-[2px] font-medium">${formatRupiah(subtotalDppPpn - nominalPpnInclude)}</td></tr><tr class="text-gray-600 text-[10px]"><td class="py-[2px] pr-2">PPN (11%)</td><td class="py-[2px] font-medium">${formatRupiah(nominalPpnInclude)}</td></tr>`;
+                        footerHtml += `<tr class="ppn-include-row text-slate-400 text-[9.5px]"><td class="pt-0.5 pr-3">[Incl] DPP / PPN (11%)</td><td class="pt-0.5 font-medium">${formatRupiah(subtotalDppPpn - nominalPpnInclude)} / ${formatRupiah(nominalPpnInclude)}</td></tr>`;
                     }
-                    mdrItems.forEach(item => { footerHtml += `<tr class="text-gray-900 text-[10px]"><td class="py-[2px] pr-2">MDR ${item.metode} (${item.rate}%)</td><td class="py-[2px]">${formatRupiah(item.nominal)}</td></tr>`; });
 
-                    let val = totalPaidBeforeCashChange;
-                    footerHtml += `<tr class="font-bold text-gray-900 border-b border-gray-300"><td class="py-[3px] pr-2">Dibayar</td><td class="py-[3px]">${formatRupiah(val)}</td></tr>`;
-
-                    if (sisaPiutangVal > 0) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-500 font-light">Sisa Piutang</td><td class="py-[2px] font-light">${formatRupiah(sisaPiutangVal)}</td></tr>`;
-                    if (kembalianVal > 0) footerHtml += `<tr><td class="py-[2px] pr-2 text-gray-500 font-light">Kembalian</td><td class="py-[2px] font-light">${formatRupiah(kembalianVal)}</td></tr>`;
+                    footerHtml += `<tr><td class="pt-0.5 pr-3 text-slate-500 font-medium">Sisa Piutang</td><td class="pt-0.5 font-medium text-slate-800">${formatRupiah(sisaPiutangVal)}</td></tr>`;
+                    footerHtml += `<tr class="font-bold text-slate-900 text-[12px]"><td class="py-0.5 pr-3">Kembalian</td><td class="py-0.5 font-bold text-slate-900 text-[12px]">${formatRupiah(kembalianVal)}</td></tr>`;
                 }
 
-                pagesHtml += `<div class="print-container text-gray-800 relative flex flex-col justify-between flex-shrink-0"><div class="absolute top-2 right-4 text-[10px] text-gray-500 font-medium no-print">Halaman ${page.pageIndex} dari ${pages.length}</div><div><div class="mb-0.5 grid grid-cols-2 gap-4 border-b border-gray-100 pb-0.5"><div class="flex items-start gap-2"><div class="w-[68px] h-[68px] flex-shrink-0 border border-slate-800 flex items-center justify-center font-bold text-[11px] text-slate-800 bg-white">[LOGO]</div><div class="h-[68px] flex flex-col justify-between"><div><h1 class="text-[11px] font-bold text-slate-900 leading-none">inTechgra Official Tester</h1><h2 class="font-semibold text-slate-700 text-[10px] mt-0.5 leading-none">Graha Grc Board</h2><p class="text-slate-500 text-[9.5px] mt-1 leading-tight">Jl. Raya Tekno No. 100, Jakarta</p><p class="text-slate-500 text-[9.5px] leading-tight">No. Telp : 081903738745</p></div><p class="font-bold text-blue-600 text-[10px] leading-none">No. Order : TRN/20260604/0002</p></div></div><div class="pl-6 text-[10px]"><table class="w-full table-fixed text-left"><tbody><tr><td class="w-24 font-bold text-slate-500 py-[2px]">Tanggal - Kasir</td><td class="w-2 py-[2px]">:</td><td class="py-[2px] text-slate-800 truncate">04-06-2026, 08:20 - Irfani</td></tr><tr><td class="font-bold text-slate-500 py-[2px]">Kepada Yth.</td><td class="py-[2px]">:</td><td class="font-bold text-slate-900 py-[2px]">Budi</td></tr><tr><td class="font-bold text-slate-500 py-[2px] align-top">Alamat Kirim</td><td class="align-top py-[2px]">:</td><td class="py-[2px] text-slate-800 leading-tight">Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Kebon Jeruk, Jakarta Barat</td></tr><tr><td class="font-bold text-slate-500 py-[2px]">Pembayaran</td><td class="py-[2px]">:</td><td class="py-[2px] text-slate-800">${pembayaranText}</td></tr>${jatuhTempoRow}</tbody></table></div></div><div class="mb-0.5"><table class="w-full border-collapse text-left text-[9.5px]"><thead><tr class="border-y border-gray-800 bg-gray-50 font-bold text-gray-900 whitespace-nowrap"><th class="w-[5%] px-1 py-0.5 text-center">No</th><th class="w-[50%] px-2 py-0.5">Nama Produk</th><th class="w-[5%] px-1 py-0.5 text-center">PPN</th><th class="w-[8%] px-1 py-0.5 text-center">Qty</th><th class="w-[10%] px-2 py-0.5">Satuan</th><th class="w-[12%] px-2 py-0.5 text-right">Harga (Rp)</th><th class="w-[10%] px-2 py-0.5 text-right">Diskon (Rp)</th><th class="w-[12%] px-2 py-0.5 text-right">Jumlah (Rp)</th></tr></thead><tbody class="divide-y divide-gray-200">${htmlProduk}</tbody></table></div></div><div>${page.showFooter ? `<div class="flex justify-between items-start"><div class="w-[45%] flex flex-col gap-1">${leftFooterHtml}</div><div class="w-[50%] text-gray-800"><table class="w-full text-right text-[9.5px]"><tbody>${footerHtml}</tbody></table></div></div><div class="mt-1.5 grid grid-cols-4 gap-4 text-center items-start text-[8.5px]"><div><p class="font-medium text-gray-900">Penerima,</p><div class="h-3"></div><div class="mx-auto w-[80%] border-b border-gray-800"></div><p class="mt-0.5 text-[7.5px] text-gray-500">( Nama Jelas )</p></div><div><p class="font-medium text-gray-900">Pengirim / Sopir,</p><div class="h-3"></div><div class="mx-auto w-[80%] border-b border-gray-800"></div><p class="mt-0.5 text-[7.5px] text-gray-500">( Armada Toko / Sopir )</p></div><div><p class="font-medium text-gray-900">Hormat Kami,</p><div class="h-3"></div><div class="mx-auto w-[80%] border-b border-gray-800"></div><p class="mt-0.5 text-[7.5px] text-gray-500">( Kasir Toko )</p></div><div></div></div>` : `<div class="text-[9px] text-gray-400 italic text-right py-1 border-t border-gray-100">Bersambung ke Halaman ${page.pageIndex + 1}...</div>`}</div></div>`;
+                pagesHtml += `
+                <div class="print-container text-slate-800 relative flex flex-col justify-between flex-shrink-0">
+                    <div>
+                        <!-- SECTION 1: HEADER (Identitas Toko & Pelanggan) -->
+                        <div class="mb-1 grid grid-cols-2 gap-3 items-start">
+                            <!-- Sisi Kiri: Profil Toko dengan Logo -->
+                            <div class="flex items-start gap-2.5">
+                                <div class="w-[50px] h-[50px] flex-shrink-0 border border-slate-800 flex items-center justify-center font-bold text-[12px] text-slate-800 bg-white">
+                                    [LOGO]
+                                </div>
+                                <div class="flex flex-col justify-between">
+                                    <div>
+                                        <h1 class="text-[14px] font-extrabold text-slate-900 leading-tight">TB inTechgra Tumbuh Bersama</h1>
+                                        <p class="text-slate-600 text-[10.5px] mt-0.5 leading-tight">Jalan Raya Pemogan Gang Mutiara Indah 1 No. 11, Banjar Sakah, Denpasar Selatan, Bali 80221</p>
+                                        <p class="text-slate-500 text-[10.5px] leading-tight">No. Telp : 081903738745</p>
+                                    </div>
+                                    <p class="font-bold text-slate-900 text-[11px] mt-0.5 leading-tight">No. Order : TRN/20260604/0002</p>
+                                </div>
+                            </div>
+
+                            <!-- Sisi Kanan: Metadata Transaksi -->
+                            <div class="pl-4">
+                                <table class="w-full table-fixed text-left text-slate-600 text-[11px]">
+                                    <tbody>
+                                        <tr>
+                                            <td class="w-28 font-bold text-slate-500 py-0.5">Tanggal - Kasir</td>
+                                            <td class="w-3 py-0.5">:</td>
+                                            <td class="py-0.5 text-slate-800 font-medium">04-06-2026, 08:20 - Irfani Anggoro</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold text-slate-500 py-0.5">Kepada Yth.</td>
+                                            <td>:</td>
+                                            <td class="font-bold text-slate-900 py-0.5">Budi</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold text-slate-500 py-0.5 align-top">Alamat Kirim</td>
+                                            <td class="align-top py-0.5">:</td>
+                                            <td class="py-0.5 leading-tight text-slate-800">Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya Utara, Jakarta Barat</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold text-slate-500 py-0.5">Pembayaran</td>
+                                            <td>:</td>
+                                            <td class="py-0.5 font-semibold text-slate-800">${pembayaranText}</td>
+                                        </tr>
+                                        ${jatuhTempoRow}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: TABEL PRODUK (Kapasitas 10 Baris - Tanpa Garis Baris) -->
+                        <div class="mb-0.5">
+                            <table class="w-full border-collapse text-left text-[12px]">
+                                <thead>
+                                    <tr class="border-y border-slate-800 bg-slate-50 text-[12px] font-bold text-slate-800 uppercase tracking-wider">
+                                        <th class="w-[5%] px-2 py-1 text-center">No</th>
+                                        <th class="w-[49%] px-3 py-1">Nama Produk</th>
+                                        <th class="w-[6%] px-2 py-1 text-center">PPN</th>
+                                        <th class="w-[8%] px-2 py-1 text-center">Qty</th>
+                                        <th class="w-[10%] px-3 py-1">Satuan</th>
+                                        <th class="w-[11%] px-3 py-1 text-right">Harga (Rp)</th>
+                                        <th class="w-[9%] px-3 py-1 text-right">Diskon (Rp)</th>
+                                        <th class="w-[12%] px-3 py-1 text-right">Jumlah (Rp)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${htmlProduk}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER ATAU HALAMAN SELANJUTNYA -->
+                    <div>
+                        <!-- SECTION 3: FOOTER (Catatan, TTD & Kalkulasi Finansial Sejajar Horizontal) -->
+                        <div class="flex justify-between items-start pt-0.5 border-t border-slate-300">
+                            <!-- Sisi Kiri (~56%): Catatan & Kolom Tanda Tangan 3 Pihak -->
+                            <div class="w-[56%] flex flex-col justify-between self-stretch pr-3">
+                                <!-- Catatan Transaksi (Teks Saja Tanpa Kotak) -->
+                                <div>
+                                    <p class="font-bold text-slate-700 text-[10px]">
+                                        Catatan :
+                                    </p>
+                                </div>
+
+                                <!-- 3 Kolom Tanda Tangan: Pihak Toko, Pengirim, Penerima -->
+                                <div class="grid grid-cols-3 gap-2 text-center pt-0.5 mt-auto">
+                                    <div>
+                                        <p class="font-semibold text-slate-800 text-[10px]">Hormat Kami,</p>
+                                        <div class="h-4"></div>
+                                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Pihak Toko )</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800 text-[10px]">Pengirim,</p>
+                                        <div class="h-4"></div>
+                                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Sopir / Kurir )</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800 text-[10px]">Penerima,</p>
+                                        <div class="h-4"></div>
+                                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Nama Jelas )</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sisi Kanan (~42%): Kalkulasi Finansial Gelondongan -->
+                            <div class="w-[42%] text-slate-700">
+                                <table class="w-full text-right text-[11px]">
+                                    <tbody>
+                                        ${footerHtml}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Halaman / Page Indicator -->
+                        <div class="text-right text-[8.5px] text-slate-400 font-semibold tracking-wider pt-0.5">
+                            HALAMAN ${page.pageIndex} DARI ${pages.length}
+                        </div>
+                    </div>
+                </div>`;
             });
             pagesContainer.innerHTML = pagesHtml;
         }

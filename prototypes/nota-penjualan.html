@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Nota POS A5 Landscape Phase 1 - Max 10 Produk</title>
+    <title>Nota POS A5 Landscape Phase 1 - 10 Produk</title>
     <!-- Menggunakan Google Font Inter untuk estetika premium -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Menggunakan Tailwind via CDN untuk kemudahan styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -16,7 +16,7 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Preview di Layar (Screen View) - Presisi A5 Landscape */
+        /* Preview di Layar (Screen View) - Presisi A5 Landscape (210mm x 140mm) */
         .invoice-card {
             width: 210mm;
             height: 140mm;
@@ -26,15 +26,15 @@
             overflow: hidden;
         }
 
-        /* Kompresi padding dan line-height sel tabel secara ketat agar muat A5 (line-height diset 1.25 untuk html2canvas) */
+        /* Kompresi padding dan line-height sel tabel agar presisi */
         .invoice-card td,
         .invoice-card th {
             padding-top: 1px !important;
             padding-bottom: 1px !important;
-            line-height: 1.25 !important;
+            line-height: 1.2 !important;
         }
 
-        /* Sembunyikan baris PPN Exclude secara default untuk menghemat space (karena transaksi demo ini PPN Include) */
+        /* Sembunyikan baris PPN Exclude secara default untuk menghemat space */
         .ppn-exclude-row {
             display: none;
         }
@@ -43,7 +43,6 @@
             @page {
                 size: 210mm 140mm;
                 margin: 0;
-                /* Margin dinonaktifkan di page agar presisi */
             }
 
             body {
@@ -63,21 +62,20 @@
                 max-width: 210mm !important;
                 border: none !important;
                 box-shadow: none !important;
-                padding: 3mm 4mm !important;
-                /* Dioptimalkan agar muat */
+                padding: 2.5mm 4mm !important;
                 margin: 0 !important;
                 border-radius: 0 !important;
             }
         }
 
-        /* Mengunci tinggi baris tabel agar pas 8 produk konsisten */
+        /* Mengunci tinggi baris tabel agar pas 10 produk dengan font lebih besar */
         .fixed-row {
             height: 15px;
         }
     </style>
 </head>
 
-<body class="bg-slate-50 p-6 text-[9px] text-slate-700 antialiased leading-tight">
+<body class="bg-slate-100 p-6 text-[10px] text-slate-700 antialiased leading-tight">
     <!-- Back to Hub Banner -->
     <div class="no-print"
         style="background-color: #0f172a; color: #ffffff; padding: 10px 24px; font-size: 12px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; margin: -24px -24px 24px -24px;">
@@ -91,305 +89,254 @@
                 🖼️ Unduh PNG
             </button>
         </div>
-        <span style="color: rgba(255,255,255,0.4); font-weight: 500;">Preview Mode</span>
+        <span style="color: rgba(255,255,255,0.4); font-weight: 500;">Preview Mode (10 Produk - Font Lebih Besar & Tanpa
+            Garis)</span>
     </div>
 
     <div id="invoice-card"
-        class="invoice-card relative mx-auto max-w-5xl border border-slate-200 bg-white p-2.5 rounded-lg shadow-sm">
-        <!-- Halaman / Page Indicator -->
-        <div class="absolute bottom-3 right-5 text-[9.5px] text-slate-400 font-semibold tracking-wider">
-            HALAMAN 1 DARI 1
-        </div>
+        class="invoice-card relative mx-auto max-w-5xl border border-slate-300 bg-white p-2.5 rounded-lg shadow-sm flex flex-col justify-between">
 
-        <!-- SECTION 1: HEADER (Identitas Toko & Pelanggan) -->
-        <div class="mb-2 grid grid-cols-2 gap-4">
-            <!-- Sisi Kiri: Profil Toko dengan Logo -->
-            <div class="flex items-start gap-3">
-                <div
-                    class="w-[60px] h-[60px] flex-shrink-0 border border-slate-800 flex items-center justify-center font-bold text-[12px] text-slate-800 bg-white">
-                    [LOGO]
-                </div>
-                <div class="h-[60px] flex flex-col justify-between">
-                    <div>
-                        <h1 class="text-[11px] font-bold text-slate-900 leading-none">inTechgra Official Tester</h1>
-                        <h2 class="font-semibold text-slate-700 text-[9.5px] mt-0.5 leading-none">Graha Grc Board</h2>
-                        <p class="text-slate-500 text-[9px] mt-1 leading-tight">Jl. Raya Tekno No. 100, Jakarta</p>
-                        <p class="text-slate-500 text-[9px] leading-tight">No. Telp : 081903738745</p>
+        <div>
+            <!-- SECTION 1: HEADER (Identitas Toko & Pelanggan) -->
+            <div class="mb-1 grid grid-cols-2 gap-3 items-start">
+                <!-- Sisi Kiri: Profil Toko dengan Logo -->
+                <div class="flex items-start gap-2.5">
+                    <div
+                        class="w-[50px] h-[50px] flex-shrink-0 border border-slate-800 flex items-center justify-center font-bold text-[12px] text-slate-800 bg-white">
+                        [LOGO]
                     </div>
-                    <p class="font-bold text-black-600 text-[9.5px] leading-none">No. Order : TRN/20260604/0002</p>
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <h1 class="text-[14px] font-extrabold text-slate-900 leading-tight">TB inTechgra Tumbuh
+                                Bersama</h1>
+                            <p class="text-slate-600 text-[10.5px] mt-0.5 leading-tight">Jalan Raya Pemogan Gang Mutiara
+                                Indah 1 No. 11, Banjar Sakah, Denpasar Selatan, Bali 80221</p>
+                            <p class="text-slate-500 text-[10.5px] leading-tight">No. Telp : 081903738745</p>
+                        </div>
+                        <p class="font-bold text-slate-900 text-[11px] mt-0.5 leading-tight">No. Order :
+                            TRN/20260604/0002</p>
+                    </div>
+                </div>
+
+                <!-- Sisi Kanan: Metadata Transaksi -->
+                <div class="pl-4">
+                    <table class="w-full table-fixed text-left text-slate-600 text-[11px]">
+                        <tbody>
+                            <tr>
+                                <td class="w-28 font-bold text-slate-500 py-0.5">Tanggal - Kasir</td>
+                                <td class="w-3 py-0.5">:</td>
+                                <td class="py-0.5 text-slate-800 font-medium">04-06-2026, 08:20 - Irfani Anggoro</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-slate-500 py-0.5">Kepada Yth.</td>
+                                <td>:</td>
+                                <td class="font-bold text-slate-900 py-0.5">Budi</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-slate-500 py-0.5 align-top">Alamat Kirim</td>
+                                <td class="align-top py-0.5">:</td>
+                                <td class="py-0.5 leading-tight text-slate-800">Jl. Anggrek No. 5, Blok C, RT 05/03,
+                                    Kedoya Utara, Jakarta Barat</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-slate-500 py-0.5">Pembayaran</td>
+                                <td>:</td>
+                                <td class="py-0.5 font-semibold text-slate-800">TEMPO (KASBON)</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-slate-500 py-0.5">Jatuh Tempo</td>
+                                <td>:</td>
+                                <td class="font-bold py-0.5 text-slate-800">18-06-2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Sisi Kanan: Metadata Transaksi -->
-            <div class="pl-8">
-                <table class="w-full table-fixed text-left text-slate-600">
+            <!-- SECTION 2: TABEL PRODUK (Kapasitas 10 Baris - Tanpa Garis Baris) -->
+            <div class="mb-1">
+                <table class="w-full border-collapse text-left text-[12px]">
+                    <thead>
+                        <tr
+                            class="border-y border-slate-800 bg-slate-50 text-[12px] font-bold text-slate-800 uppercase tracking-wider">
+                            <th class="w-[5%] px-2 py-1 text-center">No</th>
+                            <th class="w-[49%] px-3 py-1">Nama Produk</th>
+                            <th class="w-[6%] px-2 py-1 text-center">PPN</th>
+                            <th class="w-[8%] px-2 py-1 text-center">Qty</th>
+                            <th class="w-[10%] px-3 py-1">Satuan</th>
+                            <th class="w-[11%] px-3 py-1 text-right">Harga (Rp)</th>
+                            <th class="w-[9%] px-3 py-1 text-right">Diskon (Rp)</th>
+                            <th class="w-[12%] px-3 py-1 text-right">Jumlah (Rp)</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr>
-                            <td class="w-28 font-bold text-slate-500 py-0.5">Tanggal - Kasir</td>
-                            <td class="w-3 py-0.5">:</td>
-                            <td class="py-0.5 text-slate-800">04-06-2026, 08:20 - Irfani Anggoro</td>
+                        <!-- Produk 1 (Non-PPN) -->
+                        <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                            <td class="text-center font-medium text-slate-500">1</td>
+                            <td class="truncate px-3 font-medium text-slate-800">Cairan Semen Pelapis Kedap Air Sika Top
+                                107 Plus</td>
+                            <td class="text-center text-slate-400"></td>
+                            <td class="text-center font-semibold text-slate-800">10</td>
+                            <td class="px-3 text-slate-600">Pieces</td>
+                            <td class="text-right px-3 text-slate-600">100,000</td>
+                            <td class="text-right px-3 text-slate-400">10,000</td>
+                            <td class="text-right px-3 font-semibold text-slate-900">990,000</td>
                         </tr>
-                        <tr>
-                            <td class="font-bold text-slate-500 py-0.5">Kepada Yth.</td>
-                            <td>:</td>
-                            <td class="font-bold text-slate-900 py-0.5">Budi</td>
+                        <!-- Produk 2 (Kena PPN) -->
+                        <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
+                            <td class="text-center font-medium text-slate-500">2</td>
+                            <td class="truncate px-3 font-medium text-slate-800">Cairan Semen Pelapis Kedap Air Sika Top
+                                108 Plus</td>
+                            <td class="text-center text-emerald-600 font-bold">✓</td>
+                            <td class="text-center font-semibold text-slate-800">10</td>
+                            <td class="px-3 text-slate-600">Pieces</td>
+                            <td class="text-right px-3 text-slate-600">100,000</td>
+                            <td class="text-right px-3 text-slate-400">0</td>
+                            <td class="text-right px-3 font-semibold text-slate-900">1,000,000</td>
                         </tr>
-                        <tr>
-                            <td class="font-bold text-slate-500 py-0.5 align-top">Alamat Kirim</td>
-                            <td class="align-top py-0.5">:</td>
-                            <td class="py-0.5 leading-normal text-slate-800">Jl. Anggrek No. 5, Blok C, RT 05/03, Kedoya
-                                Utara, Kebon Jeruk, Jakarta Barat</td>
+                        <!-- Baris Kosong 3 s/d 10 untuk menjaga kerapian 10 baris -->
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">3</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
-                        <tr>
-                            <td class="font-bold text-slate-500 py-0.5">Pembayaran</td>
-                            <td>:</td>
-                            <td class="py-0.5 font-medium text-slate-800">TEMPO (KASBON)</td>
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">4</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
-                        <tr>
-                            <td class="font-bold text-slate-500 py-0.5">Jatuh Tempo</td>
-                            <td>:</td>
-                            <td class="font-bold py-0.5 text-slate-800"></td>
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">5</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">6</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">7</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">8</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">9</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="fixed-row text-slate-300">
+                            <td class="text-center font-medium">10</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- SECTION 2: TABEL PRODUK (Maksimal 8 Baris) -->
-        <div class="mb-2">
-            <table class="w-full border-collapse text-left">
-                <thead>
-                    <tr
-                        class="border-y border-slate-700 bg-slate-50 text-[10px] font-bold text-slate-800 uppercase tracking-wider">
-                        <th class="w-[5%] px-2 py-1.5 text-center">No</th>
-                        <th class="w-[50%] px-3 py-1.5">Nama Produk</th>
-                        <th class="w-[5%] px-2 py-1.5 text-center">PPN</th>
-                        <th class="w-[8%] px-2 py-1.5 text-center">Qty</th>
-                        <th class="w-[10%] px-3 py-1.5">Satuan</th>
-                        <th class="w-[12%] px-3 py-1.5 text-right">Harga (Rp)</th>
-                        <th class="w-[10%] px-3 py-1.5 text-right">Diskon (Rp)</th>
-                        <th class="w-[12%] px-3 py-1.5 text-right">Jumlah (Rp)</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    <!-- Produk 1 (Non-PPN) -->
-                    <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
-                        <td class="text-center font-medium text-slate-500">1</td>
-                        <td class="truncate px-3 font-medium text-slate-800">Cairan Semen Pelapis Kedap Air Sika Top 107
-                            Plus</td>
-                        <td class="text-center text-slate-400"></td>
-                        <td class="text-center font-semibold text-slate-800">10</td>
-                        <td class="px-3 text-slate-600">Pieces</td>
-                        <td class="text-right px-3 text-slate-600">100,000</td>
-                        <td class="text-right px-3 text-slate-400">10,000</td>
-                        <td class="text-right px-3 font-semibold text-slate-900">990,000</td>
-                    </tr>
-                    <!-- Produk 2 (Kena PPN) -->
-                    <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
-                        <td class="text-center font-medium text-slate-500">2</td>
-                        <td class="truncate px-3 font-medium text-slate-800">Cairan Semen Pelapis Kedap Air Sika Top 108
-                            Plus</td>
-                        <td class="text-center text-emerald-600 font-bold">✓</td>
-                        <td class="text-center font-semibold text-slate-800">10</td>
-                        <td class="px-3 text-slate-600">Pieces</td>
-                        <td class="text-right px-3 text-slate-600">100,000</td>
-                        <td class="text-right px-3 text-slate-400">0</td>
-                        <td class="text-right px-3 font-semibold text-slate-900">1,000,000</td>
-                    </tr>
-                    <!-- Baris Kosong Sisa (3 s/d 8) Otomatis Menjaga Layout Halaman -->
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">3</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">4</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">5</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">6</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">7</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="fixed-row text-slate-300">
-                        <td class="text-center font-medium">8</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <!-- SECTION 3: FOOTER (Catatan, TTD & Kalkulasi Finansial Sejajar Horizontal) -->
+        <div class="flex justify-between items-start pt-0.5 border-t border-slate-300">
 
-        <!-- SECTION 3: FOOTER FINANSIAL (Rincian Pembayaran & Biaya Tambahan di Sisi Kiri) -->
-        <div class="flex justify-between items-start mt-1.5">
-            <!-- Sisi Kiri: Rincian (Multi-payment & Biaya Tambahan & MDR) & Catatan -->
-            <div class="w-[48%] flex flex-col gap-1">
-                <!-- Row: Pembayaran & MDR side-by-side -->
-                <div class="flex gap-1 w-full">
-                    <!-- Rincian Pembayaran -->
-                    <div class="border border-slate-200 rounded-md p-1.5 bg-slate-50/50 flex-1">
-                        <p
-                            class="font-bold text-slate-800 text-[8px] uppercase tracking-wider mb-1 border-b border-slate-200 pb-0.5">
-                            Rincian Pembayaran
-                        </p>
-                        <table class="w-full text-[8px] text-slate-600">
-                            <tbody>
-                                <tr class="border-b border-slate-100/50">
-                                    <td class="py-0.5 font-medium text-slate-500">Tunai</td>
-                                    <td class="py-0.5 text-right font-semibold text-slate-800">500,000</td>
-                                </tr>
-                                <tr class="border-b border-slate-100/50">
-                                    <td class="py-0.5 font-medium text-slate-500">EDC - Bank BCA</td>
-                                    <td class="py-0.5 text-right font-semibold text-slate-800">1,000,000</td>
-                                </tr>
-                                <tr class="border-b border-slate-200">
-                                    <td class="py-0.5 font-medium text-slate-500">Lainnya</td>
-                                    <td class="py-0.5 text-right font-semibold text-slate-800">615,418</td>
-                                </tr>
-                                <tr class="font-bold text-slate-800">
-                                    <td class="pt-1 text-slate-700">Total</td>
-                                    <td class="pt-1 text-right">2,115,418</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Rincian MDR -->
-                    <div class="border border-slate-200 rounded-md p-1.5 bg-slate-50/50 flex-1">
-                        <p
-                            class="font-bold text-slate-800 text-[8px] uppercase tracking-wider mb-1 border-b border-slate-200 pb-0.5">
-                            Rincian MDR
-                        </p>
-                        <table class="w-full text-[8px] text-slate-600">
-                            <tbody>
-                                <tr class="border-b border-slate-100/50">
-                                    <td class="py-0.5 font-medium text-slate-500">MDR EDC BCA (1.0%)</td>
-                                    <td class="py-0.5 text-right font-semibold text-slate-800">10,000</td>
-                                </tr>
-                                <tr class="border-b border-slate-100/50">
-                                    <td class="py-0.5 font-medium text-slate-500">MDR QRIS SPay (0.7%)</td>
-                                    <td class="py-0.5 text-right font-semibold text-slate-800">700</td>
-                                </tr>
-                                <tr class="border-b border-slate-200">
-                                    <td class="py-0.5 font-medium text-slate-500">Lainnya</td>
-                                    <td class="py-0.5 text-right font-semibold text-slate-800">3,618</td>
-                                </tr>
-                                <tr class="font-bold text-slate-800">
-                                    <td class="pt-1 text-slate-700">Total</td>
-                                    <td class="pt-1 text-right">14,318</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <!-- Sisi Kiri (~56%): Catatan & Kolom Tanda Tangan 3 Pihak -->
+            <div class="w-[56%] flex flex-col justify-between self-stretch pr-3">
+                <!-- Catatan Transaksi (Teks Saja Tanpa Kotak) -->
+                <div>
+                    <p class="font-bold text-slate-700 text-[10px]">
+                        Catatan :
+                    </p>
                 </div>
 
-                <!-- Rincian Biaya Tambahan -->
-                <div class="border border-slate-200 rounded-md p-1.5 bg-slate-50/50 w-full">
-                    <p
-                        class="font-bold text-slate-800 text-[8px] uppercase tracking-wider mb-1 border-b border-slate-200 pb-0.5">
-                        Rincian Biaya Tambahan
-                    </p>
-                    <table class="w-full text-[8px] text-slate-600">
-                        <tbody>
-                            <tr class="border-b border-slate-100/50">
-                                <td class="py-0.5 font-medium text-slate-500">Bongkar Muat</td>
-                                <td class="py-0.5 text-right font-semibold text-slate-800">2,000</td>
-                            </tr>
-                            <tr class="border-b border-slate-100/50">
-                                <td class="py-0.5 font-medium text-slate-500">Angkat angkat</td>
-                                <td class="py-0.5 text-right font-semibold text-slate-800">2,000</td>
-                            </tr>
-                            <tr class="border-b border-slate-200">
-                                <td class="py-0.5 font-medium text-slate-500">Lainnya</td>
-                                <td class="py-0.5 text-right font-semibold text-slate-800">6,000</td>
-                            </tr>
-                            <tr class="font-bold text-slate-800">
-                                <td class="pt-1 text-slate-700">Total</td>
-                                <td class="pt-1 text-right">10,000</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Catatan Penjualan (Kosong untuk Tulis Tangan) -->
-                <div class="border border-slate-200 rounded-md p-1.5 bg-white w-full h-[36px]">
-                    <p class="font-bold text-slate-400 text-[8px] uppercase tracking-wider">
-                        Catatan:
-                    </p>
+                <!-- 3 Kolom Tanda Tangan: Pihak Toko, Pengirim, Penerima -->
+                <div class="grid grid-cols-3 gap-2 text-center pt-0.5 mt-auto">
+                    <div>
+                        <p class="font-semibold text-slate-800 text-[10px]">Hormat Kami,</p>
+                        <div class="h-4"></div>
+                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Pihak Toko )</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-slate-800 text-[10px]">Pengirim,</p>
+                        <div class="h-4"></div>
+                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Sopir / Kurir )</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-slate-800 text-[10px]">Penerima,</p>
+                        <div class="h-4"></div>
+                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Nama Jelas )</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Sisi Kanan: Alur Kalkulasi Nilai -->
-            <div class="w-[48%] text-slate-700">
-                <table class="w-full text-right text-[9px]">
+            <!-- Sisi Kanan (~42%): Kalkulasi Finansial Gelondongan -->
+            <div class="w-[42%] text-slate-700">
+                <table class="w-full text-right text-[11px]">
                     <tbody>
-                        <!-- ==================================================== -->
-                        <!-- BARIS SUB TOTAL (DISESUAIKAN BERDASARKAN KONDISI)   -->
-                        <!-- ==================================================== -->
-
-                        <!-- [KONDISI: PPN INCLUDE / NON-PPN] -->
+                        <!-- SUB TOTAL -->
                         <tr class="ppn-include-row border-b border-slate-100">
                             <td class="py-0.5 pr-3 text-slate-500 font-medium">Sub Total</td>
-                            <td class="w-32 font-semibold py-0.5 text-slate-800">1,990,000</td>
+                            <td class="w-28 font-bold py-0.5 text-slate-800 text-[12px]">1,990,000</td>
                         </tr>
-
-                        <!-- [KONDISI: PPN EXCLUDE] -->
                         <tr class="ppn-exclude-row">
                             <td class="py-0.5 pr-3 text-slate-500">Sub Total Non PPN</td>
-                            <td class="w-32 font-semibold py-0.5 text-slate-800">990,000</td>
+                            <td class="w-28 font-semibold py-0.5 text-slate-800">990,000</td>
                         </tr>
                         <tr class="ppn-exclude-row border-b border-slate-100">
                             <td class="py-0.5 pr-3 text-slate-500">Sub Total DPP PPN</td>
-                            <td class="w-32 font-semibold py-0.5 text-slate-800">1,000,000</td>
+                            <td class="w-28 font-semibold py-0.5 text-slate-800">1,000,000</td>
                         </tr>
 
-                        <!-- ==================================================== -->
-                        <!-- BIAYA-BIAYA & DISKON (BERLAKU UNTUK SEMUA KONDISI)  -->
-                        <!-- ==================================================== -->
+                        <!-- BIAYA & DISKON GELONDONGAN -->
                         <tr>
                             <td class="py-0.5 pr-3 text-slate-500">Diskon Pesanan (-)</td>
-                            <td class="py-0.5 text-black-600 font-medium">-20,000</td>
+                            <td class="py-0.5 text-slate-700 font-medium">-20,000</td>
                         </tr>
                         <tr>
                             <td class="py-0.5 pr-3 text-slate-500">Biaya Kirim (+)</td>
@@ -400,88 +347,54 @@
                             <td class="py-0.5 text-slate-800 font-medium">10,000</td>
                         </tr>
 
-
-                        <!-- ==================================================== -->
-                        <!-- PPN EXCLUDE: DIJUMLAHKAN KE TOTAL                    -->
-                        <!-- ==================================================== -->
+                        <!-- PPN EXCLUDE -->
                         <tr class="ppn-exclude-row border-b border-slate-200">
                             <td class="py-0.5 pr-3 text-slate-500">PPN (11%) (+)</td>
-                            <td class="py-0.5 pb-1 text-slate-800 font-semibold">111,100</td>
-                        </tr>
-
-                        <!-- ==================================================== -->
-                        <!-- GRAND TOTAL & GRAND PEMBAYARAN                       -->
-                        <!-- ==================================================== -->
-                        <tr class="font-bold text-slate-900 text-xs border-t border-slate-300">
-                            <td class="pt-1 pr-3">TOTAL Rp.</td>
-                            <!-- Nilai jika PPN Exclude + MDR: 2,115,418 -->
-                            <td class="pt-1 text-[11px] text-black-700 font-extrabold">2,115,418</td>
+                            <td class="py-0.5 pb-0.5 text-slate-800 font-semibold">111,100</td>
                         </tr>
                         <tr>
                             <td class="py-0.5 pr-3 text-slate-500">Total MDR (+)</td>
                             <td class="py-0.5 text-slate-800 font-semibold">14,318</td>
                         </tr>
-                        <tr>
-                            <td class="py-0.5 pr-3 text-slate-500">Cash Dibayar</td>
-                            <td class="py-0.5 text-slate-800 font-semibold">2,150,000</td>
+
+                        <!-- GRAND TOTAL -->
+                        <tr class="font-bold text-slate-900 border-t border-slate-300 text-[12px]">
+                            <td class="pt-0.5 pr-3">TOTAL Rp.</td>
+                            <td class="pt-0.5 text-slate-950 font-extrabold text-[12px]">2,115,418</td>
                         </tr>
-                        <tr class="font-bold text-slate-900 border-b border-slate-200 pb-1">
+                        <tr class="font-bold text-slate-900 border-b border-slate-200 pb-0.5 text-[12px]">
                             <td class="py-0.5 pr-3">Dibayar</td>
-                            <td class="py-0.5 text-slate-900">2,129,736</td>
+                            <td class="py-0.5 text-slate-900 text-[12px]">0</td>
                         </tr>
 
-                        <!-- ==================================================== -->
-                        <!-- PPN INCLUDE: TAMPIL SEBAGAI INFORMASI DI PALING BAWA-->
-                        <!-- ==================================================== -->
-                        <tr class="ppn-include-row text-slate-400 text-[8px]">
-                            <td class="pt-1 pr-3">[Incl] DPP</td>
-                            <td class="pt-1 font-medium">900,901</td>
-                        </tr>
-                        <tr class="ppn-include-row text-slate-400 text-[8px]">
-                            <td class="py-0.5 pr-3">[Incl] PPN (11%)</td>
-                            <td class="py-0.5 font-medium">99,099</td>
+                        <!-- PPN INCLUDE INFO -->
+                        <tr class="ppn-include-row text-slate-400 text-[9.5px]">
+                            <td class="pt-0.5 pr-3">[Incl] DPP / PPN (11%)</td>
+                            <td class="pt-0.5 font-medium">900,901 / 99,099</td>
                         </tr>
 
-                        <!-- ==================================================== -->
-                        <!-- SISA PIUTANG & KEMBALIAN                             -->
-                        <!-- ==================================================== -->
+                        <!-- SISA PIUTANG & KEMBALIAN -->
                         <tr>
-                            <td class="pt-1 pr-3 text-slate-500">Sisa Piutang</td>
-                            <td class="pt-1 font-medium text-slate-800">0</td>
+                            <td class="pt-0.5 pr-3 text-slate-500 font-medium">Sisa Piutang</td>
+                            <td class="pt-0.5 font-medium text-slate-800">2,115,418</td>
                         </tr>
-                        <tr>
-                            <td class="py-0.5 pr-3 text-slate-500">Kembalian</td>
-                            <td class="py-0.5 font-semibold text-slate-900">20,264</td>
+                        <tr class="font-bold text-slate-900 text-[12px]">
+                            <td class="py-0.5 pr-3">Kembalian</td>
+                            <td class="py-0.5 font-bold text-slate-900 text-[12px]">0</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
         </div>
 
-        <!-- SECTION 4: TANDA TANGAN & STATUS AUDIT -->
-        <div class="mt-3 grid grid-cols-4 gap-4 text-center items-start">
-            <div>
-                <p class="font-semibold text-slate-800">Penerima,</p>
-                <div class="h-6"></div>
-                <div class="mx-auto w-[85%] border-b border-slate-300"></div>
-                <p class="mt-1 text-[8.5px] text-slate-400 font-medium">( Nama Jelas )</p>
-            </div>
-            <div>
-                <p class="font-semibold text-slate-800">Pengirim / Sopir,</p>
-                <div class="h-6"></div>
-                <div class="mx-auto w-[85%] border-b border-slate-300"></div>
-                <p class="mt-1 text-[8.5px] text-slate-400 font-medium">( Armada Toko / Kurir )</p>
-            </div>
-            <div>
-                <p class="font-semibold text-slate-800">Hormat Kami,</p>
-                <div class="h-6"></div>
-                <div class="mx-auto w-[85%] border-b border-slate-300"></div>
-                <p class="mt-1 text-[8.5px] text-slate-400 font-medium">( Kasir Toko )</p>
-            </div>
-            <div></div>
+        <!-- Halaman / Page Indicator -->
+        <div class="text-right text-[8.5px] text-slate-400 font-semibold tracking-wider pt-0.5">
+            HALAMAN 1 DARI 1
         </div>
 
     </div>
+
     <script>
         document.getElementById('btn-download-png').addEventListener('click', function () {
             const container = document.getElementById('invoice-card');
