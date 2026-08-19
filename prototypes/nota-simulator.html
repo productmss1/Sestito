@@ -285,23 +285,49 @@
                                     <button type="button"
                                         class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-payment">✕</button>
                                 </div>
-                                <!-- Sub-opsi EDC: Tipe Kartu & Bank -->
-                                <div class="flex items-center gap-3 pl-2 text-[10px] text-slate-300 payment-edc-row hidden">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="text-slate-400 font-medium">Tipe:</span>
-                                        <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none payment-edc-type">
-                                            <option value="DEBIT" selected>Debit</option>
-                                            <option value="KREDIT">Kredit</option>
-                                        </select>
-                                    </div>
-                                    <div class="flex items-center gap-1.5">
+                                <!-- Sub-opsi EDC: Bank, Tipe Kartu & Jaringan -->
+                                <div
+                                    class="flex items-center gap-2 pl-2 text-[10px] text-slate-300 payment-edc-row hidden flex-wrap">
+                                    <div class="flex items-center gap-1">
                                         <span class="text-slate-400 font-medium">Bank:</span>
-                                        <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none payment-edc-bank">
+                                        <select
+                                            class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-edc-bank">
                                             <option value="BCA" selected>BCA</option>
-                                            <option value="MANDIRI">Mandiri</option>
+                                            <option value="MANDIRI">MANDIRI</option>
                                             <option value="BNI">BNI</option>
+                                            <option value="BRI">BRI</option>
                                         </select>
                                     </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-slate-400 font-medium">Tipe:</span>
+                                        <select
+                                            class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-edc-type">
+                                            <option value="DEBIT" selected>DEBIT</option>
+                                            <option value="KREDIT">KREDIT</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-slate-400 font-medium">Jaringan:</span>
+                                        <select
+                                            class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-edc-network">
+                                            <option value="GPN" selected>GPN</option>
+                                            <option value="VISA">VISA</option>
+                                            <option value="MASTERCARD">MASTERCARD</option>
+                                            <option value="JCB">JCB</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- Sub-opsi QRIS: Bank -->
+                                <div
+                                    class="flex items-center gap-1.5 pl-2 text-[10px] text-slate-300 payment-qris-row hidden">
+                                    <span class="text-slate-400 font-medium">Bank:</span>
+                                    <select
+                                        class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-qris-bank">
+                                        <option value="BCA" selected>BCA</option>
+                                        <option value="MANDIRI">MANDIRI</option>
+                                        <option value="BNI">BNI</option>
+                                        <option value="BRI">BRI</option>
+                                    </select>
                                 </div>
                                 <div
                                     class="flex justify-between items-center pl-2 text-[10px] text-slate-400 payment-mdr-row hidden">
@@ -314,6 +340,24 @@
                                         <span class="text-amber-400 payment-mdr-nominal-label">MDR: Rp 0</span>
                                         <span class="text-slate-600 mx-1">|</span>
                                         <span class="text-emerald-400 payment-total-mdr-label">Total + MDR: Rp 0</span>
+                                    </div>
+                                </div>
+                                <!-- Sub-opsi Tempo: DP (Uang Muka) -->
+                                <div class="flex flex-col gap-1.5 pl-2 pt-1 text-[10px] text-slate-300 payment-tempo-row border-t border-slate-800/80">
+                                    <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 font-medium select-none">
+                                        <input type="checkbox" class="rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-0 payment-tempo-dp-enable">
+                                        <span>Input Pembayaran DP (Uang Muka)</span>
+                                    </label>
+                                    <div class="flex items-center gap-2 payment-tempo-dp-box hidden flex-wrap">
+                                        <span class="text-slate-400 font-medium">Metode DP:</span>
+                                        <select class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-tempo-dp-method">
+                                            <option value="cash" selected>Cash (Tunai)</option>
+                                            <option value="transfer">Bank Transfer (BCA)</option>
+                                            <option value="qris">QRIS (BCA)</option>
+                                            <option value="edc">EDC (BCA Debit)</option>
+                                        </select>
+                                        <input type="number" placeholder="Nominal DP (Rp)" value="500000"
+                                            class="w-28 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white text-right focus:outline-none focus:border-blue-500 payment-tempo-dp-amount">
                                     </div>
                                 </div>
                                 <div class="flex gap-2 pl-2 text-[10px] text-slate-400 payment-transfer-row hidden">
@@ -480,18 +524,27 @@
                 const accNum = (metode === 'transfer') ? (row.querySelector(".payment-acc-num").value.trim() || "") : "";
                 const edcType = (metode === 'edc') ? (row.querySelector(".payment-edc-type") ? row.querySelector(".payment-edc-type").value : "DEBIT") : "";
                 const edcBank = (metode === 'edc') ? (row.querySelector(".payment-edc-bank") ? row.querySelector(".payment-edc-bank").value : "BCA") : "";
-                items.push({ metode, jumlah, mdrRate, mdrNominal, totalWithMdr, bankName, accNum, edcType, edcBank });
+                const edcNetwork = (metode === 'edc') ? (row.querySelector(".payment-edc-network") ? row.querySelector(".payment-edc-network").value : "GPN") : "";
+                const qrisBank = (metode === 'qris') ? (row.querySelector(".payment-qris-bank") ? row.querySelector(".payment-qris-bank").value : "BCA") : "";
+                const dpEnable = (metode === 'tempo') ? (row.querySelector(".payment-tempo-dp-enable") ? row.querySelector(".payment-tempo-dp-enable").checked : false) : false;
+                const dpMethod = (metode === 'tempo') ? (row.querySelector(".payment-tempo-dp-method") ? row.querySelector(".payment-tempo-dp-method").value : "cash") : "";
+                const dpAmount = dpEnable ? Math.max(0, parseInt(row.querySelector(".payment-tempo-dp-amount") ? row.querySelector(".payment-tempo-dp-amount").value : 0) || 0) : 0;
+                items.push({ metode, jumlah, mdrRate, mdrNominal, totalWithMdr, bankName, accNum, edcType, edcBank, edcNetwork, qrisBank, dpEnable, dpMethod, dpAmount });
             });
             return items;
         }
 
-        // Update visibilitas baris input MDR/Transfer/EDC pada metode pembayaran
+        // Update visibilitas baris input MDR/Transfer/EDC/Tempo DP pada metode pembayaran
         function updatePaymentItemMdrVisibility(row) {
             const metode = row.querySelector(".payment-metode").value;
             const mdrRow = row.querySelector(".payment-mdr-row");
             const mdrRateInput = row.querySelector(".payment-mdr-rate");
             const transferRow = row.querySelector(".payment-transfer-row");
             const edcRow = row.querySelector(".payment-edc-row");
+            const qrisRow = row.querySelector(".payment-qris-row");
+            const tempoRow = row.querySelector(".payment-tempo-row");
+            const tempoDpEnable = row.querySelector(".payment-tempo-dp-enable");
+            const tempoDpBox = row.querySelector(".payment-tempo-dp-box");
             const edcTypeSelect = row.querySelector(".payment-edc-type");
 
             if (metode === 'qris' || metode === 'edc') {
@@ -508,10 +561,29 @@
                 mdrRow.classList.add("hidden");
             }
 
+            if (metode === 'qris') {
+                if (qrisRow) qrisRow.classList.remove("hidden");
+            } else {
+                if (qrisRow) qrisRow.classList.add("hidden");
+            }
+
             if (metode === 'edc') {
                 edcRow.classList.remove("hidden");
             } else {
                 edcRow.classList.add("hidden");
+            }
+
+            if (metode === 'tempo') {
+                if (tempoRow) tempoRow.classList.remove("hidden");
+                if (tempoDpEnable && tempoDpBox) {
+                    if (tempoDpEnable.checked) {
+                        tempoDpBox.classList.remove("hidden");
+                    } else {
+                        tempoDpBox.classList.add("hidden");
+                    }
+                }
+            } else {
+                if (tempoRow) tempoRow.classList.add("hidden");
             }
 
             if (metode === 'transfer') {
@@ -530,6 +602,11 @@
             const accInput = row.querySelector(".payment-acc-num");
             const edcTypeSelect = row.querySelector(".payment-edc-type");
             const edcBankSelect = row.querySelector(".payment-edc-bank");
+            const edcNetworkSelect = row.querySelector(".payment-edc-network");
+            const qrisBankSelect = row.querySelector(".payment-qris-bank");
+            const tempoDpEnable = row.querySelector(".payment-tempo-dp-enable");
+            const tempoDpMethod = row.querySelector(".payment-tempo-dp-method");
+            const tempoDpAmount = row.querySelector(".payment-tempo-dp-amount");
             const btnHapus = row.querySelector(".btn-hapus-payment");
 
             select.addEventListener("change", () => {
@@ -549,6 +626,29 @@
 
             if (edcBankSelect) {
                 edcBankSelect.addEventListener("change", calculateSettingState);
+            }
+
+            if (edcNetworkSelect) {
+                edcNetworkSelect.addEventListener("change", calculateSettingState);
+            }
+
+            if (qrisBankSelect) {
+                qrisBankSelect.addEventListener("change", calculateSettingState);
+            }
+
+            if (tempoDpEnable) {
+                tempoDpEnable.addEventListener("change", () => {
+                    updatePaymentItemMdrVisibility(row);
+                    calculateSettingState();
+                });
+            }
+
+            if (tempoDpMethod) {
+                tempoDpMethod.addEventListener("change", calculateSettingState);
+            }
+
+            if (tempoDpAmount) {
+                tempoDpAmount.addEventListener("input", calculateSettingState);
             }
 
             mdrInput.addEventListener("input", () => {
@@ -640,7 +740,13 @@
             let totalBayarWithMdr = 0;
             paymentData.forEach(p => {
                 totalMdr += p.mdrNominal;
-                totalBayarWithMdr += p.totalWithMdr;
+                if (p.metode === 'tempo') {
+                    if (p.dpEnable && p.dpAmount > 0) {
+                        totalBayarWithMdr += p.dpAmount;
+                    }
+                } else {
+                    totalBayarWithMdr += p.totalWithMdr;
+                }
             });
 
             const targetTagihan = grandTotal + totalMdr;
@@ -719,23 +825,43 @@
                     <input type="number" placeholder="Jumlah (Rp)" class="w-28 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-white text-right focus:outline-none focus:border-blue-500 payment-jumlah">
                     <button type="button" class="text-rose-500 hover:text-rose-400 font-bold px-1.5 btn-hapus-payment">✕</button>
                 </div>
-                <!-- Sub-opsi EDC: Tipe Kartu & Bank -->
-                <div class="flex items-center gap-3 pl-2 text-[10px] text-slate-300 payment-edc-row hidden">
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-slate-400 font-medium">Tipe:</span>
-                        <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none payment-edc-type">
-                            <option value="DEBIT" selected>Debit</option>
-                            <option value="KREDIT">Kredit</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center gap-1.5">
+                <!-- Sub-opsi EDC: Bank, Tipe Kartu & Jaringan -->
+                <div class="flex items-center gap-2 pl-2 text-[10px] text-slate-300 payment-edc-row hidden flex-wrap">
+                    <div class="flex items-center gap-1">
                         <span class="text-slate-400 font-medium">Bank:</span>
-                        <select class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none payment-edc-bank">
+                        <select class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-edc-bank">
                             <option value="BCA" selected>BCA</option>
-                            <option value="MANDIRI">Mandiri</option>
+                            <option value="MANDIRI">MANDIRI</option>
                             <option value="BNI">BNI</option>
+                            <option value="BRI">BRI</option>
                         </select>
                     </div>
+                    <div class="flex items-center gap-1">
+                        <span class="text-slate-400 font-medium">Tipe:</span>
+                        <select class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-edc-type">
+                            <option value="DEBIT" selected>DEBIT</option>
+                            <option value="KREDIT">KREDIT</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="text-slate-400 font-medium">Jaringan:</span>
+                        <select class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-edc-network">
+                            <option value="GPN" selected>GPN</option>
+                            <option value="VISA">VISA</option>
+                            <option value="MASTERCARD">MASTERCARD</option>
+                            <option value="JCB">JCB</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Sub-opsi QRIS: Bank -->
+                <div class="flex items-center gap-1.5 pl-2 text-[10px] text-slate-300 payment-qris-row hidden">
+                    <span class="text-slate-400 font-medium">Bank:</span>
+                    <select class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-qris-bank">
+                        <option value="BCA" selected>BCA</option>
+                        <option value="MANDIRI">MANDIRI</option>
+                        <option value="BNI">BNI</option>
+                        <option value="BRI">BRI</option>
+                    </select>
                 </div>
                 <div class="flex justify-between items-center pl-2 text-[10px] text-slate-400 payment-mdr-row hidden">
                     <div class="flex items-center gap-1.5">
@@ -746,6 +872,24 @@
                         <span class="text-amber-400 payment-mdr-nominal-label">MDR: Rp 0</span>
                         <span class="text-slate-600 mx-1">|</span>
                         <span class="text-emerald-400 payment-total-mdr-label">Total + MDR: Rp 0</span>
+                    </div>
+                </div>
+                <!-- Sub-opsi Tempo: DP (Uang Muka) -->
+                <div class="flex flex-col gap-1.5 pl-2 pt-1 text-[10px] text-slate-300 payment-tempo-row hidden border-t border-slate-800/80">
+                    <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 font-medium select-none">
+                        <input type="checkbox" class="rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-0 payment-tempo-dp-enable">
+                        <span>Input Pembayaran DP (Uang Muka)</span>
+                    </label>
+                    <div class="flex items-center gap-2 payment-tempo-dp-box hidden flex-wrap">
+                        <span class="text-slate-400 font-medium">Metode DP:</span>
+                        <select class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs text-white focus:outline-none payment-tempo-dp-method">
+                            <option value="cash" selected>Cash (Tunai)</option>
+                            <option value="transfer">Bank Transfer (BCA)</option>
+                            <option value="qris">QRIS (BCA)</option>
+                            <option value="edc">EDC (BCA Debit)</option>
+                        </select>
+                        <input type="number" placeholder="Nominal DP (Rp)" value="500000"
+                            class="w-28 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white text-right focus:outline-none focus:border-blue-500 payment-tempo-dp-amount">
                     </div>
                 </div>
                 <div class="flex gap-2 pl-2 text-[10px] text-slate-400 payment-transfer-row hidden">
@@ -837,9 +981,20 @@
             let totalElectronicPaid = 0;
             let totalTempoAllocated = 0;
             paymentData.forEach(p => {
-                if (p.metode === 'cash') totalCashPaid += p.totalWithMdr;
-                else if (p.metode === 'tempo') totalTempoAllocated += p.totalWithMdr;
-                else totalElectronicPaid += p.totalWithMdr;
+                if (p.metode === 'cash') {
+                    totalCashPaid += p.totalWithMdr;
+                } else if (p.metode === 'tempo') {
+                    if (p.dpEnable && p.dpAmount > 0) {
+                        if (p.dpMethod === 'cash') {
+                            totalCashPaid += p.dpAmount;
+                        } else {
+                            totalElectronicPaid += p.dpAmount;
+                        }
+                    }
+                    totalTempoAllocated += p.totalWithMdr;
+                } else {
+                    totalElectronicPaid += p.totalWithMdr;
+                }
             });
             // Tempo (Kasbon) tidak masuk ke hitungan 'Dibayar' (hanya pembayaran nyata kas/elektronik)
             const totalActualPaid = totalCashPaid + totalElectronicPaid;
@@ -872,22 +1027,29 @@
             }
 
             const hasTempo = paymentData.some(p => p.metode === 'tempo');
+            const hasNonTempo = paymentData.some(p => p.metode !== 'tempo');
             let pembayaranText = "";
             if (paymentData.length === 1) {
                 const p = paymentData[0];
                 if (p.metode === 'tempo') {
-                    pembayaranText = "TEMPO (KASBON)";
+                    if (p.dpEnable && p.dpAmount > 0) {
+                        pembayaranText = "PEMBAYARAN DP";
+                    } else {
+                        pembayaranText = "TEMPO (KASBON)";
+                    }
                 } else if (p.metode === 'cash') {
                     pembayaranText = "CASH (TUNAI)";
                 } else if (p.metode === 'transfer') {
                     pembayaranText = `TRANSFER ${p.bankName.toUpperCase()} ${p.accNum}`;
                 } else if (p.metode === 'edc') {
-                    pembayaranText = `EDC ${p.edcType} ${p.edcBank}`;
+                    pembayaranText = `EDC (${p.edcBank.toUpperCase()}) - ${p.edcType.toUpperCase()} ${p.edcNetwork.toUpperCase()}`;
                 } else if (p.metode === 'qris') {
-                    pembayaranText = "QRIS";
+                    pembayaranText = p.qrisBank ? `QRIS ${p.qrisBank.toUpperCase()}` : "QRIS";
                 } else {
                     pembayaranText = p.metode.toUpperCase();
                 }
+            } else if (hasTempo && hasNonTempo) {
+                pembayaranText = "PEMBAYARAN DP";
             } else {
                 pembayaranText = "MULTIPLE PEMBAYARAN";
             }
@@ -962,8 +1124,12 @@
                         footerHtml += `<tr class="ppn-include-row text-slate-400 text-[9.5px]"><td class="pt-0.5 pr-3">[Incl] DPP / PPN (11%)</td><td class="pt-0.5 font-medium">${formatRupiah(subtotalDppPpn - nominalPpnInclude)} / ${formatRupiah(nominalPpnInclude)}</td></tr>`;
                     }
 
-                    footerHtml += `<tr><td class="pt-0.5 pr-3 text-slate-500 font-medium">Sisa Piutang</td><td class="pt-0.5 font-medium text-slate-800">${formatRupiah(sisaPiutangVal)}</td></tr>`;
-                    footerHtml += `<tr class="font-bold text-slate-900 text-[12px]"><td class="py-0.5 pr-3">Kembalian</td><td class="py-0.5 font-bold text-slate-900 text-[12px]">${formatRupiah(kembalianVal)}</td></tr>`;
+                    if (sisaPiutangVal > 0) {
+                        footerHtml += `<tr><td class="pt-0.5 pr-3 text-slate-500 font-medium">Sisa Piutang</td><td class="pt-0.5 font-medium text-slate-800">${formatRupiah(sisaPiutangVal)}</td></tr>`;
+                    }
+                    if (kembalianVal > 0) {
+                        footerHtml += `<tr class="font-bold text-slate-900 text-[12px]"><td class="py-0.5 pr-3">Kembalian</td><td class="py-0.5 font-bold text-slate-900 text-[12px]">${formatRupiah(kembalianVal)}</td></tr>`;
+                    }
                 }
 
                 pagesHtml += `
