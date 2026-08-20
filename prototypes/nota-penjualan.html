@@ -24,14 +24,15 @@
             min-height: 140mm;
             box-sizing: border-box;
             overflow: hidden;
+            padding: 3mm 4.5mm;
         }
 
         /* Kompresi padding dan line-height sel tabel agar presisi */
         .invoice-card td,
         .invoice-card th {
-            padding-top: 1px !important;
-            padding-bottom: 1px !important;
-            line-height: 1.2 !important;
+            padding-top: 1.5px !important;
+            padding-bottom: 1.5px !important;
+            line-height: 1.25 !important;
         }
 
         /* Sembunyikan baris PPN Exclude secara default untuk menghemat space */
@@ -62,7 +63,7 @@
                 max-width: 210mm !important;
                 border: none !important;
                 box-shadow: none !important;
-                padding: 2.5mm 4mm !important;
+                padding: 3mm 4.5mm !important;
                 margin: 0 !important;
                 border-radius: 0 !important;
             }
@@ -70,7 +71,7 @@
 
         /* Mengunci tinggi baris tabel agar pas 10 produk dengan font lebih besar */
         .fixed-row {
-            height: 15px;
+            height: 17px;
         }
 
         .line-clamp-2 {
@@ -285,117 +286,120 @@
             </div>
         </div>
 
-        <!-- SECTION 3: FOOTER (Catatan, TTD & Kalkulasi Finansial Sejajar Horizontal) -->
-        <div class="flex justify-between items-start pt-0.5 border-t border-slate-300">
+        <!-- FOOTER ATAU HALAMAN SELANJUTNYA -->
+        <div class="mt-1 flex-1 flex flex-col justify-between">
+            <!-- SECTION 3: FOOTER (Catatan, TTD & Kalkulasi Finansial Sejajar Horizontal) -->
+            <div class="flex justify-between items-start pt-1 border-t border-slate-300">
 
-            <!-- Sisi Kiri (~56%): Catatan & Kolom Tanda Tangan 3 Pihak -->
-            <div class="w-[56%] flex flex-col justify-between self-stretch pr-3">
-                <!-- Catatan Transaksi (Teks Saja Tanpa Kotak) -->
-                <div>
-                    <p class="font-bold text-slate-700 text-[10px]">
-                        Catatan :
-                    </p>
+                <!-- Sisi Kiri (~52%): Catatan & Kolom Tanda Tangan 3 Pihak -->
+                <div class="w-[52%] flex flex-col justify-between self-stretch pr-3">
+                    <!-- Catatan Transaksi -->
+                    <div>
+                        <p class="font-bold text-slate-700 text-[11px]">
+                            Catatan :
+                        </p>
+                    </div>
+
+                    <!-- 3 Kolom Tanda Tangan: Pihak Toko, Pengirim, Penerima -->
+                    <div class="grid grid-cols-3 gap-2 text-center pt-1 mt-auto">
+                        <div>
+                            <p class="font-semibold text-slate-800 text-[11px]">Hormat Kami,</p>
+                            <div class="h-8"></div>
+                            <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                            <p class="mt-0.5 text-[9.5px] text-slate-500 font-medium">( Pihak Toko )</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-800 text-[11px]">Pengirim,</p>
+                            <div class="h-8"></div>
+                            <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                            <p class="mt-0.5 text-[9.5px] text-slate-500 font-medium">( Sopir / Kurir )</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-800 text-[11px]">Penerima,</p>
+                            <div class="h-8"></div>
+                            <div class="mx-auto w-[85%] border-b border-slate-400"></div>
+                            <p class="mt-0.5 text-[9.5px] text-slate-500 font-medium">( Nama Jelas )</p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- 3 Kolom Tanda Tangan: Pihak Toko, Pengirim, Penerima -->
-                <div class="grid grid-cols-3 gap-2 text-center pt-0.5 mt-auto">
-                    <div>
-                        <p class="font-semibold text-slate-800 text-[10px]">Hormat Kami,</p>
-                        <div class="h-4"></div>
-                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
-                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Pihak Toko )</p>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-slate-800 text-[10px]">Pengirim,</p>
-                        <div class="h-4"></div>
-                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
-                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Sopir / Kurir )</p>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-slate-800 text-[10px]">Penerima,</p>
-                        <div class="h-4"></div>
-                        <div class="mx-auto w-[85%] border-b border-slate-400"></div>
-                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Nama Jelas )</p>
-                    </div>
+                <!-- Sisi Kanan (~46%): Kalkulasi Finansial Gelondongan -->
+                <div class="w-[46%] text-slate-700">
+                    <table class="w-full text-right text-[12px]">
+                        <tbody>
+                            <!-- SUB TOTAL -->
+                            <tr class="ppn-include-row border-b border-slate-100">
+                                <td class="py-[2px] pr-3 text-slate-500 font-medium text-[12px]">Sub Total</td>
+                                <td class="w-32 font-bold py-[2px] text-slate-800 text-[12px]">1,990,000</td>
+                            </tr>
+                            <tr class="ppn-exclude-row">
+                                <td class="py-[2px] pr-3 text-slate-500 text-[12px]">Sub Total Non PPN</td>
+                                <td class="w-32 font-semibold py-[2px] text-slate-800 text-[12px]">990,000</td>
+                            </tr>
+                            <tr class="ppn-exclude-row border-b border-slate-100">
+                                <td class="py-[2px] pr-3 text-slate-500 text-[12px]">Sub Total DPP PPN</td>
+                                <td class="w-32 font-semibold py-[2px] text-slate-800 text-[12px]">1,000,000</td>
+                            </tr>
+
+                            <!-- BIAYA & DISKON GELONDONGAN -->
+                            <tr>
+                                <td class="py-[2px] pr-3 text-slate-500 text-[12px]">Diskon Pesanan (-)</td>
+                                <td class="py-[2px] text-slate-700 font-medium text-[12px]">-20,000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-[2px] pr-3 text-slate-500 text-[12px]">Biaya Kirim (+)</td>
+                                <td class="py-[2px] text-slate-800 font-medium text-[12px]">10,000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-[2px] pr-3 text-slate-500 text-[12px]">Biaya Tambahan (+)</td>
+                                <td class="py-[2px] text-slate-800 font-medium text-[12px]">10,000</td>
+                            </tr>
+
+                            <!-- PPN EXCLUDE -->
+                            <tr class="ppn-exclude-row border-b border-slate-200">
+                                <td class="py-[2px] pr-3 text-slate-500 text-[12px]">PPN (11%) (+)</td>
+                                <td class="py-[2px] text-slate-800 font-semibold text-[12px]">111,100</td>
+                            </tr>
+                            <tr>
+                                <td class="py-[2px] pr-3 text-slate-500 text-[12px]">Total MDR (+)</td>
+                                <td class="py-[2px] text-slate-800 font-semibold text-[12px]">14,318</td>
+                            </tr>
+
+                            <!-- GRAND TOTAL -->
+                            <tr class="font-bold text-slate-900 border-t border-slate-300 text-[13.5px]">
+                                <td class="pt-1 pb-0.5 pr-3">TOTAL Rp.</td>
+                                <td class="pt-1 pb-0.5 text-slate-950 font-extrabold text-[13.5px]">2,115,418</td>
+                            </tr>
+                            <tr class="font-bold text-slate-900 border-b border-slate-200 pb-1 text-[13.5px]">
+                                <td class="py-0.5 pr-3">Dibayar</td>
+                                <td class="py-0.5 text-slate-900 text-[13.5px]">0</td>
+                            </tr>
+
+                            <!-- PPN INCLUDE INFO -->
+                            <tr class="ppn-include-row text-slate-400 text-[10px]">
+                                <td class="pt-0.5 pr-3">[Incl] DPP / PPN (11%)</td>
+                                <td class="pt-0.5 font-medium">900,901 / 99,099</td>
+                            </tr>
+
+                            <!-- SISA PIUTANG & KEMBALIAN -->
+                            <tr>
+                                <td class="pt-0.5 pr-3 text-slate-500 font-medium text-[12px]">Sisa Piutang</td>
+                                <td class="pt-0.5 font-semibold text-slate-800 text-[12px]">2,115,418</td>
+                            </tr>
+                            <tr class="font-bold text-slate-900 text-[13px]">
+                                <td class="py-0.5 pr-3">Kembalian</td>
+                                <td class="py-0.5 font-bold text-slate-900 text-[13px]">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+
             </div>
 
-            <!-- Sisi Kanan (~42%): Kalkulasi Finansial Gelondongan -->
-            <div class="w-[42%] text-slate-700">
-                <table class="w-full text-right text-[11px]">
-                    <tbody>
-                        <!-- SUB TOTAL -->
-                        <tr class="ppn-include-row border-b border-slate-100">
-                            <td class="py-0.5 pr-3 text-slate-500 font-medium">Sub Total</td>
-                            <td class="w-28 font-bold py-0.5 text-slate-800 text-[12px]">1,990,000</td>
-                        </tr>
-                        <tr class="ppn-exclude-row">
-                            <td class="py-0.5 pr-3 text-slate-500">Sub Total Non PPN</td>
-                            <td class="w-28 font-semibold py-0.5 text-slate-800">990,000</td>
-                        </tr>
-                        <tr class="ppn-exclude-row border-b border-slate-100">
-                            <td class="py-0.5 pr-3 text-slate-500">Sub Total DPP PPN</td>
-                            <td class="w-28 font-semibold py-0.5 text-slate-800">1,000,000</td>
-                        </tr>
-
-                        <!-- BIAYA & DISKON GELONDONGAN -->
-                        <tr>
-                            <td class="py-0.5 pr-3 text-slate-500">Diskon Pesanan (-)</td>
-                            <td class="py-0.5 text-slate-700 font-medium">-20,000</td>
-                        </tr>
-                        <tr>
-                            <td class="py-0.5 pr-3 text-slate-500">Biaya Kirim (+)</td>
-                            <td class="py-0.5 text-slate-800 font-medium">10,000</td>
-                        </tr>
-                        <tr>
-                            <td class="py-0.5 pr-3 text-slate-500">Biaya Tambahan (+)</td>
-                            <td class="py-0.5 text-slate-800 font-medium">10,000</td>
-                        </tr>
-
-                        <!-- PPN EXCLUDE -->
-                        <tr class="ppn-exclude-row border-b border-slate-200">
-                            <td class="py-0.5 pr-3 text-slate-500">PPN (11%) (+)</td>
-                            <td class="py-0.5 pb-0.5 text-slate-800 font-semibold">111,100</td>
-                        </tr>
-                        <tr>
-                            <td class="py-0.5 pr-3 text-slate-500">Total MDR (+)</td>
-                            <td class="py-0.5 text-slate-800 font-semibold">14,318</td>
-                        </tr>
-
-                        <!-- GRAND TOTAL -->
-                        <tr class="font-bold text-slate-900 border-t border-slate-300 text-[12px]">
-                            <td class="pt-0.5 pr-3">TOTAL Rp.</td>
-                            <td class="pt-0.5 text-slate-950 font-extrabold text-[12px]">2,115,418</td>
-                        </tr>
-                        <tr class="font-bold text-slate-900 border-b border-slate-200 pb-0.5 text-[12px]">
-                            <td class="py-0.5 pr-3">Dibayar</td>
-                            <td class="py-0.5 text-slate-900 text-[12px]">0</td>
-                        </tr>
-
-                        <!-- PPN INCLUDE INFO -->
-                        <tr class="ppn-include-row text-slate-400 text-[9.5px]">
-                            <td class="pt-0.5 pr-3">[Incl] DPP / PPN (11%)</td>
-                            <td class="pt-0.5 font-medium">900,901 / 99,099</td>
-                        </tr>
-
-                        <!-- SISA PIUTANG & KEMBALIAN -->
-                        <tr>
-                            <td class="pt-0.5 pr-3 text-slate-500 font-medium">Sisa Piutang</td>
-                            <td class="pt-0.5 font-medium text-slate-800">2,115,418</td>
-                        </tr>
-                        <tr class="font-bold text-slate-900 text-[12px]">
-                            <td class="py-0.5 pr-3">Kembalian</td>
-                            <td class="py-0.5 font-bold text-slate-900 text-[12px]">0</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Halaman / Page Indicator -->
+            <div class="text-right text-[8.5px] text-slate-400 font-semibold tracking-wider pt-0.5">
+                HALAMAN 1 DARI 1
             </div>
-
-        </div>
-
-        <!-- Halaman / Page Indicator -->
-        <div class="text-right text-[8.5px] text-slate-400 font-semibold tracking-wider pt-0.5">
-            HALAMAN 1 DARI 1
         </div>
 
     </div>

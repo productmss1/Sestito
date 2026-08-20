@@ -22,7 +22,7 @@
             height: 140mm;
             max-width: 210mm;
             min-height: 140mm;
-            padding: 2.5mm 4mm;
+            padding: 3mm 4.5mm;
             box-sizing: border-box;
             background-color: white;
             position: relative;
@@ -55,7 +55,7 @@
                 border: none !important;
                 box-shadow: none !important;
                 margin: 0 !important;
-                padding: 2.5mm 4mm !important;
+                padding: 3mm 4.5mm !important;
                 width: 210mm !important;
                 height: 140mm !important;
                 box-sizing: border-box !important;
@@ -76,16 +76,16 @@
 
         /* Baris produk dan baris kosong pelengkap tabel */
         .fixed-row td {
-            height: 15px;
+            height: 17px;
         }
 
         /* Rule baku agar teks tabel nota tidak pernah terpotong atas/bawah */
         .print-container table td,
         .print-container table th {
-            line-height: 1.2 !important;
+            line-height: 1.25 !important;
             vertical-align: middle !important;
-            padding-top: 1px !important;
-            padding-bottom: 1px !important;
+            padding-top: 1.5px !important;
+            padding-bottom: 1.5px !important;
         }
 
         .truncate-text {
@@ -146,33 +146,39 @@
 
                 <hr class="border-slate-700/60">
 
-                <!-- A. Status PPN Toko -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Status PPN Toko</label>
-                    <select id="select-ppn-toko"
-                        class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
-                        <option value="aktif" selected>PPN Toko Aktif</option>
-                        <option value="tidak">PPN Toko Tidak Aktif (Non-PPN)</option>
-                    </select>
+                <!-- B. Pengaturan Pajak Toko & Barang -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Status PPN Toko</label>
+                        <select id="select-ppn-toko"
+                            class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                            <option value="aktif" selected>PPN Toko Aktif (PKP)</option>
+                            <option value="tidak">PPN Toko Tidak Aktif (Non-PKP)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tipe Pajak Toko</label>
+                        <select id="select-ppn"
+                            class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                            <option value="exclude" selected>PPN Exclude (Ditambah Pajak)</option>
+                            <option value="include">PPN Include (Termasuk Pajak)</option>
+                            <option value="non">Non-PPN (Tanpa Pajak)</option>
+                        </select>
+                    </div>
                 </div>
 
-                <!-- B. Tipe Pajak (PPN) -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tipe Transaksi PPN</label>
-                    <select id="select-ppn"
+                <!-- C. Kondisi PPN Barang di Nota -->
+                <div id="wrapper-item-ppn" class="space-y-1.5 bg-slate-900/60 p-3 rounded-lg border border-slate-700/70">
+                    <label class="block text-xs font-semibold text-slate-300">Kondisi PPN Barang di Transaksi</label>
+                    <select id="select-ppn-barang"
                         class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
-                        <option value="non">Non-PPN (Tanpa Pajak)</option>
-                        <option value="include">PPN Include (Sudah Termasuk Pajak)</option>
-                        <option value="exclude" selected>PPN Exclude (Ditambah Pajak)</option>
+                        <option value="all-non">⚪ Semua Barang Bebas PPN (Non-PPN)</option>
+                        <option value="mixed" selected>🟡 Campuran Pajak (Ada barang PPN & Non-PPN)</option>
+                        <option value="all-ppn">🔵 Semua Barang Kena PPN (100% PPN)</option>
                     </select>
-                </div>
-
-                <!-- C. Set Pajak per Item secara Acak -->
-                <div id="wrapper-item-ppn" class="flex items-center gap-2 pl-1">
-                    <input type="checkbox" id="checkbox-mix-ppn" checked
-                        class="w-3.5 h-3.5 rounded accent-blue-500 bg-slate-900 border-slate-700">
-                    <label for="checkbox-mix-ppn" class="text-[11px] font-medium text-slate-400">Simulasikan Campuran
-                        Pajak (Ada barang Non-PPN)</label>
+                    <p id="info-ppn-barang" class="text-[10px] text-slate-400 leading-tight pt-1">
+                        * Mode campuran: Sebagian produk bertanda PPN (✓) dan sebagian bebas PPN.
+                    </p>
                 </div>
 
                 <hr class="border-slate-700/60">
@@ -266,6 +272,12 @@
                             <p id="setup-sisa-tagihan" class="text-xs font-bold text-amber-400 mt-0.5">Rp 0</p>
                         </div>
                     </div>
+
+                    <!-- Live Breakdown Pajak & Biaya -->
+                    <div id="setup-kalkulasi-detail" class="bg-slate-950/60 p-2.5 rounded border border-slate-700/60 text-[10.5px] text-slate-300 space-y-1">
+                        <!-- Di-update dinamis oleh calculateSettingState -->
+                    </div>
+
                     <div id="payment-fields" class="space-y-2">
                         <div id="dynamic-payment-list" class="space-y-2">
                             <!-- Baris pembayaran pertama (default) -->
@@ -451,7 +463,8 @@
         const labelQtyProduk = document.getElementById("label-qty-produk");
         const selectPpnToko = document.getElementById("select-ppn-toko");
         const selectPpn = document.getElementById("select-ppn");
-        const checkboxMixPpn = document.getElementById("checkbox-mix-ppn");
+        const selectPpnBarang = document.getElementById("select-ppn-barang");
+        const infoPpnBarang = document.getElementById("info-ppn-barang");
         const inputDiskon = document.getElementById("input-diskon");
         const inputDiskonItem = document.getElementById("input-diskon-item");
         const checkKirim = document.getElementById("check-kirim");
@@ -464,6 +477,7 @@
         const setupTotalTerbayar = document.getElementById("setup-total-terbayar");
         const setupSisaLabel = document.getElementById("setup-sisa-label");
         const setupSisaTagihan = document.getElementById("setup-sisa-tagihan");
+        const setupKalkulasiDetail = document.getElementById("setup-kalkulasi-detail");
         const subTambahanFields = document.getElementById("sub-tambahan-fields");
         const dynamicTambahanList = document.getElementById("dynamic-tambahan-list");
         const btnTambahTambahan = document.getElementById("btn-tambah-tambahan");
@@ -679,16 +693,38 @@
             const isPpnTokoAktif = selectPpnToko.value === 'aktif';
             if (isPpnTokoAktif) {
                 selectPpn.disabled = false;
+                if (selectPpn.value === 'non') {
+                    selectPpn.value = 'exclude';
+                }
                 document.getElementById("wrapper-item-ppn").classList.remove("hidden");
             } else {
+                selectPpn.value = 'non';
                 selectPpn.disabled = true;
                 document.getElementById("wrapper-item-ppn").classList.add("hidden");
             }
 
             const ppnType = isPpnTokoAktif ? selectPpn.value : 'non';
+            const statusPpnBarang = selectPpnBarang ? selectPpnBarang.value : 'mixed';
+
+            // Update info text status PPN barang
+            if (infoPpnBarang) {
+                if (!isPpnTokoAktif) {
+                    infoPpnBarang.textContent = "* PPN Toko Tidak Aktif: Seluruh transaksi berstatus Non-PPN.";
+                    infoPpnBarang.className = "text-[10px] text-slate-500 leading-tight pt-1";
+                } else if (statusPpnBarang === 'all-non') {
+                    infoPpnBarang.textContent = "💡 Semua barang bebas PPN (tanpa ✓). PPN 11% hanya dikenakan pada Ongkir & Biaya Tambahan (jika ada).";
+                    infoPpnBarang.className = "text-[10px] text-amber-300 font-medium leading-tight pt-1";
+                } else if (statusPpnBarang === 'mixed') {
+                    infoPpnBarang.textContent = "* Mode campuran: Sebagian produk bertanda PPN (✓) dan sebagian bebas PPN.";
+                    infoPpnBarang.className = "text-[10px] text-slate-400 leading-tight pt-1";
+                } else if (statusPpnBarang === 'all-ppn') {
+                    infoPpnBarang.textContent = "✅ 100% Produk dikenakan PPN (semua bertanda ✓ di tabel).";
+                    infoPpnBarang.className = "text-[10px] text-emerald-400 font-medium leading-tight pt-1";
+                }
+            }
+
             const diskonPesanan = Math.max(0, parseInt(inputDiskon.value) || 0);
             const diskonItem1 = Math.max(0, parseInt(inputDiskonItem.value) || 0);
-            const isMixPpn = checkboxMixPpn.checked;
             const isKirim = checkKirim.checked;
             const biayaKirim = isKirim ? (Math.max(0, parseInt(inputKirim.value) || 0)) : 0;
             const isTambahan = checkTambahan.checked;
@@ -706,29 +742,42 @@
             // Hitung subtotal produk
             let subtotalNonPpn = 0;
             let subtotalDppPpn = 0;
+            let countProdukPpn = 0;
+            let countProdukNonPpn = 0;
+
             for (let i = 0; i < qty; i++) {
                 if (dummyProducts[i]) {
                     const prod = dummyProducts[i];
                     const diskon = (i === 0) ? diskonItem1 : (prod.diskon || 0);
                     const totalBaris = (prod.price * prod.qty) - diskon;
                     let barangKenaPpn = false;
-                    if (ppnType !== 'non') {
-                        barangKenaPpn = isMixPpn ? prod.ppn : false;
+                    if (isPpnTokoAktif && ppnType !== 'non') {
+                        if (statusPpnBarang === 'all-ppn') {
+                            barangKenaPpn = true;
+                        } else if (statusPpnBarang === 'all-non') {
+                            barangKenaPpn = false;
+                        } else if (statusPpnBarang === 'mixed') {
+                            barangKenaPpn = prod.ppn;
+                        }
                     }
                     if (barangKenaPpn) {
                         subtotalDppPpn += totalBaris;
+                        countProdukPpn++;
                     } else {
                         subtotalNonPpn += totalBaris;
+                        countProdukNonPpn++;
                     }
                 }
             }
 
             // Hitung PPN
             let nominalPpn = 0;
-            if (ppnType === 'exclude') {
-                nominalPpn = Math.round((subtotalDppPpn + biayaKirim + totalTambahan) * 0.11);
-            } else if (ppnType === 'include') {
-                nominalPpn = Math.round((biayaKirim + totalTambahan) * 0.11);
+            if (isPpnTokoAktif) {
+                if (ppnType === 'exclude') {
+                    nominalPpn = Math.round((subtotalDppPpn + biayaKirim + totalTambahan) * 0.11);
+                } else if (ppnType === 'include') {
+                    nominalPpn = Math.round((biayaKirim + totalTambahan) * 0.11);
+                }
             }
 
             const baseTotal = (subtotalNonPpn + subtotalDppPpn) - diskonPesanan + biayaKirim + totalTambahan;
@@ -774,6 +823,27 @@
                 setupSisaLabel.className = "text-[10px] text-slate-400 font-medium";
                 setupSisaTagihan.textContent = "Rp 0";
                 setupSisaTagihan.className = "text-xs font-bold text-emerald-500 mt-0.5";
+            }
+
+            // Update Live Breakdown Box
+            if (setupKalkulasiDetail) {
+                let rowsDetail = [];
+                if (isPpnTokoAktif && ppnType === 'exclude') {
+                    if (countProdukNonPpn > 0) rowsDetail.push(`<div class="flex justify-between"><span>Sub Total Non PPN (${countProdukNonPpn} item):</span><span class="font-medium text-white">Rp ${formatRupiah(subtotalNonPpn)}</span></div>`);
+                    if (countProdukPpn > 0) rowsDetail.push(`<div class="flex justify-between"><span>Sub Total DPP PPN (${countProdukPpn} item):</span><span class="font-medium text-white">Rp ${formatRupiah(subtotalDppPpn)}</span></div>`);
+                } else {
+                    rowsDetail.push(`<div class="flex justify-between"><span>Sub Total Produk:</span><span class="font-medium text-white">Rp ${formatRupiah(subtotalNonPpn + subtotalDppPpn)}</span></div>`);
+                }
+                if (diskonPesanan > 0) rowsDetail.push(`<div class="flex justify-between text-rose-300"><span>Diskon Pesanan (-):</span><span>-Rp ${formatRupiah(diskonPesanan)}</span></div>`);
+                if (biayaKirim > 0) rowsDetail.push(`<div class="flex justify-between"><span>Biaya Kirim (+):</span><span class="font-medium text-white">Rp ${formatRupiah(biayaKirim)}</span></div>`);
+                if (totalTambahan > 0) rowsDetail.push(`<div class="flex justify-between"><span>Biaya Tambahan (+):</span><span class="font-medium text-white">Rp ${formatRupiah(totalTambahan)}</span></div>`);
+                if (isPpnTokoAktif && nominalPpn > 0) {
+                    const ketPpn = (countProdukPpn === 0 && (biayaKirim > 0 || totalTambahan > 0)) ? " (atas Ongkir & Biaya Tambahan)" : "";
+                    rowsDetail.push(`<div class="flex justify-between text-blue-300 font-semibold"><span>PPN (11%) (+)${ketPpn}:</span><span>Rp ${formatRupiah(nominalPpn)}</span></div>`);
+                }
+                if (totalMdr > 0) rowsDetail.push(`<div class="flex justify-between text-amber-300"><span>Total MDR (+):</span><span>Rp ${formatRupiah(totalMdr)}</span></div>`);
+                rowsDetail.push(`<div class="flex justify-between font-bold text-white border-t border-slate-700/80 pt-1 mt-1"><span>TOTAL Tagihan:</span><span class="text-amber-300">Rp ${formatRupiah(targetTagihan)}</span></div>`);
+                setupKalkulasiDetail.innerHTML = rowsDetail.join("");
             }
 
             const limitHalaman = 10;
@@ -920,7 +990,7 @@
             const qty = parseInt(inputQtyProduk.value);
             const isPpnTokoAktif = selectPpnToko.value === 'aktif';
             const ppnType = isPpnTokoAktif ? selectPpn.value : 'non';
-            const isMixPpn = checkboxMixPpn.checked;
+            const statusPpnBarang = selectPpnBarang ? selectPpnBarang.value : 'mixed';
             const diskonPesanan = Math.max(0, parseInt(inputDiskon.value) || 0);
             const diskonItem1 = Math.max(0, parseInt(inputDiskonItem.value) || 0);
             const isKirim = checkKirim.checked;
@@ -941,35 +1011,47 @@
             // Hitung subtotal keseluruhan produk terlebih dahulu
             let subtotalNonPpn = 0;
             let subtotalDppPpn = 0;
+            let countProdukPpn = 0;
+            let countProdukNonPpn = 0;
+
             for (let i = 0; i < qty; i++) {
                 if (dummyProducts[i]) {
                     const prod = dummyProducts[i];
                     const diskon = (i === 0) ? diskonItem1 : (prod.diskon || 0);
                     const totalBaris = (prod.price * prod.qty) - diskon;
                     let barangKenaPpn = false;
-                    if (ppnType !== 'non') {
-                        barangKenaPpn = isMixPpn ? prod.ppn : false;
+                    if (isPpnTokoAktif && ppnType !== 'non') {
+                        if (statusPpnBarang === 'all-ppn') {
+                            barangKenaPpn = true;
+                        } else if (statusPpnBarang === 'all-non') {
+                            barangKenaPpn = false;
+                        } else if (statusPpnBarang === 'mixed') {
+                            barangKenaPpn = prod.ppn;
+                        }
                     }
                     if (barangKenaPpn) {
                         subtotalDppPpn += totalBaris;
+                        countProdukPpn++;
                     } else {
                         subtotalNonPpn += totalBaris;
+                        countProdukNonPpn++;
                     }
                 }
             }
 
             let nominalPpn = 0;
             let showPpnRow = false;
-            if (ppnType === 'exclude') {
-                nominalPpn = Math.round((subtotalDppPpn + biayaKirim + totalTambahan) * 0.11);
-                const adaProdukPpn = qty > 0 && dummyProducts.slice(0, qty).some((prod, i) => isMixPpn ? prod.ppn : false);
-                if (adaProdukPpn || biayaKirim > 0 || totalTambahan > 0) {
-                    showPpnRow = true;
-                }
-            } else if (ppnType === 'include') {
-                nominalPpn = Math.round((biayaKirim + totalTambahan) * 0.11);
-                if (biayaKirim > 0 || totalTambahan > 0) {
-                    showPpnRow = true;
+            if (isPpnTokoAktif) {
+                if (ppnType === 'exclude') {
+                    nominalPpn = Math.round((subtotalDppPpn + biayaKirim + totalTambahan) * 0.11);
+                    if (countProdukPpn > 0 || biayaKirim > 0 || totalTambahan > 0) {
+                        showPpnRow = true;
+                    }
+                } else if (ppnType === 'include') {
+                    nominalPpn = Math.round((biayaKirim + totalTambahan) * 0.11);
+                    if (biayaKirim > 0 || totalTambahan > 0) {
+                        showPpnRow = true;
+                    }
                 }
             }
 
@@ -1064,7 +1146,16 @@
                         const prod = dummyProducts[prodIdx];
                         const diskon = (prodIdx === 0) ? diskonItem1 : (prod.diskon || 0);
                         const totalBaris = (prod.price * prod.qty) - diskon;
-                        let barangKenaPpn = (ppnType !== 'non') ? (isMixPpn ? prod.ppn : false) : false;
+                        let barangKenaPpn = false;
+                        if (isPpnTokoAktif && ppnType !== 'non') {
+                            if (statusPpnBarang === 'all-ppn') {
+                                barangKenaPpn = true;
+                            } else if (statusPpnBarang === 'all-non') {
+                                barangKenaPpn = false;
+                            } else if (statusPpnBarang === 'mixed') {
+                                barangKenaPpn = prod.ppn;
+                            }
+                        }
                         htmlProduk += `
                         <tr class="fixed-row align-middle hover:bg-slate-50/50 transition-colors">
                             <td class="text-center font-medium text-slate-500">${prodIdx + 1}</td>
@@ -1093,42 +1184,48 @@
 
                 let footerHtml = "";
                 if (page.showFooter) {
-                    if (ppnType === 'exclude') {
-                        const adaNonPpn = qty > 0 && dummyProducts.slice(0, qty).some(p => isMixPpn ? !p.ppn : true);
-                        const adaPpn = qty > 0 && dummyProducts.slice(0, qty).some(p => isMixPpn ? p.ppn : false);
-                        if (adaNonPpn) footerHtml += `<tr class="ppn-exclude-row"><td class="py-0.5 pr-3 text-slate-500">Sub Total Non PPN</td><td class="w-28 font-semibold py-0.5 text-slate-800">${formatRupiah(subtotalNonPpn)}</td></tr>`;
-                        if (adaPpn) footerHtml += `<tr class="ppn-exclude-row border-b border-slate-100"><td class="py-0.5 pr-3 text-slate-500">Sub Total DPP PPN</td><td class="w-28 font-semibold py-0.5 text-slate-800">${formatRupiah(subtotalDppPpn)}</td></tr>`;
+                    if (isPpnTokoAktif && ppnType === 'exclude') {
+                        const adaNonPpn = countProdukNonPpn > 0;
+                        const adaPpn = countProdukPpn > 0;
+                        if (adaNonPpn && adaPpn) {
+                            footerHtml += `<tr class="ppn-exclude-row"><td class="py-[2px] pr-3 text-slate-500 text-[12px]">Sub Total Non PPN</td><td class="w-32 font-semibold py-[2px] text-slate-800 text-[12px]">${formatRupiah(subtotalNonPpn)}</td></tr>`;
+                            footerHtml += `<tr class="ppn-exclude-row border-b border-slate-100"><td class="py-[2px] pr-3 text-slate-500 text-[12px]">Sub Total DPP PPN</td><td class="w-32 font-semibold py-[2px] text-slate-800 text-[12px]">${formatRupiah(subtotalDppPpn)}</td></tr>`;
+                        } else if (adaNonPpn && !adaPpn) {
+                            footerHtml += `<tr class="ppn-exclude-row border-b border-slate-100"><td class="py-[2px] pr-3 text-slate-500 font-medium text-[12px]">Sub Total Non PPN</td><td class="w-32 font-bold py-[2px] text-slate-800 text-[12px]">${formatRupiah(subtotalNonPpn)}</td></tr>`;
+                        } else if (!adaNonPpn && adaPpn) {
+                            footerHtml += `<tr class="ppn-exclude-row border-b border-slate-100"><td class="py-[2px] pr-3 text-slate-500 font-medium text-[12px]">Sub Total DPP PPN</td><td class="w-32 font-bold py-[2px] text-slate-800 text-[12px]">${formatRupiah(subtotalDppPpn)}</td></tr>`;
+                        }
                     } else {
-                        footerHtml += `<tr class="ppn-include-row border-b border-slate-100"><td class="py-0.5 pr-3 text-slate-500 font-medium">Sub Total</td><td class="w-28 font-bold py-0.5 text-slate-800 text-[12px]">${formatRupiah(subtotalNonPpn + subtotalDppPpn)}</td></tr>`;
+                        footerHtml += `<tr class="ppn-include-row border-b border-slate-100"><td class="py-[2px] pr-3 text-slate-500 font-medium text-[12px]">Sub Total</td><td class="w-32 font-bold py-[2px] text-slate-800 text-[12px]">${formatRupiah(subtotalNonPpn + subtotalDppPpn)}</td></tr>`;
                     }
                     if (diskonPesanan > 0) {
-                        footerHtml += `<tr><td class="py-0.5 pr-3 text-slate-500">Diskon Pesanan (-)</td><td class="py-0.5 text-slate-700 font-medium">-${formatRupiah(diskonPesanan)}</td></tr>`;
+                        footerHtml += `<tr><td class="py-[2px] pr-3 text-slate-500 text-[12px]">Diskon Pesanan (-)</td><td class="py-[2px] text-slate-700 font-medium text-[12px]">-${formatRupiah(diskonPesanan)}</td></tr>`;
                     }
                     if (biayaKirim > 0) {
-                        footerHtml += `<tr><td class="py-0.5 pr-3 text-slate-500">Biaya Kirim (+)</td><td class="py-0.5 text-slate-800 font-medium">${formatRupiah(biayaKirim)}</td></tr>`;
+                        footerHtml += `<tr><td class="py-[2px] pr-3 text-slate-500 text-[12px]">Biaya Kirim (+)</td><td class="py-[2px] text-slate-800 font-medium text-[12px]">${formatRupiah(biayaKirim)}</td></tr>`;
                     }
                     if (totalTambahan > 0) {
-                        footerHtml += `<tr><td class="py-0.5 pr-3 text-slate-500">Biaya Tambahan (+)</td><td class="py-0.5 text-slate-800 font-medium">${formatRupiah(totalTambahan)}</td></tr>`;
+                        footerHtml += `<tr><td class="py-[2px] pr-3 text-slate-500 text-[12px]">Biaya Tambahan (+)</td><td class="py-[2px] text-slate-800 font-medium text-[12px]">${formatRupiah(totalTambahan)}</td></tr>`;
                     }
-                    if (ppnType === 'exclude' && showPpnRow) {
-                        footerHtml += `<tr class="ppn-exclude-row border-b border-slate-200"><td class="py-0.5 pr-3 text-slate-500">PPN (11%) (+)</td><td class="py-0.5 pb-0.5 text-slate-800 font-semibold">${formatRupiah(nominalPpn)}</td></tr>`;
+                    if (isPpnTokoAktif && showPpnRow && nominalPpn > 0) {
+                        footerHtml += `<tr class="ppn-exclude-row border-b border-slate-200"><td class="py-[2px] pr-3 text-slate-500 text-[12px]">PPN (11%) (+)</td><td class="py-[2px] text-slate-800 font-semibold text-[12px]">${formatRupiah(nominalPpn)}</td></tr>`;
                     }
                     if (totalMdr > 0) {
-                        footerHtml += `<tr><td class="py-0.5 pr-3 text-slate-500">Total MDR (+)</td><td class="py-0.5 text-slate-800 font-semibold">${formatRupiah(totalMdr)}</td></tr>`;
+                        footerHtml += `<tr><td class="py-[2px] pr-3 text-slate-500 text-[12px]">Total MDR (+)</td><td class="py-[2px] text-slate-800 font-semibold text-[12px]">${formatRupiah(totalMdr)}</td></tr>`;
                     }
-                    footerHtml += `<tr class="font-bold text-slate-900 border-t border-slate-300 text-[12px]"><td class="pt-0.5 pr-3">TOTAL Rp.</td><td class="pt-0.5 text-slate-950 font-extrabold text-[12px]">${formatRupiah(grandTotalWithMdr)}</td></tr>`;
-                    footerHtml += `<tr class="font-bold text-slate-900 border-b border-slate-200 pb-0.5 text-[12px]"><td class="py-0.5 pr-3">Dibayar</td><td class="py-0.5 text-slate-900 text-[12px]">${formatRupiah(totalActualPaid)}</td></tr>`;
+                    footerHtml += `<tr class="font-bold text-slate-900 border-t border-slate-300 text-[13.5px]"><td class="pt-1 pb-0.5 pr-3">TOTAL Rp.</td><td class="pt-1 pb-0.5 text-slate-950 font-extrabold text-[13.5px]">${formatRupiah(grandTotalWithMdr)}</td></tr>`;
+                    footerHtml += `<tr class="font-bold text-slate-900 border-b border-slate-200 pb-1 text-[13.5px]"><td class="py-0.5 pr-3">Dibayar</td><td class="py-0.5 text-slate-900 text-[13.5px]">${formatRupiah(totalActualPaid)}</td></tr>`;
 
-                    if (ppnType === 'include' && showPpnRow) {
+                    if (isPpnTokoAktif && ppnType === 'include' && countProdukPpn > 0) {
                         const nominalPpnInclude = Math.round(subtotalDppPpn * 11 / 111);
-                        footerHtml += `<tr class="ppn-include-row text-slate-400 text-[9.5px]"><td class="pt-0.5 pr-3">[Incl] DPP / PPN (11%)</td><td class="pt-0.5 font-medium">${formatRupiah(subtotalDppPpn - nominalPpnInclude)} / ${formatRupiah(nominalPpnInclude)}</td></tr>`;
+                        footerHtml += `<tr class="ppn-include-row text-slate-400 text-[10px]"><td class="pt-0.5 pr-3">[Incl] DPP / PPN (11%)</td><td class="pt-0.5 font-medium">${formatRupiah(subtotalDppPpn - nominalPpnInclude)} / ${formatRupiah(nominalPpnInclude)}</td></tr>`;
                     }
 
                     if (sisaPiutangVal > 0) {
-                        footerHtml += `<tr><td class="pt-0.5 pr-3 text-slate-500 font-medium">Sisa Piutang</td><td class="pt-0.5 font-medium text-slate-800">${formatRupiah(sisaPiutangVal)}</td></tr>`;
+                        footerHtml += `<tr><td class="pt-0.5 pr-3 text-slate-500 font-medium text-[12px]">Sisa Piutang</td><td class="pt-0.5 font-semibold text-slate-800 text-[12px]">${formatRupiah(sisaPiutangVal)}</td></tr>`;
                     }
                     if (kembalianVal > 0) {
-                        footerHtml += `<tr class="font-bold text-slate-900 text-[12px]"><td class="py-0.5 pr-3">Kembalian</td><td class="py-0.5 font-bold text-slate-900 text-[12px]">${formatRupiah(kembalianVal)}</td></tr>`;
+                        footerHtml += `<tr class="font-bold text-slate-900 text-[13px]"><td class="py-0.5 pr-3">Kembalian</td><td class="py-0.5 font-bold text-slate-900 text-[13px]">${formatRupiah(kembalianVal)}</td></tr>`;
                     }
                 }
 
@@ -1136,7 +1233,7 @@
                 <div class="print-container text-slate-800 relative flex flex-col justify-between flex-shrink-0">
                     <div>
                         <!-- SECTION 1: HEADER (Identitas Toko & Pelanggan) -->
-                        <div class="mb-1 grid grid-cols-2 gap-3 items-start">
+                        <div class="mb-1.5 grid grid-cols-2 gap-3 items-start">
                             <!-- Sisi Kiri: Profil Toko dengan Logo -->
                             <div class="flex items-start gap-2.5">
                                 <div class="w-[50px] h-[50px] flex-shrink-0 border border-slate-800 flex items-center justify-center font-bold text-[12px] text-slate-800 bg-white">
@@ -1184,8 +1281,8 @@
                             </div>
                         </div>
 
-                        <!-- SECTION 2: TABEL PRODUK (Kapasitas 10 Baris - Tanpa Garis Baris) -->
-                        <div class="mb-0.5">
+                        <!-- SECTION 2: TABEL PRODUK (Kapasitas 10 Baris) -->
+                        <div>
                             <table class="w-full border-collapse text-left text-[12px]">
                                 <thead>
                                     <tr class="border-y border-slate-800 bg-slate-50 text-[12px] font-bold text-slate-800 uppercase tracking-wider">
@@ -1207,44 +1304,44 @@
                     </div>
 
                     <!-- FOOTER ATAU HALAMAN SELANJUTNYA -->
-                    <div>
+                    <div class="mt-1 flex-1 flex flex-col justify-between">
                         <!-- SECTION 3: FOOTER (Catatan, TTD & Kalkulasi Finansial Sejajar Horizontal) -->
-                        <div class="flex justify-between items-start pt-0.5 border-t border-slate-300">
-                            <!-- Sisi Kiri (~56%): Catatan & Kolom Tanda Tangan 3 Pihak -->
-                            <div class="w-[56%] flex flex-col justify-between self-stretch pr-3">
-                                <!-- Catatan Transaksi (Teks Saja Tanpa Kotak) -->
+                        <div class="flex justify-between items-start pt-1 border-t border-slate-300">
+                            <!-- Sisi Kiri (~52%): Catatan & Kolom Tanda Tangan 3 Pihak -->
+                            <div class="w-[52%] flex flex-col justify-between self-stretch pr-3">
+                                <!-- Catatan Transaksi -->
                                 <div>
-                                    <p class="font-bold text-slate-700 text-[10px]">
+                                    <p class="font-bold text-slate-700 text-[11px]">
                                         Catatan :
                                     </p>
                                 </div>
 
                                 <!-- 3 Kolom Tanda Tangan: Pihak Toko, Pengirim, Penerima -->
-                                <div class="grid grid-cols-3 gap-2 text-center pt-0.5 mt-auto">
+                                <div class="grid grid-cols-3 gap-2 text-center pt-1 mt-auto">
                                     <div>
-                                        <p class="font-semibold text-slate-800 text-[10px]">Hormat Kami,</p>
-                                        <div class="h-4"></div>
+                                        <p class="font-semibold text-slate-800 text-[11px]">Hormat Kami,</p>
+                                        <div class="h-8"></div>
                                         <div class="mx-auto w-[85%] border-b border-slate-400"></div>
-                                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Pihak Toko )</p>
+                                        <p class="mt-0.5 text-[9.5px] text-slate-500 font-medium">( Pihak Toko )</p>
                                     </div>
                                     <div>
-                                        <p class="font-semibold text-slate-800 text-[10px]">Pengirim,</p>
-                                        <div class="h-4"></div>
+                                        <p class="font-semibold text-slate-800 text-[11px]">Pengirim,</p>
+                                        <div class="h-8"></div>
                                         <div class="mx-auto w-[85%] border-b border-slate-400"></div>
-                                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Sopir / Kurir )</p>
+                                        <p class="mt-0.5 text-[9.5px] text-slate-500 font-medium">( Sopir / Kurir )</p>
                                     </div>
                                     <div>
-                                        <p class="font-semibold text-slate-800 text-[10px]">Penerima,</p>
-                                        <div class="h-4"></div>
+                                        <p class="font-semibold text-slate-800 text-[11px]">Penerima,</p>
+                                        <div class="h-8"></div>
                                         <div class="mx-auto w-[85%] border-b border-slate-400"></div>
-                                        <p class="mt-0.5 text-[8.5px] text-slate-400 font-medium">( Nama Jelas )</p>
+                                        <p class="mt-0.5 text-[9.5px] text-slate-500 font-medium">( Nama Jelas )</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Sisi Kanan (~42%): Kalkulasi Finansial Gelondongan -->
-                            <div class="w-[42%] text-slate-700">
-                                <table class="w-full text-right text-[11px]">
+                            <!-- Sisi Kanan (~46%): Kalkulasi Finansial Gelondongan -->
+                            <div class="w-[46%] text-slate-700">
+                                <table class="w-full text-right text-[12px]">
                                     <tbody>
                                         ${footerHtml}
                                     </tbody>
@@ -1298,9 +1395,13 @@
         });
 
         // Event listener untuk update halaman setting real-time
-        const controlElements = [inputQtyProduk, selectPpnToko, selectPpn, checkboxMixPpn, inputDiskon, inputDiskonItem, checkKirim, inputKirim, checkTambahan];
-        controlElements.forEach(el => el.addEventListener("input", calculateSettingState));
-        controlElements.forEach(el => el.addEventListener("change", calculateSettingState));
+        const controlElements = [inputQtyProduk, selectPpnToko, selectPpn, selectPpnBarang, inputDiskon, inputDiskonItem, checkKirim, inputKirim, checkTambahan];
+        controlElements.forEach(el => {
+            if (el) {
+                el.addEventListener("input", calculateSettingState);
+                el.addEventListener("change", calculateSettingState);
+            }
+        });
 
         // Sinkronisasi Status PPN Toko dengan Tipe Pajak PPN
         selectPpnToko.addEventListener("change", () => {
