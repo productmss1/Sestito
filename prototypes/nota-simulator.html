@@ -181,9 +181,27 @@
                     </p>
                 </div>
 
+                <!-- D. Master Promo & Bonus POS (Simulasi 3 Kondisi) -->
+                <div class="space-y-1.5 bg-slate-900/60 p-3 rounded-lg border border-slate-700/70">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-semibold text-slate-300">Simulasi Promo & Bonus POS</label>
+                        <span id="badge-promo-active" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-medium">Reguler</span>
+                    </div>
+                    <select id="select-promo-mode"
+                        class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <option value="none" selected>⛔ Transaksi Reguler (Tanpa Promo/Bonus)</option>
+                        <option value="bonus-manual">🎁 1. Produk Bonus (Rp 0) - Non-Promo</option>
+                        <option value="beli-x-gratis-y">🏷️ 2. Promo Beli X Gratis Y - Master Promo</option>
+                        <option value="bundling">📦 3. Promo Bundling Merdeka - Master Promo</option>
+                    </select>
+                    <p id="info-promo-mode" class="text-[10px] text-slate-400 leading-tight pt-1">
+                        * Mode standar: Daftar produk reguler sesuai slider kuantitas.
+                    </p>
+                </div>
+
                 <hr class="border-slate-700/60">
 
-                <!-- D. Diskon Pesanan & Diskon Item -->
+                <!-- E. Diskon Pesanan & Diskon Item -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Diskon Pesanan</label>
@@ -429,33 +447,33 @@
     <!-- JAVASCRIPT LOGIC                                     -->
     <!-- ==================================================== -->
     <script>
-        // Data Produk Dummy untuk simulasi (hingga 25 produk)
+        // Data Produk Dummy untuk simulasi (hingga 25 produk) dengan nama ringkas (2 suku kata)
         const dummyProducts = [
-            { name: "Cairan Semen Pelapis Kedap Air Sika Top 107 Plus", price: 100000, qty: 10, unit: "Pieces", diskon: 10000, ppn: false },
-            { name: "Cairan Semen Pelapis Kedap Air Sika Top 108 Plus", price: 100000, qty: 10, unit: "Pieces", diskon: 0, ppn: true },
-            { name: "Semen Tiga Roda Portland Pozzolan Cement 50kg", price: 72000, qty: 20, unit: "Sak", diskon: 0, ppn: true },
-            { name: "Besi Beton Polos Diamater 10mm SNI Pjg 12m", price: 89000, qty: 15, unit: "Batang", diskon: 15000, ppn: true },
-            { name: "Cat Tembok Dulux Catylac Interior Putih 5kg", price: 165000, qty: 2, unit: "Galon", diskon: 0, ppn: false },
-            { name: "Kayu Kaso Borneo Ukuran 4x6 Pjg 4m (Isi 6)", price: 120000, qty: 3, unit: "Ikat", diskon: 10000, ppn: false },
-            { name: "Pipa PVC Wavin AW Ukuran 1/2 Inch Biru", price: 18000, qty: 10, unit: "Batang", diskon: 0, ppn: true },
-            { name: "Kawat Ikat Beton (Kawat Bendrat) Roll Kecil", price: 22000, qty: 8, unit: "Roll", diskon: 2000, ppn: false },
-            { name: "Semen Mortar MU-301 Plesteran & Pasang Bata 40kg", price: 68000, qty: 12, unit: "Sak", diskon: 0, ppn: true },
-            { name: "Kuas Cat Tembok Ukuran 4 Inch Gagang Kayu", price: 12500, qty: 6, unit: "Pieces", diskon: 1500, ppn: false },
-            { name: "Papan Gypsum Knauf Plasterboard 9mm x 1.2m x 2.4m", price: 58000, qty: 8, unit: "Lembar", diskon: 3000, ppn: true },
-            { name: "Keramik Platinum 40x40 Bianco Putih Polos", price: 65000, qty: 15, unit: "Dus", diskon: 0, ppn: true },
-            { name: "Seng Gelombang BJLS Gajah 0.20 x 180cm", price: 47000, qty: 10, unit: "Lembar", diskon: 0, ppn: false },
-            { name: "Paku Kayu Ukuran 5cm (Per Dus 10kg)", price: 140000, qty: 1, unit: "Dus", diskon: 5000, ppn: false },
-            { name: "Pasir Pasang Bangunan Ekstra Halus", price: 250000, qty: 2, unit: "Rit/PickUp", diskon: 0, ppn: false },
-            { name: "Batu Split Cor Ukuran 2/3 (Per Kubik)", price: 320000, qty: 1, unit: "M3", diskon: 0, ppn: false },
-            { name: "Triplek Meranti 12mm x 1.22m x 2.44m", price: 145000, qty: 4, unit: "Lembar", diskon: 5000, ppn: true },
-            { name: "Lem Silikon Sealant Netral Dextone Clear", price: 28000, qty: 5, unit: "Tube", diskon: 0, ppn: false },
-            { name: "Kran Air Tembok Stainless 1/2 Inch Onda", price: 42000, qty: 3, unit: "Pieces", diskon: 2000, ppn: true },
-            { name: "Kabel Listrik Eterna NYM 2x1.5mm (50m)", price: 310000, qty: 1, unit: "Roll", diskon: 10000, ppn: true },
-            { name: "Stop Kontak Arde Broco Galleo Putih", price: 19500, qty: 6, unit: "Pieces", diskon: 0, ppn: false },
-            { name: "Saklar Ganda Outbow Broco Seri", price: 21000, qty: 4, unit: "Pieces", diskon: 0, ppn: false },
-            { name: "Tandon Air Plastik Penguin 500 Liter", price: 950000, qty: 1, unit: "Unit", diskon: 25000, ppn: true },
-            { name: "Waterproofing No Drop Abu-Abu 4kg", price: 185000, qty: 2, unit: "Pail", diskon: 0, ppn: false },
-            { name: "Thinner A Special Super Glossy 1 Liter", price: 24000, qty: 4, unit: "Botol", diskon: 0, ppn: false }
+            { name: "Semen Sika", price: 100000, qty: 10, unit: "Pieces", diskon: 10000, ppn: false },
+            { name: "Semen Top", price: 100000, qty: 10, unit: "Pieces", diskon: 0, ppn: true },
+            { name: "Semen TigaRoda", price: 72000, qty: 20, unit: "Sak", diskon: 0, ppn: true },
+            { name: "Besi Beton", price: 89000, qty: 15, unit: "Batang", diskon: 15000, ppn: true },
+            { name: "Cat Dulux", price: 165000, qty: 2, unit: "Galon", diskon: 0, ppn: false },
+            { name: "Kayu Kaso", price: 120000, qty: 3, unit: "Ikat", diskon: 10000, ppn: false },
+            { name: "Pipa PVC", price: 18000, qty: 10, unit: "Batang", diskon: 0, ppn: true },
+            { name: "Kawat Bendrat", price: 22000, qty: 8, unit: "Roll", diskon: 2000, ppn: false },
+            { name: "Semen Mortar", price: 68000, qty: 12, unit: "Sak", diskon: 0, ppn: true },
+            { name: "Kuas Cat", price: 12500, qty: 6, unit: "Pieces", diskon: 1500, ppn: false },
+            { name: "Papan Gypsum", price: 58000, qty: 8, unit: "Lembar", diskon: 3000, ppn: true },
+            { name: "Keramik Platinum", price: 65000, qty: 15, unit: "Dus", diskon: 0, ppn: true },
+            { name: "Seng Gelombang", price: 47000, qty: 10, unit: "Lembar", diskon: 0, ppn: false },
+            { name: "Paku Kayu", price: 140000, qty: 1, unit: "Dus", diskon: 5000, ppn: false },
+            { name: "Pasir Pasang", price: 250000, qty: 2, unit: "Rit/PickUp", diskon: 0, ppn: false },
+            { name: "Batu Split", price: 320000, qty: 1, unit: "M3", diskon: 0, ppn: false },
+            { name: "Triplek Meranti", price: 145000, qty: 4, unit: "Lembar", diskon: 5000, ppn: true },
+            { name: "Lem Silikon", price: 28000, qty: 5, unit: "Tube", diskon: 0, ppn: false },
+            { name: "Kran Air", price: 42000, qty: 3, unit: "Pieces", diskon: 2000, ppn: true },
+            { name: "Kabel Eterna", price: 310000, qty: 1, unit: "Roll", diskon: 10000, ppn: true },
+            { name: "Stop Kontak", price: 19500, qty: 6, unit: "Pieces", diskon: 0, ppn: false },
+            { name: "Saklar Ganda", price: 21000, qty: 4, unit: "Pieces", diskon: 0, ppn: false },
+            { name: "Tandon Penguin", price: 950000, qty: 1, unit: "Unit", diskon: 25000, ppn: true },
+            { name: "Cat NoDrop", price: 185000, qty: 2, unit: "Pail", diskon: 0, ppn: false },
+            { name: "Thinner Special", price: 24000, qty: 4, unit: "Botol", diskon: 0, ppn: false }
         ];
 
         // Elemen Input Setup
@@ -465,6 +483,9 @@
         const selectPpn = document.getElementById("select-ppn");
         const selectPpnBarang = document.getElementById("select-ppn-barang");
         const infoPpnBarang = document.getElementById("info-ppn-barang");
+        const selectPromoMode = document.getElementById("select-promo-mode");
+        const infoPromoMode = document.getElementById("info-promo-mode");
+        const badgePromoActive = document.getElementById("badge-promo-active");
         const inputDiskon = document.getElementById("input-diskon");
         const inputDiskonItem = document.getElementById("input-diskon-item");
         const checkKirim = document.getElementById("check-kirim");
@@ -482,6 +503,95 @@
         const dynamicTambahanList = document.getElementById("dynamic-tambahan-list");
         const btnTambahTambahan = document.getElementById("btn-tambah-tambahan");
         const infoLimitProduk = document.getElementById("info-limit-produk");
+
+        // Helper untuk menghasilkan daftar produk aktif berdasarkan mode promo (3 Kondisi)
+        function getActiveProducts(qty, diskonItem1Input) {
+            const promoMode = selectPromoMode ? selectPromoMode.value : 'none';
+            const products = [];
+
+            if (promoMode === 'bonus-manual') {
+                // Kondisi 1: Produk Bonus Rp 0 (Non-Promo) - Diinput Manual / Standalone POS
+                products.push({
+                    name: "Semen TigaRoda",
+                    price: 72000,
+                    qty: 2,
+                    unit: "Sak",
+                    diskon: 0,
+                    ppn: true
+                });
+                products.push({
+                    name: "Kuas Cat [BONUS]",
+                    price: 0,
+                    qty: 1,
+                    unit: "Pieces",
+                    diskon: 0,
+                    ppn: false // Non-PPN karena DPP = Rp 0
+                });
+                for (let i = 2; i < qty; i++) {
+                    if (dummyProducts[i]) {
+                        products.push({ ...dummyProducts[i] });
+                    }
+                }
+            } else if (promoMode === 'beli-x-gratis-y') {
+                // Kondisi 2: Promo Beli X Gratis Y (Master Promo) - Keduanya disematkan tag [Nama Promo]
+                products.push({
+                    name: "Aqua Galon [Promo Merdeka]",
+                    price: 20000,
+                    qty: 1,
+                    unit: "Galon",
+                    diskon: 0,
+                    ppn: true
+                });
+                products.push({
+                    name: "Kopi Kapal Api [Promo Merdeka]",
+                    price: 0,
+                    qty: 1,
+                    unit: "Pack",
+                    diskon: 0,
+                    ppn: false // Non-PPN karena DPP = Rp 0
+                });
+                for (let i = 2; i < qty; i++) {
+                    if (dummyProducts[i]) {
+                        products.push({ ...dummyProducts[i] });
+                    }
+                }
+            } else if (promoMode === 'bundling') {
+                // Kondisi 3: Promo Bundling Merdeka (Master Promo) - Diskon Proporsional
+                products.push({
+                    name: "Cat Dulux [Promo Bundling Merdeka]",
+                    price: 70000,
+                    qty: 1,
+                    unit: "Galon",
+                    diskon: 11667,
+                    ppn: true
+                });
+                products.push({
+                    name: "Kuas Rol [Promo Bundling Merdeka]",
+                    price: 50000,
+                    qty: 1,
+                    unit: "Pieces",
+                    diskon: 8333,
+                    ppn: false
+                });
+                for (let i = 2; i < qty; i++) {
+                    if (dummyProducts[i]) {
+                        products.push({ ...dummyProducts[i] });
+                    }
+                }
+            } else {
+                // Mode Standar / Non-Promo
+                for (let i = 0; i < qty; i++) {
+                    if (dummyProducts[i]) {
+                        const prod = { ...dummyProducts[i] };
+                        if (i === 0) {
+                            prod.diskon = diskonItem1Input;
+                        }
+                        products.push(prod);
+                    }
+                }
+            }
+            return products;
+        }
 
         // Tombol Navigasi SPA
         const btnPreview = document.getElementById("btn-preview");
@@ -723,6 +833,32 @@
                 }
             }
 
+            // Update info text status Promo Master & Bonus (3 Kondisi)
+            const promoMode = selectPromoMode ? selectPromoMode.value : 'none';
+            if (badgePromoActive && infoPromoMode) {
+                if (promoMode === 'bonus-manual') {
+                    badgePromoActive.textContent = "Bonus (Rp 0)";
+                    badgePromoActive.className = "text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-700/60 px-2 py-0.5 rounded font-bold";
+                    infoPromoMode.textContent = "🎁 Kondisi 1 — Produk Bonus (Rp 0) Non-Promo: Kasir input bonus mandiri. Item bonus diberi tag default [BONUS], Harga Rp 0, Diskon 0, Jumlah Rp 0. Bebas PPN & tidak memicu diskon pesanan footer.";
+                    infoPromoMode.className = "text-[10px] text-emerald-300 font-medium leading-tight pt-1";
+                } else if (promoMode === 'beli-x-gratis-y') {
+                    badgePromoActive.textContent = "Beli X Gratis Y";
+                    badgePromoActive.className = "text-[10px] bg-blue-950 text-blue-300 border border-blue-700/60 px-2 py-0.5 rounded font-bold";
+                    infoPromoMode.textContent = "🏷️ Kondisi 2 — Promo Beli X Gratis Y (Master Promo): Kedua produk dipasangkan tag [Promo Merdeka]. Barang utama berbayar normal dan barang hadiah Rp 0.";
+                    infoPromoMode.className = "text-[10px] text-blue-300 font-medium leading-tight pt-1";
+                } else if (promoMode === 'bundling') {
+                    badgePromoActive.textContent = "Bundling Merdeka";
+                    badgePromoActive.className = "text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-700/60 px-2 py-0.5 rounded font-bold";
+                    infoPromoMode.textContent = "📦 Kondisi 3 — Promo Bundling Merdeka (Master Promo): Seluruh item paket diberi tag [Promo Bundling Merdeka]. Diskon dialokasikan proporsional (Rp 11.667 & Rp 8.333) dengan total tepat Rp 100.000.";
+                    infoPromoMode.className = "text-[10px] text-indigo-300 font-medium leading-tight pt-1";
+                } else {
+                    badgePromoActive.textContent = "Reguler";
+                    badgePromoActive.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-medium";
+                    infoPromoMode.textContent = "* Mode standar: Menggunakan daftar produk reguler sesuai slider kuantitas.";
+                    infoPromoMode.className = "text-[10px] text-slate-400 leading-tight pt-1";
+                }
+            }
+
             const diskonPesanan = Math.max(0, parseInt(inputDiskon.value) || 0);
             const diskonItem1 = Math.max(0, parseInt(inputDiskonItem.value) || 0);
             const isKirim = checkKirim.checked;
@@ -739,36 +875,34 @@
             const totalTambahan = tambahanData.reduce((sum, item) => sum + item.nilai, 0);
             labelTotalTambahan.textContent = "Rp " + formatRupiah(totalTambahan);
 
-            // Hitung subtotal produk
+            // Hitung subtotal produk berdasarkan activeProducts
             let subtotalNonPpn = 0;
             let subtotalDppPpn = 0;
             let countProdukPpn = 0;
             let countProdukNonPpn = 0;
 
-            for (let i = 0; i < qty; i++) {
-                if (dummyProducts[i]) {
-                    const prod = dummyProducts[i];
-                    const diskon = (i === 0) ? diskonItem1 : (prod.diskon || 0);
-                    const totalBaris = (prod.price * prod.qty) - diskon;
-                    let barangKenaPpn = false;
-                    if (isPpnTokoAktif && ppnType !== 'non') {
-                        if (statusPpnBarang === 'all-ppn') {
-                            barangKenaPpn = true;
-                        } else if (statusPpnBarang === 'all-non') {
-                            barangKenaPpn = false;
-                        } else if (statusPpnBarang === 'mixed') {
-                            barangKenaPpn = prod.ppn;
-                        }
-                    }
-                    if (barangKenaPpn) {
-                        subtotalDppPpn += totalBaris;
-                        countProdukPpn++;
-                    } else {
-                        subtotalNonPpn += totalBaris;
-                        countProdukNonPpn++;
+            const activeProds = getActiveProducts(qty, diskonItem1);
+            activeProds.forEach((prod, i) => {
+                const diskon = prod.diskon || 0;
+                const totalBaris = (prod.price * prod.qty) - diskon;
+                let barangKenaPpn = false;
+                if (isPpnTokoAktif && ppnType !== 'non' && prod.price > 0) {
+                    if (statusPpnBarang === 'all-ppn') {
+                        barangKenaPpn = true;
+                    } else if (statusPpnBarang === 'all-non') {
+                        barangKenaPpn = false;
+                    } else if (statusPpnBarang === 'mixed') {
+                        barangKenaPpn = prod.ppn;
                     }
                 }
-            }
+                if (barangKenaPpn) {
+                    subtotalDppPpn += totalBaris;
+                    countProdukPpn++;
+                } else {
+                    subtotalNonPpn += totalBaris;
+                    countProdukNonPpn++;
+                }
+            });
 
             // Hitung PPN
             let nominalPpn = 0;
@@ -1014,30 +1148,28 @@
             let countProdukPpn = 0;
             let countProdukNonPpn = 0;
 
-            for (let i = 0; i < qty; i++) {
-                if (dummyProducts[i]) {
-                    const prod = dummyProducts[i];
-                    const diskon = (i === 0) ? diskonItem1 : (prod.diskon || 0);
-                    const totalBaris = (prod.price * prod.qty) - diskon;
-                    let barangKenaPpn = false;
-                    if (isPpnTokoAktif && ppnType !== 'non') {
-                        if (statusPpnBarang === 'all-ppn') {
-                            barangKenaPpn = true;
-                        } else if (statusPpnBarang === 'all-non') {
-                            barangKenaPpn = false;
-                        } else if (statusPpnBarang === 'mixed') {
-                            barangKenaPpn = prod.ppn;
-                        }
-                    }
-                    if (barangKenaPpn) {
-                        subtotalDppPpn += totalBaris;
-                        countProdukPpn++;
-                    } else {
-                        subtotalNonPpn += totalBaris;
-                        countProdukNonPpn++;
+            const activeProds = getActiveProducts(qty, diskonItem1);
+            activeProds.forEach((prod, i) => {
+                const diskon = prod.diskon || 0;
+                const totalBaris = (prod.price * prod.qty) - diskon;
+                let barangKenaPpn = false;
+                if (isPpnTokoAktif && ppnType !== 'non' && prod.price > 0) {
+                    if (statusPpnBarang === 'all-ppn') {
+                        barangKenaPpn = true;
+                    } else if (statusPpnBarang === 'all-non') {
+                        barangKenaPpn = false;
+                    } else if (statusPpnBarang === 'mixed') {
+                        barangKenaPpn = prod.ppn;
                     }
                 }
-            }
+                if (barangKenaPpn) {
+                    subtotalDppPpn += totalBaris;
+                    countProdukPpn++;
+                } else {
+                    subtotalNonPpn += totalBaris;
+                    countProdukNonPpn++;
+                }
+            });
 
             let nominalPpn = 0;
             let showPpnRow = false;
@@ -1142,12 +1274,12 @@
                 let htmlProduk = "";
                 for (let i = 0; i < page.pageLimit; i++) {
                     const prodIdx = page.productsStart + i;
-                    if (prodIdx < page.productsEnd && dummyProducts[prodIdx]) {
-                        const prod = dummyProducts[prodIdx];
-                        const diskon = (prodIdx === 0) ? diskonItem1 : (prod.diskon || 0);
+                    if (prodIdx < page.productsEnd && activeProds[prodIdx]) {
+                        const prod = activeProds[prodIdx];
+                        const diskon = prod.diskon || 0;
                         const totalBaris = (prod.price * prod.qty) - diskon;
                         let barangKenaPpn = false;
-                        if (isPpnTokoAktif && ppnType !== 'non') {
+                        if (isPpnTokoAktif && ppnType !== 'non' && prod.price > 0) {
                             if (statusPpnBarang === 'all-ppn') {
                                 barangKenaPpn = true;
                             } else if (statusPpnBarang === 'all-non') {
@@ -1395,7 +1527,7 @@
         });
 
         // Event listener untuk update halaman setting real-time
-        const controlElements = [inputQtyProduk, selectPpnToko, selectPpn, selectPpnBarang, inputDiskon, inputDiskonItem, checkKirim, inputKirim, checkTambahan];
+        const controlElements = [inputQtyProduk, selectPpnToko, selectPpn, selectPpnBarang, selectPromoMode, inputDiskon, inputDiskonItem, checkKirim, inputKirim, checkTambahan];
         controlElements.forEach(el => {
             if (el) {
                 el.addEventListener("input", calculateSettingState);
