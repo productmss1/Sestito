@@ -449,7 +449,7 @@
     <script>
         // Data Produk Dummy untuk simulasi (hingga 25 produk) dengan nama ringkas (2 suku kata)
         const dummyProducts = [
-            { name: "Semen Sika", price: 100000, qty: 10, unit: "Pieces", diskon: 10000, ppn: false },
+            { name: "Mesin Cor", price: 1000000000, qty: 1, unit: "Unit", diskon: 0, ppn: true },
             { name: "Semen Top", price: 100000, qty: 10, unit: "Pieces", diskon: 0, ppn: true },
             { name: "Semen TigaRoda", price: 72000, qty: 20, unit: "Sak", diskon: 0, ppn: true },
             { name: "Besi Beton", price: 89000, qty: 15, unit: "Batang", diskon: 15000, ppn: true },
@@ -603,9 +603,9 @@
         // Elemen Preview Nota
         const pagesContainer = document.getElementById("pages-container");
 
-        // Helper Format Angka
+        // Helper Format Angka (Standar Rupiah Indonesia dengan Pemisah Ribuan Titik)
         function formatRupiah(num) {
-            return num.toLocaleString('en-US');
+            return Number(num || 0).toLocaleString('id-ID');
         }
 
         // Dapatkan data biaya tambahan dinamis
