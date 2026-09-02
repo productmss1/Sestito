@@ -142,6 +142,18 @@
                     <span class="text-[10px] text-emerald-400 mt-1 block font-medium" id="info-limit-produk">
                         * Kapasitas Optimal: 10 produk per halaman.
                     </span>
+
+                    <!-- Opsi Produk Nominal 1 Miliar (Default Nonaktif) -->
+                    <div class="mt-2.5 flex items-center justify-between bg-slate-900/60 px-3 py-2 rounded-lg border border-slate-700/60">
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 select-none text-xs">
+                            <input type="checkbox" id="check-produk-1m"
+                                class="w-3.5 h-3.5 rounded accent-blue-500 bg-slate-900 border-slate-700 cursor-pointer">
+                            <span class="font-medium">Sertakan Produk Ekstrem (Rp 1 Miliar - Mesin Cor)</span>
+                        </label>
+                        <span id="badge-produk-1m" class="text-[9.5px] font-medium text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
+                            Nonaktif (Harga Normal)
+                        </span>
+                    </div>
                 </div>
 
                 <hr class="border-slate-700/60">
@@ -273,7 +285,17 @@
 
                 <!-- G. Metode Pembayaran -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-semibold text-slate-300">Metode Pembayaran (Multi-Payment)</label>
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-semibold text-slate-300">Metode Pembayaran (Multi-Payment)</label>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" id="btn-quick-cash-pas" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-2 py-0.5 rounded border border-slate-700 transition" title="Set pembayaran Cash Pas senilai Total Tagihan">
+                                💵 Cash Pas
+                            </button>
+                            <button type="button" id="btn-quick-cash-lebih" class="text-[10px] bg-emerald-950 hover:bg-emerald-900 text-emerald-300 px-2 py-0.5 rounded border border-emerald-700/60 transition" title="Set pembayaran Cash Lebih untuk simulasi Cash Dibayar & Kembalian">
+                                💰 Cash Lebih (+Kembalian)
+                            </button>
+                        </div>
+                    </div>
                     <!-- Row Indikator Tagihan Real-time -->
                     <div
                         class="grid grid-cols-3 gap-2 bg-slate-900/60 p-2.5 rounded border border-slate-700/50 text-center select-none">
@@ -449,7 +471,7 @@
     <script>
         // Data Produk Dummy untuk simulasi (hingga 25 produk) dengan nama ringkas (2 suku kata)
         const dummyProducts = [
-            { name: "Mesin Cor", price: 1000000000, qty: 1, unit: "Unit", diskon: 0, ppn: true },
+            { name: "Mesin Bor", price: 350000, qty: 1, unit: "Unit", diskon: 0, ppn: true },
             { name: "Semen Top", price: 100000, qty: 10, unit: "Pieces", diskon: 0, ppn: true },
             { name: "Semen TigaRoda", price: 72000, qty: 20, unit: "Sak", diskon: 0, ppn: true },
             { name: "Besi Beton", price: 89000, qty: 15, unit: "Batang", diskon: 15000, ppn: true },
@@ -479,6 +501,8 @@
         // Elemen Input Setup
         const inputQtyProduk = document.getElementById("input-qty-produk");
         const labelQtyProduk = document.getElementById("label-qty-produk");
+        const checkProduk1M = document.getElementById("check-produk-1m");
+        const badgeProduk1M = document.getElementById("badge-produk-1m");
         const selectPpnToko = document.getElementById("select-ppn-toko");
         const selectPpn = document.getElementById("select-ppn");
         const selectPpnBarang = document.getElementById("select-ppn-barang");
@@ -580,10 +604,18 @@
                 }
             } else {
                 // Mode Standar / Non-Promo
+                const is1M = checkProduk1M && checkProduk1M.checked;
                 for (let i = 0; i < qty; i++) {
                     if (dummyProducts[i]) {
                         const prod = { ...dummyProducts[i] };
                         if (i === 0) {
+                            if (is1M) {
+                                prod.name = "Mesin Cor";
+                                prod.price = 1000000000;
+                            } else {
+                                prod.name = "Mesin Bor";
+                                prod.price = 350000;
+                            }
                             prod.diskon = diskonItem1Input;
                         }
                         products.push(prod);
@@ -715,6 +747,17 @@
             } else {
                 transferRow.classList.add("hidden");
             }
+
+            const jumlahInput = row.querySelector(".payment-jumlah");
+            if (jumlahInput) {
+                if (metode === 'cash') {
+                    jumlahInput.placeholder = "Cash Diterima (Rp)";
+                } else if (metode === 'tempo') {
+                    jumlahInput.placeholder = "Total Tempo (Rp)";
+                } else {
+                    jumlahInput.placeholder = "Jumlah (Rp)";
+                }
+            }
         }
 
         // Bind event listeners ke komponen baris pembayaran
@@ -815,6 +858,18 @@
 
             const ppnType = isPpnTokoAktif ? selectPpn.value : 'non';
             const statusPpnBarang = selectPpnBarang ? selectPpnBarang.value : 'mixed';
+
+            // Update badge opsi produk 1 Miliar
+            const is1M = checkProduk1M && checkProduk1M.checked;
+            if (badgeProduk1M) {
+                if (is1M) {
+                    badgeProduk1M.textContent = "Aktif (Rp 1 Miliar)";
+                    badgeProduk1M.className = "text-[9.5px] font-bold text-amber-300 bg-amber-950/80 border border-amber-700/60 px-1.5 py-0.5 rounded";
+                } else {
+                    badgeProduk1M.textContent = "Nonaktif (Rp 350.000)";
+                    badgeProduk1M.className = "text-[9.5px] font-medium text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded";
+                }
+            }
 
             // Update info text status PPN barang
             if (infoPpnBarang) {
@@ -917,41 +972,55 @@
             const baseTotal = (subtotalNonPpn + subtotalDppPpn) - diskonPesanan + biayaKirim + totalTambahan;
             const grandTotal = baseTotal + nominalPpn;
 
-            // Hitung MDR dari paymentData
+            // Hitung MDR & Pembayaran dari paymentData
             const paymentData = getPaymentData();
             let totalMdr = 0;
-            let totalBayarWithMdr = 0;
+            let totalCashPaid = 0;
+            let totalElectronicPaid = 0;
+            let totalTempoAllocated = 0;
+
             paymentData.forEach(p => {
                 totalMdr += p.mdrNominal;
-                if (p.metode === 'tempo') {
+                if (p.metode === 'cash') {
+                    totalCashPaid += p.totalWithMdr;
+                } else if (p.metode === 'tempo') {
                     if (p.dpEnable && p.dpAmount > 0) {
-                        totalBayarWithMdr += p.dpAmount;
+                        if (p.dpMethod === 'cash') {
+                            totalCashPaid += p.dpAmount;
+                        } else {
+                            totalElectronicPaid += p.dpAmount;
+                        }
                     }
+                    totalTempoAllocated += p.totalWithMdr;
                 } else {
-                    totalBayarWithMdr += p.totalWithMdr;
+                    totalElectronicPaid += p.totalWithMdr;
                 }
             });
 
             const targetTagihan = grandTotal + totalMdr;
-            const totalBayar = totalBayarWithMdr;
+            const totalActualPaid = totalCashPaid + totalElectronicPaid;
+            let kembalianVal = 0;
+            if (totalCashPaid > 0 && totalActualPaid > targetTagihan) {
+                kembalianVal = Math.min(totalCashPaid, totalActualPaid - targetTagihan);
+            }
+            const uangMasukBersih = totalElectronicPaid + Math.max(0, totalCashPaid - kembalianVal);
+            const sisaPiutangVal = Math.max(0, targetTagihan - uangMasukBersih);
 
-            // Update DOM element
+            // Update DOM element indikator setup
             setupTotalTagihan.textContent = "Rp " + formatRupiah(targetTagihan);
-            setupTotalTerbayar.textContent = "Rp " + formatRupiah(totalBayar);
+            setupTotalTerbayar.textContent = "Rp " + formatRupiah(uangMasukBersih);
 
             // Tentukan apakah ada sisa tagihan atau kembalian
-            const diff = targetTagihan - totalBayar;
-            if (diff > 0) {
-                setupSisaLabel.textContent = "Sisa Tagihan";
-                setupSisaLabel.className = "text-[10px] text-slate-400 font-medium";
-                setupSisaTagihan.textContent = "Rp " + formatRupiah(diff);
-                setupSisaTagihan.className = "text-xs font-bold text-amber-400 mt-0.5";
-            } else if (diff < 0) {
-                const kembalian = Math.abs(diff);
+            if (kembalianVal > 0) {
                 setupSisaLabel.textContent = "Kembalian";
                 setupSisaLabel.className = "text-[10px] text-slate-400 font-medium";
-                setupSisaTagihan.textContent = "Rp " + formatRupiah(kembalian);
+                setupSisaTagihan.textContent = "Rp " + formatRupiah(kembalianVal);
                 setupSisaTagihan.className = "text-xs font-bold text-emerald-400 mt-0.5";
+            } else if (sisaPiutangVal > 0) {
+                setupSisaLabel.textContent = "Sisa Tagihan";
+                setupSisaLabel.className = "text-[10px] text-slate-400 font-medium";
+                setupSisaTagihan.textContent = "Rp " + formatRupiah(sisaPiutangVal);
+                setupSisaTagihan.className = "text-xs font-bold text-amber-400 mt-0.5";
             } else {
                 setupSisaLabel.textContent = "Lunas";
                 setupSisaLabel.className = "text-[10px] text-slate-400 font-medium";
@@ -977,6 +1046,13 @@
                 }
                 if (totalMdr > 0) rowsDetail.push(`<div class="flex justify-between text-amber-300"><span>Total MDR (+):</span><span>Rp ${formatRupiah(totalMdr)}</span></div>`);
                 rowsDetail.push(`<div class="flex justify-between font-bold text-white border-t border-slate-700/80 pt-1 mt-1"><span>TOTAL Tagihan:</span><span class="text-amber-300">Rp ${formatRupiah(targetTagihan)}</span></div>`);
+                
+                if (totalCashPaid > 0 && kembalianVal > 0) {
+                    rowsDetail.push(`<div class="flex justify-between text-slate-300 pt-1 border-t border-slate-700/50"><span>Cash Fisik Diterima:</span><span class="font-semibold text-white">Rp ${formatRupiah(totalCashPaid)}</span></div>`);
+                    rowsDetail.push(`<div class="flex justify-between text-emerald-400 font-bold"><span>Kembalian Tunai:</span><span>Rp ${formatRupiah(kembalianVal)}</span></div>`);
+                    rowsDetail.push(`<div class="text-[9.5px] text-emerald-300/90 pt-0.5 leading-tight">✨ Baris <b>Cash Dibayar</b> menggantikan "Dibayar", dan baris <b>Kembalian</b> otomatis tampil pada nota.</div>`);
+                }
+
                 setupKalkulasiDetail.innerHTML = rowsDetail.join("");
             }
 
@@ -1346,7 +1422,14 @@
                         footerHtml += `<tr><td class="py-[2px] pr-3 text-slate-500 text-[12px]">Total MDR (+)</td><td class="py-[2px] text-slate-800 font-semibold text-[12px]">${formatRupiah(totalMdr)}</td></tr>`;
                     }
                     footerHtml += `<tr class="font-bold text-slate-900 border-t border-slate-300 text-[13.5px]"><td class="pt-1 pb-0.5 pr-3">TOTAL Rp.</td><td class="pt-1 pb-0.5 text-slate-950 font-extrabold text-[13.5px]">${formatRupiah(grandTotalWithMdr)}</td></tr>`;
-                    footerHtml += `<tr class="font-bold text-slate-900 border-b border-slate-200 pb-1 text-[13.5px]"><td class="py-0.5 pr-3">Dibayar</td><td class="py-0.5 text-slate-900 text-[13.5px]">${formatRupiah(totalActualPaid)}</td></tr>`;
+                    
+                    // Jika ada kelebihan cash (Kembalian > 0), baris "Cash Dibayar" tampil menggantikan baris "Dibayar" agar tidak redundan
+                    const hasCashLebih = (kembalianVal > 0 && totalCashPaid > 0);
+                    if (hasCashLebih) {
+                        footerHtml += `<tr class="font-bold text-slate-900 border-b border-slate-200 pb-1 text-[13.5px]"><td class="py-0.5 pr-3">Cash Dibayar</td><td class="py-0.5 text-slate-900 text-[13.5px]">${formatRupiah(totalCashPaid)}</td></tr>`;
+                    } else {
+                        footerHtml += `<tr class="font-bold text-slate-900 border-b border-slate-200 pb-1 text-[13.5px]"><td class="py-0.5 pr-3">Dibayar</td><td class="py-0.5 text-slate-900 text-[13.5px]">${formatRupiah(uangMasukBersih)}</td></tr>`;
+                    }
 
                     if (isPpnTokoAktif && ppnType === 'include' && countProdukPpn > 0) {
                         const nominalPpnInclude = Math.round(subtotalDppPpn * 11 / 111);
@@ -1527,7 +1610,7 @@
         });
 
         // Event listener untuk update halaman setting real-time
-        const controlElements = [inputQtyProduk, selectPpnToko, selectPpn, selectPpnBarang, selectPromoMode, inputDiskon, inputDiskonItem, checkKirim, inputKirim, checkTambahan];
+        const controlElements = [inputQtyProduk, checkProduk1M, selectPpnToko, selectPpn, selectPpnBarang, selectPromoMode, inputDiskon, inputDiskonItem, checkKirim, inputKirim, checkTambahan];
         controlElements.forEach(el => {
             if (el) {
                 el.addEventListener("input", calculateSettingState);
@@ -1566,6 +1649,43 @@
             bindPaymentItemEvents(row);
             updatePaymentItemMdrVisibility(row);
         });
+
+        // Tombol Quick Simulasi Pembayaran Cepat
+        const btnQuickCashPas = document.getElementById("btn-quick-cash-pas");
+        const btnQuickCashLebih = document.getElementById("btn-quick-cash-lebih");
+
+        if (btnQuickCashPas) {
+            btnQuickCashPas.addEventListener("click", () => {
+                const currentTagihan = parseInt(setupTotalTagihan.textContent.replace(/[^\d]/g, '')) || 0;
+                const rows = dynamicPaymentList.querySelectorAll(".payment-item");
+                for (let i = 1; i < rows.length; i++) rows[i].remove();
+                const firstRow = dynamicPaymentList.querySelector(".payment-item");
+                if (firstRow) {
+                    firstRow.querySelector(".payment-metode").value = "cash";
+                    firstRow.querySelector(".payment-jumlah").value = currentTagihan;
+                    updatePaymentItemMdrVisibility(firstRow);
+                    calculateSettingState();
+                }
+            });
+        }
+
+        if (btnQuickCashLebih) {
+            btnQuickCashLebih.addEventListener("click", () => {
+                const currentTagihan = parseInt(setupTotalTagihan.textContent.replace(/[^\d]/g, '')) || 0;
+                let cashNominal = Math.ceil((currentTagihan + 1000) / 50000) * 50000;
+                if (cashNominal <= currentTagihan) cashNominal += 50000;
+
+                const rows = dynamicPaymentList.querySelectorAll(".payment-item");
+                for (let i = 1; i < rows.length; i++) rows[i].remove();
+                const firstRow = dynamicPaymentList.querySelector(".payment-item");
+                if (firstRow) {
+                    firstRow.querySelector(".payment-metode").value = "cash";
+                    firstRow.querySelector(".payment-jumlah").value = cashNominal;
+                    updatePaymentItemMdrVisibility(firstRow);
+                    calculateSettingState();
+                }
+            });
+        }
 
         // Inisialisasi awal
         calculateSettingState();
