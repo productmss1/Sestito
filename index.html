@@ -126,6 +126,62 @@
     <!-- Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cards-container">
 
+      <!-- PROJECT BARCODE: Master Data Produk & 3 Kolom Identifikasi -->
+      <div class="modular-card bg-white border border-blue-100 rounded-2xl flex flex-col justify-between p-6 shadow-sm shadow-blue-500/5 relative overflow-hidden"
+        data-search="master data produk barcode prd kode produk sku toko serial number detail produk addibond kaleng identifikasi">
+        <div class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+          New Feature
+        </div>
+        <div>
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="font-display text-base font-bold text-slate-900 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+              Master Data Produk · Barcode
+            </h3>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            Prototype alur Daftar Produk ke Detail Produk (1 halaman scroll) dengan penambahan <strong>3 kolom identifikasi</strong> di bagian bawah: <em>Kode Produk</em> (Read-Only), <em>SKU Toko</em> (Read-Only), dan <em>Serial Number Barcode</em> (Editable + Live Barcode Preview & Scan Simulator).
+          </p>
+
+          <!-- Accordion Toggle -->
+          <button
+            class="accordion-btn flex items-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-brand-blue border-t border-slate-50 pt-3 transition-colors w-full"
+            onclick="toggleAccordion(this)">
+            <span>Lihat Detail Scope & Skenario</span>
+            <svg class="w-3 h-3 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="3">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="space-y-2.5 pt-3 text-[11px] text-slate-500">
+              <div>
+                <span class="block font-bold text-slate-700">PRD Reference:</span>
+                <span>PRD Kode Produk (Story 1 & 2)</span>
+              </div>
+              <div>
+                <span class="block font-bold text-slate-700">Fitur Utama:</span>
+                <span>3 Kolom Identifikasi di bawah tabel Stok & Harga Jual, live barcode line render (JsBarcode), scan tester fisik, print label modal, validasi duplikasi per toko.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-50">
+          <a href="prototypes/master-data-produk-barcode.html"
+            class="w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-sm shadow-blue-500/20">
+            Buka Prototype Master Data & Barcode
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-3.5">
+            <span>Status</span>
+            <span class="font-medium text-emerald-600 font-semibold">Interactive Ready</span>
+          </div>
+        </div>
+      </div>
+
       <!-- PROJECT 1: Group Toko 1000S -->
       <div class="modular-card bg-white border border-slate-100 rounded-2xl flex flex-col justify-between p-6"
         data-search="group toko 1000s index prd highlevel mini prd">
@@ -222,13 +278,13 @@
 
       <!-- PROJECT 3: inTechgra Pro Phase 1.1 -->
       <div class="modular-card bg-white border border-slate-100 rounded-2xl flex flex-col justify-between p-6"
-        data-search="intechgra pro phase 1.1 license expiry notifikasi lisensi nota penjualan simulator nota a5 10 produk frameless table multi halaman mdr tempo kasbon murni pembayaran dp edc debit kredit gpn visa mastercard qris bank bca mandiri bni bri surat jalan cetak pengiriman pending ppn toko aktif non ppn barang biaya kirim biaya tambahan kalkulasi pajak subtotal non ppn footer gap font besar master promo beli x gratis y promo bundling produk bonus rp 0 diskon proporsional tagging promo visual pairing label alamat walk-in strip pemisah ribuan titik standar rupiah id-id kapasitas nominal besar 1m miliaran triliunan">
+        data-search="intechgra pro phase 1.1 license expiry notifikasi lisensi nota penjualan simulator nota a5 10 produk frameless table multi halaman mdr tempo kasbon murni pembayaran dp edc debit kredit gpn visa mastercard qris bank bca mandiri bni bri surat jalan cetak pengiriman pending ppn toko aktif non ppn barang biaya kirim biaya tambahan kalkulasi pajak subtotal non ppn footer gap font besar master promo beli x gratis y promo bundling produk bonus rp 0 diskon proporsional tagging promo visual pairing label alamat walk-in strip pemisah ribuan titik standar rupiah id-id kapasitas nominal besar 1m miliaran triliunan cash dibayar kembalian uang masuk bersih opsi produk 1m quick cash">
         <div>
           <div class="flex justify-between items-start mb-4">
             <h3 class="font-display text-base font-bold text-slate-900">inTechgra Pro · Phase 1.1</h3>
           </div>
           <p class="text-xs text-slate-500 leading-relaxed mb-4">
-            Penyempurnaan pasca Phase 1: UX notifikasi lisensi, simulator interaktif nota penjualan A5 (kapasitas 10 produk, frameless table, format pemisah ribuan titik `1.000` standar id-ID, dukungan nominal besar s/d puluhan miliar &amp; ratusan triliun, label Alamat netral &amp; penanganan walk-in strip, simulasi 3 kondisi promo &amp; bonus POS: Produk Bonus Rp 0 Non-Promo, Promo Beli X Gratis Y, &amp; Promo Bundling Diskon Proporsional, footer TTD &amp; rincian biaya proporsional, skenario PPN Toko Aktif + Barang Non-PPN dengan PPN atas Biaya Ongkir &amp; Tambahan, EDC All Caps, QRIS bank, Kasbon murni &amp; pembayaran DP, auto-hide kembalian = 0, simulasi MDR), surat jalan &amp; cetak pengiriman.
+            Penyempurnaan pasca Phase 1: UX notifikasi lisensi, simulator interaktif nota penjualan A5 (kapasitas 10 produk, frameless table, pemisah ribuan titik `1.000` standar id-ID, <strong>baris dinamis Cash Dibayar &amp; Kembalian</strong> yang otomatis menggantikan baris Dibayar saat ada kembalian tunai, <strong>opsi toggle produk ekstrem Rp 1 Miliar</strong> vs nominal retail normal Rp 350rb, preset quick-cash, simulasi 3 kondisi promo &amp; bonus POS, PPN Toko Aktif + Barang Non-PPN, EDC All Caps, QRIS bank, Kasbon murni &amp; pembayaran DP, simulasi MDR), surat jalan &amp; cetak pengiriman.
           </p>
 
           <!-- Accordion Toggle -->
@@ -245,7 +301,7 @@
             <div class="space-y-2.5 pt-3 text-[11px] text-slate-500">
               <div>
                 <span class="block font-bold text-slate-700">Scope:</span>
-                <span>Notifikasi Lisensi Expired, Simulator &amp; Desain Nota POS A5 Landscape (Kapasitas 10 Produk/Lembar, Frameless Table, Multi-Halaman, Format Pemisah Ribuan Titik id-ID [1.000], Toleransi Kapasitas Nominal Ekstrem s/d Puluhan Miliar per Item &amp; Ratusan Triliun Footer, Label Header Alamat Netral &amp; Strip untuk Pelanggan Walk-In, Simulasi 3 Kondisi Promo POS: Produk Bonus Rp 0 [BONUS], Promo Beli X Gratis Y [Nama Promo], Promo Bundling [Nama Promo] dengan Diskon Proporsional, PPN Toko Aktif &amp; Barang Non-PPN dengan Pajak atas Biaya, Opsi EDC Bank/Tipe/Jaringan All Caps, QRIS Bank, Kasbon Murni &amp; Pembayaran DP, Conditional Kembalian &amp; Sisa Piutang, MDR Surcharge, Anti-Clipping, TTD Lega &amp; Font Rincian Lebih Besar Setiap Lembar), Detail Pengiriman &amp; Cetak Surat Jalan</span>
+                <span>Notifikasi Lisensi Expired, Simulator &amp; Desain Nota POS A5 Landscape (Kapasitas 10 Produk/Lembar, Frameless Table, Multi-Halaman, Format Pemisah Ribuan Titik id-ID [1.000], Alur Dinamis Baris Cash Dibayar &amp; Kembalian [Eliminasi Redundansi Baris Dibayar], Opsi Toggle Produk Ekstrem Rp 1 Miliar vs Harga Normal Retail Rp 350.000, Preset Quick-Cash Pas &amp; Lebih, Toleransi Kapasitas Nominal Ekstrem s/d Ratusan Triliun Footer, Label Header Alamat Netral &amp; Strip untuk Walk-In, Simulasi 3 Kondisi Promo POS: Produk Bonus Rp 0 [BONUS], Promo Beli X Gratis Y [Nama Promo], Promo Bundling [Nama Promo] dengan Diskon Proporsional, PPN Toko Aktif &amp; Barang Non-PPN dengan Pajak atas Biaya, Opsi EDC Bank/Tipe/Jaringan All Caps, QRIS Bank, Kasbon Murni &amp; Pembayaran DP, MDR Surcharge, TTD Lega &amp; Font Rincian Lebih Besar Setiap Lembar), Detail Pengiriman &amp; Cetak Surat Jalan</span>
               </div>
               <div>
                 <span class="block font-bold text-slate-700">User:</span>
@@ -284,7 +340,7 @@
 
           <div class="flex items-center justify-between text-[10px] text-slate-400 mt-3.5">
             <span>Last update</span>
-            <span class="font-medium text-slate-600">20 Agustus 2026</span>
+            <span class="font-medium text-slate-600">2 September 2026</span>
           </div>
         </div>
       </div>
