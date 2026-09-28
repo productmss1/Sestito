@@ -1,0 +1,2883 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>inTechgra POS - Master Data Produk & Barcode</title>
+  <meta name="description" content="Prototype interaktif Master Data Produk & Detail Produk dengan 3 kolom identifikasi Kode Produk, SKU Toko, dan Barcode.">
+
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- JsBarcode for Real Live Barcode Rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+  <style>
+    :root {
+      --primary-blue: #1b65e9;
+      --primary-blue-hover: #1555c4;
+      --primary-blue-light: #eef4ff;
+      --primary-blue-border: #d3e2fd;
+      --brand-logo: #0b1a3d;
+      
+      --bg-body: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e5e9f2;
+      --border-subtle: #f1f4f9;
+
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      --status-habis-bg: #fef2f2;
+      --status-habis-text: #dc2626;
+      --status-habis-border: #fecaca;
+
+      --status-tersedia-bg: #f0fdf4;
+      --status-tersedia-text: #16a34a;
+      --status-tersedia-border: #bbf7d0;
+
+      --status-aktif-bg: #f1f5f9;
+      --status-aktif-text: #475569;
+      --status-aktif-border: #cbd5e1;
+
+      --sidebar-width: 240px;
+      --header-height: 64px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-x: auto;
+      overflow-y: hidden;
+      min-width: 1100px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, .font-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* TOP HEADER */
+    .top-header {
+      height: var(--header-height);
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 50;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 21px;
+      font-weight: 800;
+      color: #0b1e42;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-logo-icon {
+      width: 28px;
+      height: 28px;
+      color: var(--primary-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-tab-btn {
+      padding: 8px 24px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .top-tab-btn.active {
+      background: var(--primary-blue);
+      color: #ffffff;
+      border-color: var(--primary-blue);
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(27, 101, 233, 0.25);
+    }
+
+    .top-tab-btn:hover:not(.active) {
+      background: #f8fafc;
+      color: var(--text-main);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .icon-action-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .icon-action-btn:hover {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+
+    .user-profile-badge:hover {
+      background: #f8fafc;
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1b65e9, #60a5fa);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* MAIN APP LAYOUT */
+    .app-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - var(--header-height));
+      overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: #ffffff;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+      flex-shrink: 0;
+      padding: 12px 0 16px 0;
+    }
+
+    .sidebar-menu-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 0 12px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sidebar-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-item-left i {
+      font-size: 14px;
+      width: 18px;
+      text-align: center;
+      color: #94a3b8;
+    }
+
+    .sidebar-item:hover {
+      background: #f8fafc;
+      color: var(--text-main);
+    }
+
+    .sidebar-item:hover .sidebar-item-left i {
+      color: var(--primary-blue);
+    }
+
+    .sidebar-item.active-parent {
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    .sidebar-item.active-parent i {
+      color: var(--primary-blue);
+    }
+
+    .sidebar-sub-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 4px 0 6px 16px;
+      padding-left: 14px;
+      border-left: 2px solid #e2e8f0;
+    }
+
+    .sidebar-sub-item {
+      display: block;
+      padding: 7px 10px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sidebar-sub-item:hover {
+      color: var(--primary-blue);
+      background: #f8fafc;
+    }
+
+    .sidebar-sub-item.active {
+      color: var(--primary-blue);
+      background: var(--primary-blue-light);
+      font-weight: 600;
+    }
+
+    .sidebar-bottom {
+      padding: 12px 12px 0 12px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-bottom-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .sidebar-bottom-item.danger {
+      color: #ef4444;
+    }
+
+    .sidebar-bottom-item:hover {
+      background: #f8fafc;
+    }
+
+    .sidebar-bottom-item.danger:hover {
+      background: #fef2f2;
+    }
+
+    /* MAIN VIEW CONTAINER */
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      background-color: var(--bg-body);
+      position: relative;
+    }
+
+    /* VIEW 1: DAFTAR PRODUK */
+    .view-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+      display: none;
+    }
+
+    .view-container.active {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PAGE HEADER BAR */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .page-title i {
+      color: var(--primary-blue);
+      font-size: 20px;
+    }
+
+    .page-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      background: #00b074;
+      color: #ffffff;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: #009663;
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: var(--primary-blue);
+      border: 1px solid var(--primary-blue-border);
+      border-radius: 7px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-blue-light);
+    }
+
+    .btn-ghost-pending {
+      background: #ffffff;
+      color: var(--primary-blue);
+      border: 1px solid var(--border-color);
+      border-radius: 7px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* STORE BAR */
+    .store-bar {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    /* STATS CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .stat-card-top {
+      background: linear-gradient(135deg, #4f73f6 0%, #3b5bdb 100%);
+      color: #ffffff;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      position: relative;
+    }
+
+    .stat-card-top::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      bottom: 10px;
+      width: 28px;
+      height: 28px;
+      opacity: 0.18;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M5 19h14v2H5zM5 5h14v2H5zM3 9h18v2H3zM3 13h18v2H3z'/%3E%3C/svg%3E") no-repeat center;
+    }
+
+    .stat-card-bottom {
+      background: #ffffff;
+      padding: 10px 14px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary-blue);
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* FILTERS ROW */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      min-width: 140px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .filter-search {
+      flex: 1;
+      position: relative;
+      min-width: 240px;
+    }
+
+    .filter-search input {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 36px 8px 14px;
+      font-size: 13px;
+      outline: none;
+      color: var(--text-main);
+    }
+
+    .filter-search input:focus {
+      border-color: var(--primary-blue);
+    }
+
+    .filter-search i {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    /* PRODUCT TABLE */
+    .table-container {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .table-title {
+      font-size: 15px;
+      font-weight: 700;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .product-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: left;
+    }
+
+    .product-table th {
+      background: #ffffff;
+      padding: 12px 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .product-table th i {
+      font-size: 10px;
+      margin-left: 4px;
+      color: var(--text-light);
+    }
+
+    .product-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .product-table tr:hover td {
+      background-color: #fbfdff;
+    }
+
+    .product-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .product-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .product-name-link {
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-block;
+      max-width: 280px;
+      line-height: 1.4;
+    }
+
+    .product-name-link:hover {
+      text-decoration: underline;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-status.habis {
+      color: var(--status-habis-text);
+      background: var(--status-habis-bg);
+      border: 1px solid var(--status-habis-border);
+    }
+
+    .badge-status.tersedia {
+      color: var(--status-tersedia-text);
+      background: var(--status-tersedia-bg);
+      border: 1px solid var(--status-tersedia-border);
+    }
+
+    .badge-status.belum-aktif {
+      color: var(--status-aktif-text);
+      background: var(--status-aktif-bg);
+      border: 1px solid var(--status-aktif-border);
+    }
+
+    .action-icons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-icon-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      background: #ffffff;
+      transition: all 0.15s;
+    }
+
+    .action-icon-btn:hover {
+      color: var(--primary-blue);
+      border-color: var(--primary-blue);
+    }
+
+    .action-icon-btn.delete:hover {
+      color: #ef4444;
+      border-color: #ef4444;
+    }
+
+    /* =================================================== */
+    /* VIEW 2: DETAIL PRODUK (1 Continuous Scroll Page)    */
+    /* =================================================== */
+    .detail-page-wrapper {
+      padding-bottom: 90px;
+    }
+
+    .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      margin-bottom: 16px;
+    }
+
+    .breadcrumb-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .breadcrumb-link:hover {
+      color: var(--primary-blue);
+      text-decoration: underline;
+    }
+
+    .breadcrumb-current {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .breadcrumb-separator {
+      color: #cbd5e1;
+    }
+
+    /* HERO BANNER SECTION */
+    .detail-hero-banner {
+      background: linear-gradient(135deg, #2b6cef 0%, #468bfb 100%);
+      border-radius: 12px 12px 0 0;
+      position: relative;
+      height: 140px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Blueprint tools pattern */
+    .detail-hero-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.12;
+      background-image: radial-gradient(#ffffff 1px, transparent 1px), radial-gradient(#ffffff 1px, #2b6cef 1px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+
+    .detail-hero-body {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 0 24px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      position: relative;
+    }
+
+    .hero-product-img-box {
+      width: 90px;
+      height: 90px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -45px;
+      z-index: 2;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-product-img-box img {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+    }
+
+    .hero-product-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-blue);
+      margin-top: 14px;
+      text-align: center;
+      max-width: 700px;
+      line-height: 1.4;
+    }
+
+    .hero-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #334155;
+    }
+
+    .hero-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* DETAIL SECTION CARDS */
+    .detail-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .detail-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-label .required {
+      color: #ef4444;
+      margin-left: 2px;
+    }
+
+    .form-label .optional {
+      color: var(--text-light);
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      background: #fdfdfd;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 13px;
+      color: var(--text-main);
+      font-family: inherit;
+      outline: none;
+      transition: all 0.15s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 2px rgba(27, 101, 233, 0.1);
+      background: #ffffff;
+    }
+
+    .form-input:disabled, .form-select:disabled {
+      background: #f8fafc;
+      color: #64748b;
+      cursor: not-allowed;
+      border-color: #e2e8f0;
+    }
+
+    .product-type-toggles {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 32px;
+      height: 18px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #cbd5e1;
+      transition: .2s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary-blue);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(14px);
+    }
+
+    /* SUB-TABLES INSIDE DETAIL (Stok & Harga Jual) */
+    .sub-section-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 16px 0 10px 0;
+    }
+
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 18px;
+      font-size: 12.5px;
+    }
+
+    .detail-table th {
+      background: #f8fafc;
+      padding: 10px 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+    }
+
+    .detail-table th:last-child {
+      border-right: none;
+    }
+
+    .detail-table td {
+      background: #ffffff;
+      padding: 12px 14px;
+      color: var(--text-main);
+      border-right: 1px solid var(--border-color);
+    }
+
+    .detail-table td:last-child {
+      border-right: none;
+    }
+
+    /* ========================================================== */
+    /* NEW FEATURE: 3 KOLOM IDENTIFIKASI & BARCODE DI BAGIAN BAWAH */
+    /* ========================================================== */
+    .barcode-section-card {
+      background: #ffffff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px -2px rgba(27, 101, 233, 0.05);
+      position: relative;
+    }
+
+    .barcode-section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      color: var(--primary-blue);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      border: 1px solid #dbeafe;
+    }
+
+    .three-columns-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
+      margin-top: 12px;
+    }
+
+    .three-columns-table th {
+      background: #f8fafc;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+      border-right: 1px solid #e2e8f0;
+      width: 33.333%;
+    }
+
+    .three-columns-table th:last-child {
+      border-right: none;
+    }
+
+    .three-columns-table td {
+      padding: 16px;
+      vertical-align: top;
+      border-right: 1px solid #e2e8f0;
+      background: #ffffff;
+    }
+
+    .three-columns-table td:last-child {
+      border-right: none;
+    }
+
+    /* Column 1 & 2: Read-Only locked cards */
+    .readonly-field-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .readonly-field-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .readonly-note {
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    /* Column 3: Editable Barcode & Visualizer */
+    .barcode-editable-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .barcode-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .barcode-input {
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid #2563eb;
+      border-radius: 8px;
+      padding: 10px 42px 10px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+      outline: none;
+      transition: all 0.15s;
+    }
+
+    .barcode-input:focus {
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .barcode-input-wrapper .barcode-icon-right {
+      position: absolute;
+      right: 12px;
+      color: #2563eb;
+      font-size: 16px;
+    }
+
+    .barcode-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-barcode-tool {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .btn-barcode-tool:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-barcode-tool.primary-tool {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .btn-barcode-tool.primary-tool:hover {
+      background: #dbeafe;
+    }
+
+    /* LIVE BARCODE PREVIEW BOX */
+    .barcode-visual-preview {
+      background: #fafafa;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 85px;
+      margin-top: 4px;
+    }
+
+    .barcode-visual-preview svg {
+      max-width: 100%;
+      height: 55px;
+    }
+
+    .barcode-empty-state {
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .barcode-error-msg {
+      font-size: 11.5px;
+      color: #dc2626;
+      font-weight: 500;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    /* COMPACT 3-COLUMN TABLE STYLES */
+    .compact-cell-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .compact-code-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: #1e293b;
+      letter-spacing: 0.3px;
+    }
+
+    .compact-lock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #64748b;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .btn-compact-tool {
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      height: 36px;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #334155;
+      transition: all 0.15s;
+    }
+
+    .btn-compact-tool.bolt {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .btn-compact-tool.bolt:hover {
+      background: #dbeafe;
+    }
+
+    .btn-compact-tool.clear:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #dc2626;
+    }
+
+    .btn-print-label-action {
+      background: #ffffff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .btn-print-label-action:hover {
+      background: #eff6ff;
+      border-color: #2563eb;
+    }
+
+    /* BARCODE SOURCE SELECTOR GRID IN MODAL */
+    .barcode-source-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .source-radio-card {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      cursor: pointer;
+      background: #ffffff;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .source-radio-card input {
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: #2563eb;
+    }
+
+    .source-radio-card:hover {
+      border-color: #93c5fd;
+      background: #fbfdff;
+    }
+
+    .source-radio-card.selected {
+      border-color: #2563eb;
+      background: #eff6ff;
+      box-shadow: 0 0 0 1px #2563eb;
+    }
+
+    .source-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      line-height: 1.2;
+    }
+
+    .source-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .source-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      word-break: break-all;
+    }
+
+    .source-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .source-badge.blue {
+      color: #2563eb;
+    }
+
+    /* STICKY BOTTOM ACTION BAR */
+    .sticky-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: var(--sidebar-width);
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      z-index: 40;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+    }
+
+    .btn-save-primary {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.05s;
+    }
+
+    .btn-save-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-save-primary:active {
+      transform: scale(0.98);
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 14px 18px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      border-left: 4px solid var(--primary-blue);
+      animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 420px;
+    }
+
+    .toast.success {
+      border-left-color: #10b981;
+    }
+
+    .toast.error {
+      border-left-color: #ef4444;
+    }
+
+    .toast-icon {
+      font-size: 16px;
+    }
+
+    .toast.success .toast-icon { color: #10b981; }
+    .toast.error .toast-icon { color: #ef4444; }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* MODAL PRINT LABEL PREVIEW */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(2px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      animation: fadeIn 0.15s ease-out;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .barcode-label-sheet {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 16px 20px;
+      background: #ffffff;
+      width: 100%;
+      text-align: center;
+    }
+
+    .label-store-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .label-prod-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .label-price-tag {
+      font-size: 16px;
+      font-weight: 800;
+      color: #2563eb;
+      margin-top: 6px;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* TOP GUIDE BANNER */
+    .prototype-guide-pill {
+      background: #0f172a;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .pill-tag {
+      background: #2563eb;
+      color: white;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pill-btn-nav {
+      background: #334155;
+      color: #f8fafc;
+      border: none;
+      padding: 3px 10px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .pill-btn-nav:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP PROTOTYPE QUICK CONTROL BAR -->
+  <div class="prototype-guide-pill">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="pill-tag">Prototype Master Data & Barcode</span>
+      <span>Alur: Klik menu <strong>Data Produk</strong> &rarr; Pilih salah satu produk (Addibond 1 kg) &rarr; Masuk ke <strong>Detail Produk</strong> &rarr; Cek <strong>3 Kolom di bagian bawah</strong>.</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button class="pill-btn-nav" onclick="switchView('view-daftar-produk')"><i class="fa-solid fa-table-list"></i> Lihat Daftar Produk</button>
+      <button class="pill-btn-nav" onclick="switchView('view-detail-produk'); scrollToBarcodeSection();"><i class="fa-solid fa-barcode"></i> Langsung ke Detail Produk (3 Kolom)</button>
+    </div>
+  </div>
+
+  <!-- TOP IN-APP HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <a href="javascript:void(0)" class="brand-logo" onclick="switchView('view-daftar-produk')">
+        <div class="brand-logo-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span>inTechgra</span>
+      </a>
+
+      <nav class="top-tabs">
+        <button class="top-tab-btn active">Penjualan</button>
+        <button class="top-tab-btn">Penjualan Online</button>
+        <button class="top-tab-btn">Keuangan</button>
+        <button class="top-tab-btn">Pengaturan</button>
+      </nav>
+    </div>
+
+    <div class="header-right">
+      <div class="icon-action-btn" title="Pencarian">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+      <div class="icon-action-btn" title="Notifikasi" style="position: relative;">
+        <i class="fa-regular fa-bell"></i>
+        <span style="position: absolute; top: 7px; right: 8px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%;"></span>
+      </div>
+      <div class="user-profile-badge">
+        <div class="user-avatar">S</div>
+        <div class="user-info">
+          <span class="user-name">Sestito</span>
+          <span class="user-role">Sestito <i class="fa-solid fa-chevron-down" style="font-size: 9px; margin-left: 2px;"></i></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER WITH SIDEBAR & CONTENT -->
+  <div class="app-container">
+
+    <!-- SIDEBAR NAV -->
+    <aside class="sidebar">
+      <div class="sidebar-menu-group">
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-regular fa-compass"></i>
+            <span>Dashboard</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-regular fa-file-lines"></i>
+            <span>Laporan</span>
+          </div>
+          <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #cbd5e1;"></i>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Penjualan</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Riwayat Transaksi</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Riwayat kasbon</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-arrow-rotate-left"></i>
+            <span>Riwayat Retur</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-user-group"></i>
+            <span>Penjualan Sales</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-truck-fast"></i>
+            <span>Pengiriman</span>
+          </div>
+        </div>
+
+        <!-- PRODUK MENU (ACTIVE / EXPANDED) -->
+        <div class="sidebar-item active-parent" onclick="switchView('view-daftar-produk')">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-box-open" style="color: var(--primary-blue);"></i>
+            <span>Produk</span>
+          </div>
+          <i class="fa-solid fa-chevron-up" style="font-size: 10px; color: var(--primary-blue);"></i>
+        </div>
+
+        <!-- SUB-MENU PRODUK -->
+        <div class="sidebar-sub-menu">
+          <a class="sidebar-sub-item active" id="sub-menu-data-produk" onclick="switchView('view-daftar-produk')">Data Produk</a>
+          <a class="sidebar-sub-item">Brand</a>
+          <a class="sidebar-sub-item">Kategori</a>
+          <a class="sidebar-sub-item">Konversi</a>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span>Inventori</span>
+          </div>
+          <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #cbd5e1;"></i>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-regular fa-star"></i>
+            <span>Promosi</span>
+          </div>
+          <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #cbd5e1;"></i>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-item-left">
+            <i class="fa-solid fa-users-gear"></i>
+            <span>Manajemen Pelanggan</span>
+          </div>
+          <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #cbd5e1;"></i>
+        </div>
+      </div>
+
+      <!-- SIDEBAR FOOTER -->
+      <div class="sidebar-bottom">
+        <div class="sidebar-bottom-item">
+          <i class="fa-regular fa-book-open"></i>
+          <span>Panduan Pengguna</span>
+        </div>
+        <div class="sidebar-bottom-item danger">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Keluar</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CONTENT WORKSPACE -->
+    <main class="content-area" id="main-content-scroll">
+
+      <!-- =================================================================== -->
+      <!-- VIEW 1: DAFTAR PRODUK (Sesuai Screenshot Gambar 1)                  -->
+      <!-- =================================================================== -->
+      <div class="view-container active" id="view-daftar-produk">
+
+        <!-- Top Header Controls -->
+        <div class="page-header">
+          <div class="page-title">
+            <i class="fa-solid fa-box-open"></i>
+            <span>Produk</span>
+          </div>
+          <div class="page-actions">
+            <button class="btn-primary" onclick="showToast('info', 'Form pembuatan produk baru!')">
+              <i class="fa-solid fa-plus"></i> Tambah
+            </button>
+            <button class="btn-outline">
+              <i class="fa-solid fa-gear"></i> Atur Produk dan Harga <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
+            </button>
+            <button class="btn-ghost-pending">
+              <i class="fa-solid fa-cube"></i> Draft Pending (0)
+            </button>
+          </div>
+        </div>
+
+        <!-- Store Selector Header -->
+        <div class="store-bar">
+          <span>Toko Bangun Bersama</span>
+          <i class="fa-solid fa-chevron-up" style="font-size: 12px; color: #64748b;"></i>
+        </div>
+
+        <!-- Summary Stat Cards -->
+        <div class="stats-grid">
+          <!-- Card 1 -->
+          <div class="stat-card">
+            <div class="stat-card-top">12</div>
+            <div class="stat-card-bottom">Total SKU Produk</div>
+          </div>
+          <!-- Card 2 -->
+          <div class="stat-card">
+            <div class="stat-card-top">0</div>
+            <div class="stat-card-bottom">Total Stok Produk Dibawah Stok Minimal</div>
+          </div>
+          <!-- Card 3 -->
+          <div class="stat-card">
+            <div class="stat-card-top">0</div>
+            <div class="stat-card-bottom">Total Produk Dijual Online</div>
+          </div>
+        </div>
+
+        <!-- Filters Row -->
+        <div class="filter-bar">
+          <select class="filter-select">
+            <option>Semua Brand</option>
+            <option>additon</option>
+            <option>GP500</option>
+            <option>PYLOX</option>
+            <option>NO MERK</option>
+          </select>
+
+          <select class="filter-select">
+            <option>Semua Kategori</option>
+            <option>Material Dasar</option>
+            <option>Sanitary</option>
+            <option>Finishing</option>
+            <option>Dinding, Plafon, dan Partisi</option>
+            <option>Umum dan Rumah Tangga</option>
+          </select>
+
+          <select class="filter-select">
+            <option>Semua Status</option>
+            <option>Tersedia</option>
+            <option>Habis</option>
+            <option>Belum Aktif</option>
+          </select>
+
+          <div class="filter-search">
+            <input type="text" id="searchInput" placeholder="Cari nama produk..." onkeyup="filterProductTable()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="table-container">
+          <div class="table-title">Daftar Produk</div>
+          <table class="product-table" id="productTable">
+            <thead>
+              <tr>
+                <th style="width: 32px;"><input type="checkbox"></th>
+                <th style="width: 50px;">Gambar</th>
+                <th>Nama Produk <i class="fa-solid fa-arrow-up-down"></i></th>
+                <th>Satuan <i class="fa-solid fa-arrow-up-down"></i></th>
+                <th>Brand <i class="fa-solid fa-arrow-up-down"></i></th>
+                <th>Kategori <i class="fa-solid fa-arrow-up-down"></i></th>
+                <th>Harga <i class="fa-solid fa-arrow-up-down"></i></th>
+                <th>Stok <i class="fa-solid fa-arrow-up-down"></i></th>
+                <th>Status Stok <i class="fa-solid fa-arrow-up-down"></i></th>
+                <th style="text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Item 1 -->
+              <tr style="cursor: pointer;" onclick="openProductDetail('Aqua Botol', 'Pieces', 'NO MERK', 'Sanitary', 'Rp5.000', '0', 'Habis', 'SKU-AQ-001', '00001', '8991234567810')">
+                <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                <td>
+                  <div class="product-thumb">
+                    <i class="fa-solid fa-circle" style="color: #cbd5e1; font-size: 14px;"></i>
+                  </div>
+                </td>
+                <td>
+                  <a class="product-name-link" href="javascript:void(0)">
+                    Aqua Botol
+                  </a>
+                </td>
+                <td>Pieces</td>
+                <td>NO MERK</td>
+                <td>Sanitary</td>
+                <td>Rp5.000</td>
+                <td>0</td>
+                <td><span class="badge-status habis">Habis</span></td>
+                <td style="text-align: center;" onclick="event.stopPropagation()">
+                  <div class="action-icons" style="justify-content: center;">
+                    <div class="action-icon-btn" title="Edit" onclick="openProductDetail('Aqua Botol', 'Pieces', 'NO MERK', 'Sanitary', 'Rp5.000', '0', 'Habis', 'SKU-AQ-001', '00001', '8991234567810')"><i class="fa-regular fa-pen-to-square"></i></div>
+                    <div class="action-icon-btn delete" title="Hapus"><i class="fa-regular fa-trash-can"></i></div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Item 2 -->
+              <tr style="cursor: pointer;" onclick="openProductDetail('Aqua Galon', 'Pieces', 'NO MERK', 'Umum dan Rumah Tangga', 'Rp21.000', '9', 'Tersedia', 'SKU-AQ-002', '00002', '8991234567827')">
+                <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                <td>
+                  <div class="product-thumb">
+                    <i class="fa-solid fa-circle" style="color: #cbd5e1; font-size: 14px;"></i>
+                  </div>
+                </td>
+                <td>
+                  <a class="product-name-link" href="javascript:void(0)">
+                    Aqua Galon
+                  </a>
+                </td>
+                <td>Pieces</td>
+                <td>NO MERK</td>
+                <td>Umum dan Rumah Tangga</td>
+                <td>Rp21.000</td>
+                <td>9</td>
+                <td><span class="badge-status tersedia">Tersedia</span></td>
+                <td style="text-align: center;" onclick="event.stopPropagation()">
+                  <div class="action-icons" style="justify-content: center;">
+                    <div class="action-icon-btn" title="Edit" onclick="openProductDetail('Aqua Galon', 'Pieces', 'NO MERK', 'Umum dan Rumah Tangga', 'Rp21.000', '9', 'Tersedia', 'SKU-AQ-002', '00002', '8991234567827')"><i class="fa-regular fa-pen-to-square"></i></div>
+                    <div class="action-icon-btn delete" title="Hapus"><i class="fa-regular fa-trash-can"></i></div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Item 3: SELECTED ITEM IN SCREENSHOT -->
+              <tr style="background-color: #f0f7ff; cursor: pointer;" onclick="openProductDetail('Bahan Pencampur Semen Perekat Beton dan Keramik additon ADDIBOND 1 kg (Kaleng)', 'Kaleng', 'additon', 'Material Dasar', 'Rp1.000', '0', 'Habis', 'ADBN-BND-01KG', '00003', '8992753001230')">
+                <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                <td>
+                  <div class="product-thumb" style="border-color: #93c5fd; background: #ffffff;">
+                    <svg viewBox="0 0 40 40" width="32" height="32">
+                      <rect x="10" y="8" width="20" height="24" rx="2" fill="#d97706" />
+                      <rect x="8" y="6" width="24" height="4" rx="1" fill="#b45309" />
+                      <rect x="12" y="14" width="16" height="12" fill="#b91c1c" />
+                      <text x="20" y="21" font-size="5" fill="#ffffff" font-weight="bold" text-anchor="middle">additon</text>
+                      <text x="20" y="25" font-size="3" fill="#ffffff" text-anchor="middle">ADDIBOND</text>
+                      <rect x="15" y="10" width="10" height="2" fill="#fef08a" />
+                    </svg>
+                  </div>
+                </td>
+                <td>
+                  <a class="product-name-link" style="font-weight: 700; color: #1d4ed8;" href="javascript:void(0)">
+                    Bahan Pencampur Semen Perekat Beton dan Keramik additon ADDIBOND 1 kg (Kaleng)
+                  </a>
+                  <span style="display: block; font-size: 11px; color: #2563eb; font-weight: 600; margin-top: 2px;">
+                    <i class="fa-solid fa-arrow-pointer"></i> Klik baris ini untuk buka Detail Produk
+                  </span>
+                </td>
+                <td>Kaleng</td>
+                <td>additon</td>
+                <td>Material Dasar</td>
+                <td>Rp1.000</td>
+                <td>0</td>
+                <td><span class="badge-status habis">Habis</span></td>
+                <td style="text-align: center;" onclick="event.stopPropagation()">
+                  <div class="action-icons" style="justify-content: center;">
+                    <div class="action-icon-btn" style="background: #2563eb; color: #ffffff;" title="Edit / Detail" onclick="openProductDetail('Bahan Pencampur Semen Perekat Beton dan Keramik additon ADDIBOND 1 kg (Kaleng)', 'Kaleng', 'additon', 'Material Dasar', 'Rp1.000', '0', 'Habis', 'ADBN-BND-01KG', '00003', '8992753001230')"><i class="fa-regular fa-pen-to-square"></i></div>
+                    <div class="action-icon-btn delete" title="Hapus"><i class="fa-regular fa-trash-can"></i></div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Item 4 -->
+              <tr style="cursor: pointer;" onclick="openProductDetail('Bata Ringan 60 x 20 x 10 cm (Pieces)', 'Pieces', 'NO MERK', 'Dinding, Plafon, dan Partisi', 'Rp3.500', '0', 'Habis', '-', '00004', '8993456789012')">
+                <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                <td>
+                  <div class="product-thumb">
+                    <svg viewBox="0 0 32 32" width="24" height="24">
+                      <path d="M4 10 L16 4 L28 10 L16 16 Z" fill="#94a3b8" />
+                      <path d="M4 10 L16 16 L16 26 L4 20 Z" fill="#64748b" />
+                      <path d="M16 16 L28 10 L28 20 L16 26 Z" fill="#475569" />
+                    </svg>
+                  </div>
+                </td>
+                <td>
+                  <a class="product-name-link" href="javascript:void(0)">
+                    Bata Ringan 60 x 20 x 10 cm (Pieces)
+                  </a>
+                </td>
+                <td>Pieces</td>
+                <td>NO MERK</td>
+                <td>Dinding, Plafon, dan Partisi</td>
+                <td>Rp3.500</td>
+                <td>0</td>
+                <td><span class="badge-status habis">Habis</span></td>
+                <td style="text-align: center;" onclick="event.stopPropagation()">
+                  <div class="action-icons" style="justify-content: center;">
+                    <div class="action-icon-btn" title="Edit" onclick="openProductDetail('Bata Ringan 60 x 20 x 10 cm (Pieces)', 'Pieces', 'NO MERK', 'Dinding, Plafon, dan Partisi', 'Rp3.500', '0', 'Habis', '-', '00004', '8993456789012')"><i class="fa-regular fa-pen-to-square"></i></div>
+                    <div class="action-icon-btn delete" title="Hapus"><i class="fa-regular fa-trash-can"></i></div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Item 5 -->
+              <tr style="cursor: pointer;" onclick="openProductDetail('Cat Semprot GP500 9505 Lemari Es Green 200 cc (Kaleng)', 'Kaleng', 'GP500', 'Finishing', 'Rp1.000', '0', 'Belum Aktif', 'SKU-GP-9505', '00005', '8994567890123')">
+                <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                <td>
+                  <div class="product-thumb">
+                    <i class="fa-solid fa-spray-can" style="color: #cbd5e1; font-size: 16px;"></i>
+                  </div>
+                </td>
+                <td>
+                  <a class="product-name-link" href="javascript:void(0)">
+                    Cat Semprot GP500 9505 Lemari Es Green 200 cc (Kaleng)
+                  </a>
+                </td>
+                <td>Kaleng</td>
+                <td>GP500</td>
+                <td>Finishing</td>
+                <td>Rp1.000</td>
+                <td>0</td>
+                <td><span class="badge-status belum-aktif">Belum Aktif</span></td>
+                <td style="text-align: center;" onclick="event.stopPropagation()">
+                  <div class="action-icons" style="justify-content: center;">
+                    <div class="action-icon-btn" title="Edit" onclick="openProductDetail('Cat Semprot GP500 9505 Lemari Es Green 200 cc (Kaleng)', 'Kaleng', 'GP500', 'Finishing', 'Rp1.000', '0', 'Belum Aktif', 'SKU-GP-9505', '00005', '8994567890123')"><i class="fa-regular fa-pen-to-square"></i></div>
+                    <div class="action-icon-btn delete" title="Hapus"><i class="fa-regular fa-trash-can"></i></div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Item 6 -->
+              <tr style="cursor: pointer;" onclick="openProductDetail('Cat Semprot NIPPON PAINT PYLOX Solid 171 Lemari Es Pearl White 300 cc (Kaleng)', 'Kaleng', 'PYLOX', 'Finishing', 'Rp10.000', '0', 'Belum Aktif', 'SKU-PY-0171', '00006', '')">
+                <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                <td>
+                  <div class="product-thumb">
+                    <i class="fa-solid fa-spray-can" style="color: #475569; font-size: 16px;"></i>
+                  </div>
+                </td>
+                <td>
+                  <a class="product-name-link" href="javascript:void(0)">
+                    Cat Semprot NIPPON PAINT PYLOX Solid 171 Lemari Es Pearl White 300 cc (Kaleng)
+                  </a>
+                </td>
+                <td>Kaleng</td>
+                <td>PYLOX</td>
+                <td>Finishing</td>
+                <td>Rp10.000</td>
+                <td>0</td>
+                <td><span class="badge-status belum-aktif">Belum Aktif</span></td>
+                <td style="text-align: center;" onclick="event.stopPropagation()">
+                  <div class="action-icons" style="justify-content: center;">
+                    <div class="action-icon-btn" title="Edit" onclick="openProductDetail('Cat Semprot NIPPON PAINT PYLOX Solid 171 Lemari Es Pearl White 300 cc (Kaleng)', 'Kaleng', 'PYLOX', 'Finishing', 'Rp10.000', '0', 'Belum Aktif', 'SKU-PY-0171', '00006', '')"><i class="fa-regular fa-pen-to-square"></i></div>
+                    <div class="action-icon-btn delete" title="Hapus"><i class="fa-regular fa-trash-can"></i></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- VIEW 2: DETAIL PRODUK (1 Halaman Penuh Sesuai Gambar 2 & 3)          -->
+      <!-- =================================================================== -->
+      <div class="view-container detail-page-wrapper" id="view-detail-produk">
+
+        <!-- Breadcrumb Bar -->
+        <div class="breadcrumb-bar">
+          <a class="breadcrumb-link" onclick="switchView('view-daftar-produk')">Daftar Produk</a>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-current">Detail Produk</span>
+        </div>
+
+        <!-- HERO BANNER (Gambar 2 Atas) -->
+        <div class="detail-hero-banner"></div>
+        <div class="detail-hero-body">
+          <div class="hero-product-img-box">
+            <svg viewBox="0 0 60 60" width="50" height="50">
+              <rect x="15" y="10" width="30" height="38" rx="3" fill="#dc2626" />
+              <rect x="13" y="8" width="34" height="5" rx="1.5" fill="#991b1b" />
+              <rect x="18" y="20" width="24" height="18" rx="1" fill="#facc15" />
+              <text x="30" y="28" font-size="5.5" fill="#991b1b" font-weight="900" text-anchor="middle">additon</text>
+              <text x="30" y="34" font-size="4" fill="#000000" font-weight="bold" text-anchor="middle">ADDIBOND</text>
+              <rect x="22" y="13" width="16" height="3" fill="#ffffff" opacity="0.8"/>
+              <text x="30" y="15.5" font-size="2.5" fill="#1e293b" font-weight="bold" text-anchor="middle">1 kg</text>
+            </svg>
+          </div>
+          <h1 class="hero-product-title" id="detailHeroTitle">
+            Bahan Pencampur Semen Perekat Beton dan Keramik additon ADDIBOND 1 kg (Kaleng)
+          </h1>
+          <div class="hero-badges-row">
+            <div class="hero-chip">
+              <i class="fa-solid fa-box-archive" style="color: #64748b;"></i>
+              <span>Stok: <strong id="detailHeroStock">-</strong></span>
+            </div>
+            <div class="hero-chip">
+              <i class="fa-solid fa-rupiah-sign" style="color: #2563eb;"></i>
+              <span>Harga: <strong id="detailHeroPrice">Rp1.000</strong></span>
+            </div>
+            <div class="hero-chip">
+              <i class="fa-solid fa-tower-broadcast" style="color: #dc2626;"></i>
+              <span>Status: <strong style="color: #dc2626;" id="detailHeroStatus">Habis</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 1: INFORMASI PRODUK (Gambar 2) -->
+        <div class="detail-card">
+          <div class="detail-card-title">
+            <span>Informasi Produk</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Produk <span class="required">*</span></label>
+            <input type="text" class="form-input" id="detailProductNameInput" value="Bahan Pencampur Semen Perekat Beton dan Keramik additon ADDIBOND 1 kg (Kaleng)">
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Nama Cetak <span class="optional">(Opsional)</span></label>
+              <input type="text" class="form-input" placeholder="Tulis nama cetak" id="detailPrintName">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nama Alias <span class="optional">(Opsional)</span></label>
+              <input type="text" class="form-input" placeholder="Tulis nama alias" id="detailAliasName">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Kategori <span class="required">*</span></label>
+              <select class="form-select" id="detailCategorySelect">
+                <option selected>Material Dasar</option>
+                <option>Sanitary</option>
+                <option>Finishing</option>
+                <option>Dinding, Plafon, dan Partisi</option>
+                <option>Umum dan Rumah Tangga</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Satuan <span class="required">*</span></label>
+              <select class="form-select" id="detailUnitSelect">
+                <option selected>Kaleng</option>
+                <option>Pieces</option>
+                <option>Sak</option>
+                <option>Meter</option>
+                <option>Dus</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Brand <span class="required">*</span></label>
+              <select class="form-select" id="detailBrandSelect">
+                <option selected>additon</option>
+                <option>GP500</option>
+                <option>PYLOX</option>
+                <option>NO MERK</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tipe Produk <span class="optional">(Opsional)</span></label>
+              <div class="product-type-toggles">
+                <label class="toggle-item">
+                  <span class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                  </span>
+                  <span>Cat Tinting</span>
+                </label>
+                <label class="toggle-item">
+                  <span class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                  </span>
+                  <span>Tinta Cat Tinting</span>
+                </label>
+                <label class="toggle-item">
+                  <span class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                  </span>
+                  <span>Produk PPN</span>
+                </label>
+                <label class="toggle-item">
+                  <span class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                  </span>
+                  <span>Produk Online</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deskripsi & Spesifikasi (Dari Screenshot 3 Bagian Atas) -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Deskripsi / Spesifikasi <span class="optional">(Opsional)</span></label>
+            <textarea class="form-textarea" rows="3" id="detailDescText">Spesifikasi :
+Ukuran : 1 kg</textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 2: STOK DAN HARGA JUAL (Gambar 3) -->
+        <div class="detail-card">
+          <div class="detail-card-title">
+            <span>Stok dan Harga Jual</span>
+          </div>
+
+          <!-- Sub-tabel Stok -->
+          <div class="sub-section-title">Stok</div>
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th>Stok Minimum</th>
+                <th>Stok Maksimum</th>
+                <th>Stok Saat Ini</th>
+                <th>HPP Saat Ini</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>-</td>
+                <td>-</td>
+                <td id="detailTableStock">0</td>
+                <td>Rp0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Sub-tabel Gudang -->
+          <div class="sub-section-title">Gudang</div>
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th style="width: 70%;">Gudang</th>
+                <th>Stok</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Toko Bangun Bersama</td>
+                <td id="detailWarehouseStock">0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Sub-tabel Harga Jual -->
+          <div class="sub-section-title">Harga Jual</div>
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th>Harga Minimum</th>
+                <th>Harga Jual</th>
+                <th>Harga Maksimum</th>
+                <th>Harga Jual Online</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>-</td>
+                <td id="detailTablePrice">Rp1.000</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Sub-tabel Identifikasi Produk (3 KOLOM COMPACT) -->
+          <div class="sub-section-title" style="display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>Identifikasi Produk</span>
+              <span style="font-size: 11px; font-weight: 600; color: #2563eb; background: #eff6ff; padding: 2px 8px; border-radius: 4px; border: 1px solid #dbeafe;">
+                <i class="fa-solid fa-barcode"></i> 3 Kolom PRD
+              </span>
+            </div>
+            <button class="btn-print-label-action" onclick="openLabelPrintModal()">
+              <i class="fa-solid fa-print"></i> Cetak Label Barcode
+            </button>
+          </div>
+
+          <table class="detail-table compact-id-table" style="margin-bottom: 0;">
+            <thead>
+              <tr>
+                <th style="width: 28%;">Kode Produk</th>
+                <th style="width: 28%;">SKU Toko</th>
+                <th style="width: 44%;">Serial Number (Barcode)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <!-- Kolom 1: Kode Produk (Read-Only) -->
+                <td>
+                  <div class="compact-cell-flex">
+                    <span class="compact-code-val" id="colKodeProduk">ADBN-BND-01KG</span>
+                    <span class="compact-lock-badge" title="Terkunci: Master SKU Pusat"><i class="fa-solid fa-lock"></i> Read-Only</span>
+                  </div>
+                </td>
+
+                <!-- Kolom 2: SKU Toko (Read-Only) -->
+                <td>
+                  <div class="compact-cell-flex">
+                    <span class="compact-code-val" id="colSkuToko" style="color: #2563eb;">00003</span>
+                    <span class="compact-lock-badge" title="Terkunci: 5-Digit Unik Toko"><i class="fa-solid fa-lock"></i> Read-Only</span>
+                  </div>
+                </td>
+
+                <!-- Kolom 3: Serial Number Barcode (Editable) -->
+                <td>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <div style="position: relative; flex: 1;">
+                      <input 
+                        type="text" 
+                        class="form-input" 
+                        id="colBarcodeNumber" 
+                        value="8992753001230" 
+                        placeholder="Scan / ketik barcode kemasan..."
+                        maxlength="50"
+                        style="padding-right: 32px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; height: 36px;"
+                        oninput="handleBarcodeInputChange(this.value)"
+                      >
+                      <i class="fa-solid fa-barcode" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px;"></i>
+                    </div>
+                    <button class="btn-compact-tool bolt" onclick="simulateBarcodeScan()" title="Simulasi scan scanner fisik">
+                      <i class="fa-solid fa-bolt"></i> Scan
+                    </button>
+                    <button class="btn-compact-tool clear" onclick="clearBarcode()" title="Kosongkan barcode">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                  <!-- Error message -->
+                  <div class="barcode-error-msg" id="barcodeErrorMsg">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="barcodeErrorText">Format barcode tidak valid</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- STICKY BOTTOM BUTTON -->
+    <div class="sticky-bottom-bar" id="detailBottomActionBar" style="display: none;">
+      <button class="btn-outline" onclick="switchView('view-daftar-produk')">
+        Batal / Kembali
+      </button>
+      <button class="btn-save-primary" onclick="saveProductDetailChanges()">
+        <i class="fa-solid fa-check"></i> Ubah Produk
+      </button>
+    </div>
+
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- MODAL CETAK LABEL BARCODE (DENGAN PILIHAN 3 SUMBER KODE) -->
+  <div class="modal-overlay" id="labelPrintModal" onclick="if(event.target === this) closeLabelPrintModal();">
+    <div class="modal-card" style="max-width: 540px;">
+      <div class="modal-header">
+        <div class="modal-title"><i class="fa-solid fa-print"></i> Cetak Label Barcode Produk</div>
+        <button class="modal-close-btn" onclick="closeLabelPrintModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+
+        <!-- PILIHAN 3 SUMBER KODE BARCODE -->
+        <div style="width: 100%; margin-bottom: 16px;">
+          <label style="display: block; font-size: 12.5px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
+            Pilih Sumber Barcode yang Dicetak:
+          </label>
+          <div class="barcode-source-grid">
+            <!-- Pilihan 1: Kode Produk -->
+            <label class="source-radio-card" id="cardSourceKode">
+              <input type="radio" name="barcodeSourceOpt" value="kodeProduk" onchange="updateModalLabelPreview()">
+              <div class="source-info">
+                <span class="source-title">Kode Produk</span>
+                <span class="source-val" id="modalRadioKodeVal">ADBN-BND-01KG</span>
+                <span class="source-badge">Master SKU</span>
+              </div>
+            </label>
+
+            <!-- Pilihan 2: SKU Toko -->
+            <label class="source-radio-card selected" id="cardSourceSku">
+              <input type="radio" name="barcodeSourceOpt" value="skuToko" checked onchange="updateModalLabelPreview()">
+              <div class="source-info">
+                <span class="source-title">SKU Toko</span>
+                <span class="source-val" id="modalRadioSkuVal">00003</span>
+                <span class="source-badge blue">5-Digit Toko</span>
+              </div>
+            </label>
+
+            <!-- Pilihan 3: Serial Number (SN) -->
+            <label class="source-radio-card" id="cardSourceSn">
+              <input type="radio" name="barcodeSourceOpt" value="sn" onchange="updateModalLabelPreview()">
+              <div class="source-info">
+                <span class="source-title">Serial Number (SN)</span>
+                <span class="source-val" id="modalRadioSnVal">8992753001230</span>
+                <span class="source-badge">Barcode Kemasan</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- JUMLAH CETAK & UKURAN -->
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 16px; padding: 10px 14px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #334155;">
+            <i class="fa-solid fa-copy" style="color: #64748b;"></i>
+            <span>Jumlah Cetak:</span>
+            <input type="number" id="labelCopiesInput" value="1" min="1" max="100" style="width: 55px; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 700; text-align: center;">
+            <span>stiker</span>
+          </div>
+          <span style="font-size: 11px; color: #64748b; background: #ffffff; padding: 3px 8px; border-radius: 4px; border: 1px solid #e2e8f0;">
+            Format Label: 50 &times; 30 mm
+          </span>
+        </div>
+
+        <!-- PREVIEW LEMBAR LABEL -->
+        <div class="barcode-label-sheet">
+          <div class="label-store-name">Toko Bangun Bersama</div>
+          <div class="label-prod-name" id="modalLabelProdName">Bahan Pencampur Semen Perekat Beton dan Keramik additon ADDIBOND 1 kg (Kaleng)</div>
+          
+          <div style="margin: 6px 0; display: flex; justify-content: center;">
+            <svg id="modalBarcodeSvg" style="max-width: 100%; height: 50px;"></svg>
+          </div>
+          
+          <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; font-weight: 600; color: #475569;" id="modalLabelCodeText">
+            SKU Toko: 00003
+          </div>
+          <div class="label-price-tag" id="modalLabelPrice">Rp1.000</div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline" onclick="closeLabelPrintModal()">Tutup</button>
+        <button class="btn-primary" onclick="printSelectedLabel()">
+          <i class="fa-solid fa-print"></i> Cetak Label Sekarang
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State of Current Product Loaded
+    let currentProduct = {
+      name: "Bahan Pencampur Semen Perekat Beton dan Keramik additon ADDIBOND 1 kg (Kaleng)",
+      unit: "Kaleng",
+      brand: "additon",
+      category: "Material Dasar",
+      price: "Rp1.000",
+      stock: "0",
+      status: "Habis",
+      kodeProduk: "ADBN-BND-01KG",
+      skuToko: "00003",
+      barcode: "8992753001230"
+    };
+
+    // Database Mock for checking duplicates in store
+    const storeProductsDb = [
+      { name: "Aqua Botol", barcode: "8991234567810", skuToko: "00001" },
+      { name: "Aqua Galon", barcode: "8991234567827", skuToko: "00002" },
+      { name: "Bata Ringan 60 x 20 x 10 cm (Pieces)", barcode: "8993456789012", skuToko: "00004" },
+      { name: "Cat Semprot GP500 9505 Lemari Es Green 200 cc", barcode: "8994567890123", skuToko: "00005" }
+    ];
+
+    // VIEW SWITCHER
+    function switchView(viewId) {
+      const daftarView = document.getElementById('view-daftar-produk');
+      const detailView = document.getElementById('view-detail-produk');
+      if (daftarView) daftarView.classList.remove('active');
+      if (detailView) detailView.classList.remove('active');
+
+      const target = document.getElementById(viewId);
+      if (target) target.classList.add('active');
+
+      const subMenuItem = document.getElementById('sub-menu-data-produk');
+      const bottomBar = document.getElementById('detailBottomActionBar');
+
+      if (viewId === 'view-detail-produk') {
+        if (subMenuItem) subMenuItem.classList.add('active');
+        if (bottomBar) bottomBar.style.display = 'flex';
+      } else {
+        if (bottomBar) bottomBar.style.display = 'none';
+      }
+
+      // Scroll to top
+      const scrollEl = document.getElementById('main-content-scroll');
+      if (scrollEl) scrollEl.scrollTop = 0;
+    }
+
+    // OPEN PRODUCT DETAIL
+    function openProductDetail(name, unit, brand, category, price, stock, status, kode, skuToko, barcode) {
+      currentProduct = {
+        name: name,
+        unit: unit,
+        brand: brand,
+        category: category,
+        price: price,
+        stock: stock,
+        status: status,
+        kodeProduk: kode,
+        skuToko: skuToko,
+        barcode: barcode
+      };
+
+      // Populate Detail View Fields
+      const heroTitle = document.getElementById('detailHeroTitle');
+      if (heroTitle) heroTitle.textContent = name;
+
+      const heroStock = document.getElementById('detailHeroStock');
+      if (heroStock) heroStock.textContent = stock === '0' ? '-' : stock;
+
+      const heroPrice = document.getElementById('detailHeroPrice');
+      if (heroPrice) heroPrice.textContent = price;
+      
+      const heroStatusElem = document.getElementById('detailHeroStatus');
+      if (heroStatusElem) {
+        heroStatusElem.textContent = status;
+        if (status === 'Habis') {
+          heroStatusElem.style.color = '#dc2626';
+        } else if (status === 'Tersedia') {
+          heroStatusElem.style.color = '#16a34a';
+        } else {
+          heroStatusElem.style.color = '#64748b';
+        }
+      }
+
+      const nameInput = document.getElementById('detailProductNameInput');
+      if (nameInput) nameInput.value = name;
+
+      const catSelect = document.getElementById('detailCategorySelect');
+      if (catSelect) catSelect.value = category;
+
+      const unitSelect = document.getElementById('detailUnitSelect');
+      if (unitSelect) unitSelect.value = unit;
+
+      const brandSelect = document.getElementById('detailBrandSelect');
+      if (brandSelect) brandSelect.value = brand;
+
+      const stockCell = document.getElementById('detailTableStock');
+      if (stockCell) stockCell.textContent = stock;
+
+      const whStockCell = document.getElementById('detailWarehouseStock');
+      if (whStockCell) whStockCell.textContent = stock;
+
+      const priceCell = document.getElementById('detailTablePrice');
+      if (priceCell) priceCell.textContent = price;
+
+      // 3 Kolom Identifikasi
+      const colKode = document.getElementById('colKodeProduk');
+      if (colKode) colKode.textContent = kode;
+
+      const colSku = document.getElementById('colSkuToko');
+      if (colSku) colSku.textContent = skuToko;
+      
+      const barcodeInput = document.getElementById('colBarcodeNumber');
+      if (barcodeInput) barcodeInput.value = barcode || '';
+      
+      clearBarcodeError();
+
+      // Buka halaman detail produk
+      switchView('view-detail-produk');
+    }
+
+    // SCROLL TO BARCODE SECTION
+    function scrollToBarcodeSection() {
+      setTimeout(() => {
+        const barcodeSection = document.getElementById('barcode-identification-section');
+        if (barcodeSection) {
+          barcodeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          barcodeSection.style.transition = 'background-color 0.3s ease';
+          barcodeSection.style.backgroundColor = '#eff6ff';
+          setTimeout(() => {
+            barcodeSection.style.backgroundColor = 'transparent';
+          }, 1500);
+        }
+      }, 100);
+    }
+
+    // SAFE RENDER BARCODE GRAPHIC (FOR MODAL / OPTIONAL LIVE PREVIEW)
+    function renderBarcodeGraphic(code) {
+      const svgElem = document.getElementById('liveBarcodeSvg');
+      if (!svgElem) return;
+      const emptyNotice = document.getElementById('barcodeEmptyNotice');
+
+      const cleanCode = (code || '').trim();
+
+      if (!cleanCode) {
+        svgElem.style.display = 'none';
+        if (emptyNotice) emptyNotice.style.display = 'flex';
+        return;
+      }
+
+      svgElem.style.display = 'block';
+      if (emptyNotice) emptyNotice.style.display = 'none';
+
+      try {
+        JsBarcode("#liveBarcodeSvg", cleanCode, {
+          format: "CODE128",
+          width: 1.6,
+          height: 42,
+          displayValue: true,
+          fontSize: 12,
+          font: "JetBrains Mono",
+          textMargin: 3,
+          lineColor: "#1e293b",
+          margin: 0
+        });
+      } catch (e) {
+        // Fallback
+      }
+    }
+
+    // BARCODE INPUT VALIDATION REAL-TIME
+    function handleBarcodeInputChange(val) {
+      clearBarcodeError();
+
+      // Check for space
+      if (/\s/.test(val)) {
+        showBarcodeError("Format barcode tidak valid: tidak boleh mengandung spasi.");
+        return;
+      }
+
+      // Check for forbidden special characters
+      if (/[@#$%^&*()+=!~`[\]{}|\\:;"'<>,.?/]/.test(val)) {
+        showBarcodeError("Format barcode tidak valid: hanya boleh huruf, angka, strip (-), dan underscore (_).");
+        return;
+      }
+
+      renderBarcodeGraphic(val);
+    }
+
+    function showBarcodeError(msg) {
+      const errBox = document.getElementById('barcodeErrorMsg');
+      const errText = document.getElementById('barcodeErrorText');
+      errText.textContent = msg;
+      errBox.style.display = 'flex';
+      document.getElementById('colBarcodeNumber').style.borderColor = '#ef4444';
+    }
+
+    function clearBarcodeError() {
+      const errBox = document.getElementById('barcodeErrorMsg');
+      errBox.style.display = 'none';
+      document.getElementById('colBarcodeNumber').style.borderColor = '#2563eb';
+    }
+
+    // SIMULASI SCAN FISIK (SCANNER BARCODE TESTER)
+    function simulateBarcodeScan() {
+      const sampleBarcodes = [
+        "8992753001230",
+        "8992753994821",
+        "7110034928114",
+        "8998866120932",
+        "8993005128760"
+      ];
+      const randomCode = sampleBarcodes[Math.floor(Math.random() * sampleBarcodes.length)];
+      
+      const input = document.getElementById('colBarcodeNumber');
+      input.value = randomCode;
+      
+      clearBarcodeError();
+      renderBarcodeGraphic(randomCode);
+
+      // Flash effect to mimic scanner beam beep
+      input.style.backgroundColor = '#dbeafe';
+      setTimeout(() => {
+        input.style.backgroundColor = '#ffffff';
+      }, 300);
+
+      showToast('info', `📡 Berhasil memindai barcode fisik: ${randomCode}`);
+    }
+
+    // KOSONGKAN BARCODE
+    function clearBarcode() {
+      const input = document.getElementById('colBarcodeNumber');
+      input.value = "";
+      clearBarcodeError();
+      renderBarcodeGraphic("");
+      showToast('info', "Nilai barcode dikosongkan.");
+    }
+
+    // SIMPAN / UBAH PRODUK HANDLER
+    function saveProductDetailChanges() {
+      const barcodeVal = document.getElementById('colBarcodeNumber').value.trim();
+
+      // 1. Validasi karakter
+      if (/\s/.test(barcodeVal)) {
+        showBarcodeError("Format barcode tidak valid: tidak boleh mengandung spasi.");
+        showToast('error', "Gagal menyimpan: format barcode mengandung spasi.");
+        scrollToBarcodeSection();
+        return;
+      }
+
+      if (/[@#$%^&*()+=!~`[\]{}|\\:;"'<>,.?/]/.test(barcodeVal)) {
+        showBarcodeError("Format barcode tidak valid: simbol terlarang ditemukan.");
+        showToast('error', "Gagal menyimpan: format barcode tidak valid.");
+        scrollToBarcodeSection();
+        return;
+      }
+
+      // 2. Validasi Duplikasi Toko (PRD Story 2 & Edge Case)
+      if (barcodeVal !== "") {
+        const duplicate = storeProductsDb.find(p => p.barcode === barcodeVal && p.skuToko !== currentProduct.skuToko);
+        if (duplicate) {
+          showBarcodeError(`Serial Number / Barcode sudah digunakan oleh produk "${duplicate.name}".`);
+          showToast('error', `Duplikasi Barcode: Sudah dipakai oleh produk "${duplicate.name}"`);
+          scrollToBarcodeSection();
+          return;
+        }
+      }
+
+      // Simpan Berhasil
+      currentProduct.barcode = barcodeVal;
+      showToast('success', `Berhasil! Data produk dan barcode (${barcodeVal || 'tanpa barcode'}) berhasil diperbarui.`);
+      
+      // Update UI title if changed
+      const newName = document.getElementById('detailProductNameInput').value;
+      document.getElementById('detailHeroTitle').textContent = newName;
+    }
+
+    // PRINT MODAL PREVIEW & 3-SOURCE BARCODE SELECTOR
+    function openLabelPrintModal() {
+      const modal = document.getElementById('labelPrintModal');
+      
+      // Update values shown in radio cards
+      document.getElementById('modalRadioKodeVal').textContent = currentProduct.kodeProduk || '-';
+      document.getElementById('modalRadioSkuVal').textContent = currentProduct.skuToko || '00001';
+      
+      const currentSn = document.getElementById('colBarcodeNumber').value.trim();
+      document.getElementById('modalRadioSnVal').textContent = currentSn || '(Belum diisi)';
+
+      document.getElementById('modalLabelProdName').textContent = document.getElementById('detailProductNameInput').value;
+      document.getElementById('modalLabelPrice').textContent = document.getElementById('detailHeroPrice').textContent;
+
+      // Update active preview
+      updateModalLabelPreview();
+
+      modal.classList.add('open');
+    }
+
+    function updateModalLabelPreview() {
+      const selectedRadio = document.querySelector('input[name="barcodeSourceOpt"]:checked');
+      if (!selectedRadio) return;
+      const selectedSource = selectedRadio.value;
+      
+      // Highlight selected radio card
+      document.getElementById('cardSourceKode').classList.toggle('selected', selectedSource === 'kodeProduk');
+      document.getElementById('cardSourceSku').classList.toggle('selected', selectedSource === 'skuToko');
+      document.getElementById('cardSourceSn').classList.toggle('selected', selectedSource === 'sn');
+
+      let targetCode = "";
+      let labelSubText = "";
+
+      if (selectedSource === 'kodeProduk') {
+        targetCode = currentProduct.kodeProduk;
+        if (!targetCode || targetCode === '-') {
+          targetCode = currentProduct.skuToko; // fallback if non-sku
+          labelSubText = `Kode Master: - (Dialihkan ke SKU: ${currentProduct.skuToko})`;
+        } else {
+          labelSubText = `Kode Produk: ${targetCode}`;
+        }
+      } else if (selectedSource === 'skuToko') {
+        targetCode = currentProduct.skuToko || '00001';
+        labelSubText = `SKU Toko: ${targetCode}`;
+      } else if (selectedSource === 'sn') {
+        targetCode = document.getElementById('colBarcodeNumber').value.trim();
+        if (!targetCode) {
+          targetCode = currentProduct.skuToko; // fallback
+          labelSubText = `SN Kosong (Dialihkan ke SKU: ${currentProduct.skuToko})`;
+        } else {
+          labelSubText = `Serial Number: ${targetCode}`;
+        }
+      }
+
+      document.getElementById('modalLabelCodeText').textContent = labelSubText;
+
+      try {
+        JsBarcode("#modalBarcodeSvg", targetCode, {
+          format: "CODE128",
+          width: 1.8,
+          height: 48,
+          displayValue: true,
+          fontSize: 12,
+          font: "JetBrains Mono",
+          lineColor: "#1e293b",
+          margin: 0
+        });
+      } catch (e) {
+        JsBarcode("#modalBarcodeSvg", targetCode, {
+          format: "CODE128"
+        });
+      }
+    }
+
+    function printSelectedLabel() {
+      const selectedRadio = document.querySelector('input[name="barcodeSourceOpt"]:checked');
+      const selectedSource = selectedRadio ? selectedRadio.value : 'skuToko';
+      const copies = document.getElementById('labelCopiesInput').value || '1';
+      
+      let sourceName = "SKU Toko";
+      let codeVal = currentProduct.skuToko;
+      if (selectedSource === 'kodeProduk') {
+        sourceName = "Kode Produk";
+        codeVal = currentProduct.kodeProduk;
+      } else if (selectedSource === 'sn') {
+        sourceName = "Serial Number";
+        codeVal = document.getElementById('colBarcodeNumber').value.trim() || currentProduct.skuToko;
+      }
+
+      showToast('success', `🖨️ Perintah cetak ${copies} lembar stiker label (${sourceName}: ${codeVal}) terkirim ke printer!`);
+      closeLabelPrintModal();
+    }
+
+    function closeLabelPrintModal() {
+      document.getElementById('labelPrintModal').classList.remove('open');
+    }
+
+    // SEARCH FILTER TABLE
+    function filterProductTable() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const table = document.getElementById("productTable");
+      const trs = table.getElementsByTagName("tr");
+
+      for (let i = 1; i < trs.length; i++) {
+        const td = trs[i].getElementsByTagName("td")[2];
+        if (td) {
+          const txtValue = td.textContent || td.innerText;
+          if (txtValue.toLowerCase().indexOf(input) > -1) {
+            trs[i].style.display = "";
+          } else {
+            trs[i].style.display = "none";
+          }
+        }
+      }
+    }
+
+    // TOAST SYSTEM
+    function showToast(type, message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+
+      let iconClass = 'fa-solid fa-circle-check';
+      if (type === 'error') iconClass = 'fa-solid fa-circle-exclamation';
+      if (type === 'info') iconClass = 'fa-solid fa-circle-info';
+
+      toast.innerHTML = `
+        <i class="${iconClass} toast-icon"></i>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Initialize on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Ready
+    });
+  </script>
+</body>
+</html>

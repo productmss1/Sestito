@@ -1,0 +1,3088 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrator 1000s - Manajemen Toko inTechgra</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              navy: '#0c2340',
+              navydark: '#071628',
+              blue: '#1976d2',
+              bluelight: '#e3f2fd',
+              accent: '#ff9800',
+              graybg: '#f8fafc',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Modal Backdrop Blur */
+    .modal-backdrop {
+      background-color: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(3px);
+    }
+
+    /* Pulse animation */
+    @keyframes pulseSubtle {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    .pulse-subtle {
+      animation: pulseSubtle 2s infinite;
+    }
+  </style>
+</head>
+
+<body class="bg-[#f4f6f9] text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+  <!-- ========================================================================= -->
+  <!-- 1. TOP NAVIGATION BAR (Sesuai Desain Screenshot) -->
+  <!-- ========================================================================= -->
+  <header class="bg-[#0c2340] text-white sticky top-0 z-40 shadow-md">
+    <div class="flex items-center justify-between px-4 lg:px-6 h-14">
+
+      <!-- Brand & Top Menu Links -->
+      <div class="flex items-center space-x-6 overflow-x-auto no-scrollbar py-1">
+        <!-- Logo / App Name -->
+        <div class="flex items-center space-x-2 shrink-0 pr-2 border-r border-slate-700/60">
+          <span class="font-bold tracking-wider text-base text-white">ADMINISTRATOR 1000s</span>
+        </div>
+
+        <!-- Top Nav Items -->
+        <nav class="flex items-center space-x-1 shrink-0 text-xs font-medium">
+          <button
+            class="px-3 py-1.5 rounded-full hover:bg-slate-700/50 text-slate-300 transition-colors">Master</button>
+          <button
+            class="px-3 py-1.5 rounded-full hover:bg-slate-700/50 text-slate-300 transition-colors">Mitra1000s</button>
+          <button
+            class="px-3 py-1.5 rounded-full hover:bg-slate-700/50 text-slate-300 transition-colors">1000Saudara</button>
+
+          <!-- inTechgra Menu (Pilihan Utama Sesuai Request User) -->
+          <button id="navIntechgraBtn"
+            class="bg-[#1976d2] text-white px-4 py-1.5 rounded-full font-semibold shadow-sm flex items-center space-x-1.5">
+            <i class="fa-solid fa-cloud text-[11px]"></i>
+            <span>inTechgra</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block ml-1"></span>
+          </button>
+
+          <button
+            class="px-3 py-1.5 rounded-full hover:bg-slate-700/50 text-slate-300 transition-colors">Renov1000s</button>
+          <button
+            class="px-3 py-1.5 rounded-full hover:bg-slate-700/50 text-slate-300 transition-colors">Project1000s</button>
+          <button
+            class="px-3 py-1.5 rounded-full hover:bg-slate-700/50 text-slate-300 transition-colors flex items-center space-x-1">
+            <span>+3 Lainnya</span>
+            <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Right User Profile & Notification -->
+      <div class="flex items-center space-x-4 shrink-0 pl-4">
+        <!-- Notification Bell -->
+        <button class="relative text-slate-300 hover:text-white p-1 transition-colors" title="Notifikasi">
+          <i class="fa-regular fa-bell text-base"></i>
+          <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-[#0c2340]"></span>
+        </button>
+
+        <!-- User Profile Pill -->
+        <div class="flex items-center space-x-2.5 pl-2 border-l border-slate-700/60">
+          <div
+            class="w-8 h-8 rounded-full bg-indigo-500 overflow-hidden ring-1 ring-white/30 flex items-center justify-center text-white font-semibold text-xs shadow-inner">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+              alt="Cathrine Widjaja" class="w-full h-full object-cover">
+          </div>
+          <div class="text-left hidden sm:block leading-tight">
+            <div class="text-xs font-semibold text-white">Cathrine Widjaja</div>
+            <div class="text-[11px] text-slate-400 flex items-center">
+              <span>Admin</span>
+              <i class="fa-solid fa-chevron-down text-[9px] ml-1 opacity-70"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MAIN LAYOUT (SIDEBAR + CONTENT WORKSPACE) -->
+  <!-- ========================================================================= -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- LEFT SIDEBAR (Sesuai Screenshot Desain) -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 overflow-y-auto">
+      <div class="p-3 space-y-1 text-xs">
+
+        <!-- Menu: Manajemen Customer -->
+        <button onclick="switchSidebarMenu('customer')" id="sideCustomerBtn"
+          class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+          <i class="fa-solid fa-users text-slate-400 w-4 text-center"></i>
+          <span>Manajemen Customer</span>
+        </button>
+
+        <!-- Menu: Manajemen Toko (ACTIVE MENU UNTUK INTECHGRA STAGE 1-3) -->
+        <button onclick="switchSidebarMenu('toko')" id="sideTokoBtn"
+          class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-blue-50 text-[#1976d2] font-semibold transition-colors shadow-sm">
+          <i class="fa-solid fa-store text-[#1976d2] w-4 text-center"></i>
+          <span>Manajemen Toko</span>
+          <span class="ml-auto bg-[#1976d2] text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">AZURE</span>
+        </button>
+
+        <!-- Menu: Manajemen Sales -->
+        <button onclick="switchSidebarMenu('sales')" id="sideSalesBtn"
+          class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+          <i class="fa-solid fa-user-tie text-slate-400 w-4 text-center"></i>
+          <span>Manajemen Sales</span>
+        </button>
+
+        <!-- Menu: Manajemen Produk Jualan -->
+        <button
+          class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+          <i class="fa-solid fa-box-open text-slate-400 w-4 text-center"></i>
+          <span>Manajemen Produk Jualan</span>
+        </button>
+
+        <!-- Menu: Manajemen Homepage -->
+        <div class="pt-1">
+          <button
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+            <div class="flex items-center space-x-3">
+              <i class="fa-solid fa-house text-slate-400 w-4 text-center"></i>
+              <span>Manajemen Homepage</span>
+            </div>
+            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+          </button>
+        </div>
+
+        <!-- Menu: Order -->
+        <div>
+          <button
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+            <div class="flex items-center space-x-3">
+              <i class="fa-solid fa-receipt text-slate-400 w-4 text-center"></i>
+              <span>Order</span>
+            </div>
+            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+          </button>
+        </div>
+
+        <!-- Menu: Finance -->
+        <div>
+          <button
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+            <div class="flex items-center space-x-3">
+              <i class="fa-solid fa-file-invoice-dollar text-slate-400 w-4 text-center"></i>
+              <span>Finance</span>
+            </div>
+            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Bottom Settings & Logout -->
+      <div class="mt-auto p-3 border-t border-slate-100 space-y-2 text-xs">
+        <button
+          class="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+          <i class="fa-solid fa-gear text-slate-400 w-4 text-center"></i>
+          <span>Pengaturan</span>
+        </button>
+
+        <button
+          class="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 font-medium transition-colors">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN WORKSPACE -->
+    <main class="flex-1 overflow-y-auto bg-[#f8fafc] p-5 lg:p-7">
+
+      <!-- ===================================================================== -->
+      <!-- VIEW A: LIST TOKO UTAMA (STAGE 1 - TERBAGI 3 PAKET: LITE, BASIC, PRO) -->
+      <!-- ===================================================================== -->
+      <div id="viewStoreList" class="space-y-6">
+
+        <!-- Page Header & Global Breadcrumb -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <div class="flex items-center space-x-2 text-xs text-slate-500 mb-1">
+              <span>inTechgra Azure</span>
+              <span>/</span>
+              <span class="text-blue-600 font-medium">Manajemen Toko</span>
+              <span>/</span>
+              <span id="currentPackageLabel" class="text-slate-700 font-semibold">inTechgra Pro</span>
+            </div>
+            <h1 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-store text-[#1976d2]"></i>
+              <span>Daftar Toko inTechgra</span>
+            </h1>
+            <p class="text-xs text-slate-500 mt-0.5">Kelola status langganan toko, toleransi masa aktif manual, dan
+              inisiasi migrasi master SKU toko.</p>
+          </div>
+
+          <!-- Quick Stage Badge Indicator -->
+          <div
+            class="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm text-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="text-slate-600 font-medium">Status Server:</span>
+            <span class="font-bold text-slate-800">Online</span>
+          </div>
+        </div>
+
+        <!-- 3 TABS PAKET (CORE STAGE 1: LITE, BASIC, PRO) -->
+        <div
+          class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+          <!-- Segmented Tab Buttons -->
+          <div class="flex bg-slate-100 p-1 rounded-lg w-full md:w-auto text-xs font-medium">
+            <button onclick="switchPackage('lite')" id="tabLite"
+              class="flex-1 md:flex-initial px-4 py-2 rounded-md transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-2">
+              <span>inTechgra Lite</span>
+              <span id="tabCountLite" class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">4</span>
+            </button>
+            <button onclick="switchPackage('basic')" id="tabBasic"
+              class="flex-1 md:flex-initial px-4 py-2 rounded-md transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-2">
+              <span>inTechgra Basic</span>
+              <span id="tabCountBasic" class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">5</span>
+            </button>
+            <button onclick="switchPackage('pro')" id="tabPro"
+              class="flex-1 md:flex-initial px-4 py-2 rounded-md transition-all bg-[#1976d2] text-white shadow-sm font-semibold flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-crown text-amber-300 text-[11px]"></i>
+              <span>inTechgra Pro</span>
+              <span id="tabCountPro" class="bg-blue-800 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">9</span>
+            </button>
+          </div>
+
+          <!-- Quick Metrics Banner (Semua Status: Aktif, H-7 Expired, Expired, Implementasi) -->
+          <div class="flex items-center flex-wrap gap-x-3.5 gap-y-1 text-xs px-2 text-slate-600 w-full md:w-auto justify-end">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span>Aktif: <strong id="metricActive" class="text-slate-800 font-bold">0</strong></span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              <span>H-7 Expired: <strong id="metricWarning" class="text-slate-800 font-bold">0</strong></span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+              <span>Expired: <strong id="metricExpired" class="text-slate-800 font-bold">0</strong></span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+              <span>Implementasi: <strong id="metricOnboard" class="text-slate-800 font-bold">0</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar (Sesuai Referensi Screenshot) -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <!-- Search Input -->
+            <div class="flex-1 relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+              <input type="text" id="searchInput" onkeyup="filterStoreTable()"
+                placeholder="Cari berdasarkan nama toko atau no. HP yang terdaftar..."
+                class="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <!-- Status Filter -->
+            <div class="sm:w-48">
+              <select id="statusFilter" onchange="filterStoreTable()"
+                class="w-full py-2 px-3 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700 bg-white">
+                <option value="ALL">Semua Status Akun</option>
+                <option value="Aktif">Hanya Aktif</option>
+                <option value="Segera Berakhir">Segera Berakhir (H-7)</option>
+                <option value="Implementasi">Fase Implementasi</option>
+                <option value="Expired">Expired</option>
+              </select>
+            </div>
+
+            <!-- Quick Export -->
+            <button onclick="showToast('Mengunduh daftar toko aktif...')"
+              class="border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs font-medium hover:bg-slate-50 flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-arrow-up-from-bracket"></i>
+              <span>Export CSV</span>
+            </button>
+          </div>
+
+          <!-- Alert Tips untuk Tim Bisnis (Dispensasi Manual) -->
+          <div
+            class="bg-blue-50/70 border border-blue-100 rounded-lg p-2.5 flex items-start space-x-2 text-xs text-blue-900">
+            <i class="fa-solid fa-circle-info text-blue-600 mt-0.5 shrink-0"></i>
+            <div>
+              <span class="font-semibold">Info Fitur Stage 1:</span> Klik langsung pada kolom <strong>Tanggal Masa
+                Aktif</strong> untuk membuka kalender <em>Inline Datepicker</em> guna memberikan toleransi dispensasi
+              1–2 hari bagi toko saat implementasi tanpa menerbitkan invoice.
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN STORE TABLE (STAGE 1) -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs" id="storeTable">
+              <thead
+                class="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200 uppercase tracking-wider text-[11px]">
+                <tr>
+                  <th class="py-3 px-4 w-12 text-center">No.</th>
+                  <th class="py-3 px-4">Nama Toko</th>
+                  <th class="py-3 px-4">Lokasi</th>
+                  <th class="py-3 px-4">
+                    <div class="flex items-center space-x-1">
+                      <span>Masa Aktif</span>
+                      <span id="colHeaderMasaAktifHint"
+                        class="text-[9px] bg-blue-100 text-blue-800 px-1 py-0.5 rounded font-normal normal-case">Klik
+                        utk Ubah</span>
+                    </div>
+                  </th>
+                  <th class="py-3 px-4 text-center">User Login</th>
+                  <th class="py-3 px-4 text-center">Status Akun</th>
+                  <th class="py-3 px-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="storeTableBody" class="divide-y divide-slate-100 text-slate-700">
+                <!-- Injected via JavaScript based on Selected Package -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar (Sesuai Referensi Screenshot) -->
+          <div
+            class="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <div>
+              Menampilkan <span id="pageInfo">1 - 6 dari 22 toko</span> di paket <strong id="pagePackageName">inTechgra
+                Pro</strong>
+            </div>
+            <div class="flex items-center space-x-1">
+              <button class="px-2.5 py-1.5 rounded border border-slate-200 hover:bg-slate-50 disabled:opacity-40"><i
+                  class="fa-solid fa-chevron-left text-[10px]"></i></button>
+              <button class="px-3 py-1.5 rounded bg-[#1976d2] text-white font-medium">1</button>
+              <button class="px-3 py-1.5 rounded border border-slate-200 hover:bg-slate-50">2</button>
+              <button class="px-3 py-1.5 rounded border border-slate-200 hover:bg-slate-50">3</button>
+              <button class="px-2.5 py-1.5 rounded border border-slate-200 hover:bg-slate-50"><i
+                  class="fa-solid fa-chevron-right text-[10px]"></i></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW B: STORE WORKSPACE (SOLUSI B: HALAMAN PENUH DENGAN 3 SUB-TAB)    -->
+      <!-- ===================================================================== -->
+      <div id="viewStoreWorkspace" class="hidden space-y-6">
+
+        <!-- Top Header & Breadcrumb -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-200">
+          <div class="flex items-center space-x-3">
+            <button onclick="closeStoreWorkspace()"
+              class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors shadow-sm"
+              title="Kembali ke Daftar Toko">
+              <i class="fa-solid fa-arrow-left text-sm"></i>
+            </button>
+            <div>
+              <div class="flex items-center space-x-2 text-xs text-slate-500">
+                <span class="cursor-pointer hover:underline" onclick="closeStoreWorkspace()">Manajemen Toko</span>
+                <span>/</span>
+                <span id="workspaceBreadcrumbPkg" class="font-medium text-blue-600">inTechgra Pro</span>
+                <span>/</span>
+                <span id="workspaceBreadcrumbName" class="text-slate-700 font-semibold">Toko Bangunan Berkah Jaya</span>
+              </div>
+              <div class="flex items-center space-x-3 mt-0.5">
+                <h1 id="workspaceStoreTitle" class="text-xl font-bold text-slate-800">Toko Bangunan Berkah Jaya</h1>
+                <span id="workspaceBadgePackage"
+                  class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full uppercase">INTECHGRA
+                  PRO</span>
+                <span id="workspaceStatusBadge"
+                  class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Aktif</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button onclick="closeStoreWorkspace()"
+              class="border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm flex items-center space-x-1.5 transition-colors">
+              <i class="fa-solid fa-table-list text-slate-400"></i>
+              <span>Kembali ke Daftar Toko</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 SUB-TAB NAVIGASI TOKO (SOLUSI B) -->
+        <div
+          class="bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-1 text-xs font-medium overflow-x-auto">
+          <button onclick="switchStoreTab('profile')" id="subTabProfile"
+            class="px-5 py-2.5 rounded-lg transition-all bg-[#1976d2] text-white shadow-sm font-semibold flex items-center space-x-2 shrink-0">
+            <i class="fa-regular fa-id-card text-xs"></i>
+            <span>Profil Toko</span>
+          </button>
+          <button onclick="switchStoreTab('vouchers')" id="subTabVouchers"
+            class="px-5 py-2.5 rounded-lg transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50 flex items-center space-x-2 shrink-0">
+            <i class="fa-solid fa-ticket text-xs"></i>
+            <span>Kelola Voucher</span>
+          </button>
+          <button onclick="switchStoreTab('sku')" id="subTabSku"
+            class="px-5 py-2.5 rounded-lg transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50 flex items-center space-x-2 shrink-0">
+            <i class="fa-solid fa-boxes-stacked text-xs"></i>
+            <span>Export & Import SKU</span>
+          </button>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-TAB 1: PROFIL TOKO & INFORMASI LISENSI                          -->
+        <!-- =================================================================== -->
+        <div id="tabContentProfile" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Kolom 1: Informasi Toko (Sesuai Referensi Pengguna) -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+              <h3
+                class="text-base font-bold text-slate-800 pb-2 border-b border-slate-100 flex items-center justify-between">
+                <span>Informasi Toko</span>
+                <span
+                  class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full uppercase">Detail
+                  Toko</span>
+              </h3>
+
+              <div class="space-y-2 text-xs">
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Nama Toko</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoNamaToko">TB. Jaya Makmur</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Provinsi</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoProvinsi">DKI Jakarta</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Kabupaten/Kota</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoKabupaten">Jakarta Barat</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Kecamatan</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoKecamatan">Palmerah</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Kelurahan/Desa</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoKelurahan">Slipi</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Jalan</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoJalan">Jl. Slipi No. 12 Jakarta Barat</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">No. Rumah</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoNoRumah">No. 12</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">PIC</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoPic">Hayat</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Tlp</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoTlp">-</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">No. Handphone</div>
+                  <div class="col-span-7 text-slate-600 font-medium flex items-center space-x-2">
+                    <span id="infoHandphone">081234567890</span>
+                    <a id="btnInfoWa" href="#" onclick="showToast('Membuka tautan chat WhatsApp toko...')"
+                      class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center space-x-1 transition-colors">
+                      <i class="fa-brands fa-whatsapp text-emerald-600"></i>
+                      <span>WA</span>
+                    </a>
+                  </div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Status</div>
+                  <div class="col-span-7 text-slate-600 font-medium">
+                    <span id="infoStatus"
+                      class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block">Aktif</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Tanggal Registrasi</div>
+                  <div class="col-span-7 text-slate-600 font-medium" id="infoTglRegistrasi">18 Agustus 2024, 10:00</div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 py-1">
+                  <div class="col-span-5 font-bold text-[#0f2c59]">Total Produk</div>
+                  <div class="col-span-7 text-slate-600 font-medium">
+                    <span id="infoTotalProduk" class="font-bold text-slate-800">100</span> Produk
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kolom 2: Maps Location Toko (Google Maps) Sesuai Permintaan User -->
+            <div
+              class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4 flex flex-col justify-between">
+              <div>
+                <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#1976d2] flex items-center justify-center text-sm font-bold shrink-0">
+                      <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-bold text-slate-800">Lokasi Toko</h3>
+                      <p class="text-[10px] text-slate-400">Peta wilayah & koordinat operasional</p>
+                    </div>
+                  </div>
+                  <a id="btnOpenMapsExternal" href="https://maps.google.com" target="_blank"
+                    class="text-[11px] font-semibold text-[#1976d2] hover:text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-lg transition-colors flex items-center space-x-1.5 shadow-2xs">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                    <span>Buka Google Maps</span>
+                  </a>
+                </div>
+
+                <!-- Interactive Map Frame with Pin Overlay -->
+                <div class="mt-3 relative w-full h-64 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shadow-inner group">
+                  <iframe id="storeMapIframe"
+                    class="w-full h-full border-0"
+                    loading="lazy"
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://maps.google.com/maps?q=TB.%20Jaya%20Makmur%2C%20Jakarta%20Barat&t=&z=15&ie=UTF8&iwloc=&output=embed">
+                  </iframe>
+
+                  <!-- Floating Badge at Top-Left of Map -->
+                  <div class="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs border border-slate-200 shadow-md px-2.5 py-1 rounded-lg flex items-center space-x-2 z-10 pointer-events-none">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    <span id="mapFloatingStoreName" class="font-bold text-slate-800 text-[11px]">TB. Jaya Makmur</span>
+                    <span id="mapFloatingCity" class="text-[9px] text-slate-500 bg-slate-100 px-1 py-0.2 rounded font-medium">Jakarta Barat</span>
+                  </div>
+                </div>
+
+                <!-- Detail Alamat & Wilayah Box -->
+                <div class="mt-3.5 bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2 text-xs">
+                  <div class="flex items-start space-x-2">
+                    <i class="fa-solid fa-location-dot text-red-500 text-xs mt-0.5 shrink-0"></i>
+                    <div class="flex-1">
+                      <span class="text-[10px] text-slate-400 block font-semibold uppercase tracking-wider">Alamat Lengkap</span>
+                      <span id="mapDetailAddress" class="font-medium text-slate-700 leading-tight block mt-0.5">Jl. Slipi No. 12 Jakarta Barat, Slipi, Palmerah, DKI Jakarta</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between pt-2 border-t border-slate-200/60 text-[11px]">
+                    <div class="flex items-center space-x-1.5 text-slate-500">
+                      <i class="fa-solid fa-map text-blue-600 text-[10px]"></i>
+                      <span>Pricelist Wilayah:</span>
+                    </div>
+                    <span id="mapDetailArea" class="font-bold text-slate-800">Zona Jabobarban</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Button Directions at Bottom -->
+              <div class="pt-2">
+                <button onclick="openStoreDirections()"
+                  class="w-full bg-[#1976d2] hover:bg-blue-700 text-white font-semibold py-2.5 px-3 rounded-lg text-xs transition-colors flex items-center justify-center space-x-2 shadow-xs">
+                  <i class="fa-solid fa-diamond-turn-right text-[11px]"></i>
+                  <span>Petunjuk Arah Rute Menuju Toko</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-TAB 2: KELOLA VOUCHER (STAGE 2 - TAMPILAN RESMI SESUAI GAMBAR)  -->
+        <!-- =================================================================== -->
+        <div id="tabContentVouchers" class="hidden space-y-5">
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+
+            <!-- Header Tab 2 & Top Action Buttons (Exact Replica dari Gambar User) -->
+            <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-white">
+              <div class="flex items-center space-x-2.5">
+                <button onclick="toggleFormTambahAkses()" id="btnTambahAkses"
+                  class="bg-[#1976d2] hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5">
+                  <i class="fa-solid fa-user-plus text-[11px]"></i>
+                  <span>Tambah Akses</span>
+                </button>
+                <button onclick="handlePerpanjangOrUpgradeClick()" id="btnPerpanjangAkun"
+                  class="bg-[#1976d2] hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5">
+                  <i id="btnPerpanjangIcon" class="fa-solid fa-calendar-plus text-[11px]"></i>
+                  <span id="btnPerpanjangText">Perpanjang Akun</span>
+                </button>
+                <button onclick="openUpgradeModal()" id="btnUpgradeAkun"
+                  class="hidden bg-[#7079cb] hover:bg-[#5e66b8] text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5">
+                  <i class="fa-solid fa-rocket text-[11px]"></i>
+                  <span id="btnUpgradeAkunText">Upgrade Akun</span>
+                </button>
+                <button onclick="openImplementasiModal()" id="btnImplementasi"
+                  class="hidden bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5">
+                  <i class="fa-solid fa-chalkboard-user text-[11px]"></i>
+                  <span>Implementasi</span>
+                </button>
+              </div>
+
+              <div class="text-xs text-slate-500">
+                Target Toko: <strong id="modalTargetStoreName" class="text-slate-800">Toko Bangunan Berkah Jaya</strong>
+              </div>
+            </div>
+
+            <!-- Sub-Form Accordion A: Tambah Akses User Login (+Seat) -->
+            <div id="subFormTambahAkses"
+              class="hidden mx-6 my-4 p-4 bg-blue-50/70 border border-blue-200 rounded-xl space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+                  <i class="fa-solid fa-users-gear text-blue-600"></i>
+                  <span>Form Tambah Akses User Login (Generate Invoice)</span>
+                </h4>
+                <button onclick="toggleFormTambahAkses()" class="text-slate-400 hover:text-slate-600 text-xs"><i
+                    class="fa-solid fa-xmark"></i></button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                <div>
+                  <label class="block text-slate-600 text-[11px] mb-1">Kuota Saat Ini:</label>
+                  <input type="text" id="inputCurrentUserQuota" value="3 User" disabled
+                    class="w-full bg-slate-100 border border-slate-200 rounded px-2.5 py-1.5 font-bold text-slate-700">
+                </div>
+                <div>
+                  <label class="block text-slate-600 text-[11px] mb-1">Jumlah Tambahan User:</label>
+                  <select id="inputAddUserSeat"
+                    class="w-full bg-white border border-blue-300 rounded px-2.5 py-1.5 font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    <option value="+1 User">+1 User Seat (Rp 150.000 / bln)</option>
+                    <option value="+2 User">+2 User Seat (Rp 300.000 / bln)</option>
+                    <option value="+3 User">+3 User Seat (Rp 450.000 / bln)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-slate-600 text-[11px] mb-1">Masa Aktif User:</label>
+                  <input type="text" id="inputUserExpiryFollowStore" value="s/d 31 Des 2026" disabled
+                    class="w-full bg-blue-100/60 border border-blue-200 rounded px-2.5 py-1.5 font-semibold text-blue-900"
+                    title="Masa aktif user mengikuti masa aktif toko">
+                  <span class="text-[9px] text-blue-700 block mt-0.5">*Otomatis mengikuti masa aktif toko</span>
+                </div>
+                <div class="flex items-end">
+                  <button onclick="submitGenerateVoucherUser()"
+                    class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-1.5 px-3 rounded text-xs shadow-sm flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Generate Invoice</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Table History Kelola Voucher (Kolom Baru Sesuai Permintaan) -->
+            <div class="p-6 overflow-x-auto">
+              <div class="border border-slate-200 rounded-lg overflow-hidden">
+                <table class="w-full text-left text-xs" id="voucherHistoryTable">
+                  <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200 text-[11px]">
+                    <tr>
+                      <th class="py-3 px-3 text-center w-12">No.</th>
+                      <th class="py-3 px-3">Kode Invoice</th>
+                      <th class="py-3 px-3">Tipe</th>
+                      <th class="py-3 px-3">Jumlah</th>
+                      <th class="py-3 px-3">Masa Aktif</th>
+                      <th class="py-3 px-3">Status Terpakai</th>
+                      <th class="py-3 px-3">Implementator</th>
+                      <th class="py-3 px-3 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="voucherHistoryBody" class="divide-y divide-slate-100 text-slate-700">
+                    <!-- Rendered via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SUB-TAB 3: EXPORT & IMPORT SKU (STAGE 3)                            -->
+        <!-- =================================================================== -->
+        <div id="tabContentSku" class="hidden space-y-6">
+
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-emerald-600"></i>
+                <span>Migrasi Master Data SKU Toko Bangunan</span>
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola impor batch data awal toko dan download template
+                terfilter.</p>
+            </div>
+          </div>
+
+          <!-- 3 Pilar Statistik Produk Toko (Total Produk, Produk SKU, Produk NON SKU) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- 1. Total Produk di Toko -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3.5">
+              <div
+                class="w-11 h-11 rounded-xl bg-blue-50 text-[#1976d2] flex items-center justify-center text-xl shrink-0">
+                <i class="fa-solid fa-boxes-stacked"></i>
+              </div>
+              <div>
+                <span class="text-xs text-slate-400 block font-medium">Total Produk di Toko</span>
+                <div class="flex items-baseline space-x-1.5 mt-0.5">
+                  <span class="text-xl font-bold text-slate-800">3.450</span>
+                  <span class="text-xs text-slate-500 font-medium">Produk</span>
+                </div>
+                <span class="text-[10px] text-slate-400 block mt-0.5">Seluruh katalog aktif toko ini</span>
+              </div>
+            </div>
+
+            <!-- 2. Jumlah Produk SKU (Master 1000saudara) -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3.5">
+              <div
+                class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
+                <i class="fa-solid fa-barcode"></i>
+              </div>
+              <div>
+                <span class="text-xs text-slate-400 block font-medium">Jumlah Produk SKU</span>
+                <div class="flex items-baseline space-x-1.5 mt-0.5">
+                  <span class="text-xl font-bold text-emerald-600">3.200</span>
+                  <span class="text-xs text-emerald-700 font-semibold">(92.8%)</span>
+                </div>
+                <span class="text-[10px] text-slate-400 block mt-0.5">Terstandarisasi Master 1000saudara</span>
+              </div>
+            </div>
+
+            <!-- 3. Jumlah Produk NON SKU (Lokal Toko) -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3.5">
+              <div
+                class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                <i class="fa-solid fa-tag"></i>
+              </div>
+              <div>
+                <span class="text-xs text-slate-400 block font-medium">Jumlah Produk NON SKU</span>
+                <div class="flex items-baseline space-x-1.5 mt-0.5">
+                  <span class="text-xl font-bold text-amber-600">250</span>
+                  <span class="text-xs text-amber-700 font-semibold">(7.2%)</span>
+                </div>
+                <span class="text-[10px] text-slate-400 block mt-0.5">Produk khusus / lokal racikan toko</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Cards: Export Smart Template vs Export Data Toko (Presisi Sama Tinggi & Sejajar) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+
+            <!-- Card 1: Smart Template Export (Auto-Filter Barang Eksisting) -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-full">
+              <div class="space-y-3 flex-1 flex flex-col">
+                <div class="flex items-center space-x-3">
+                  <div
+                    class="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold shrink-0">
+                    1</div>
+                  <div class="min-h-[38px] flex flex-col justify-center">
+                    <h3 class="text-sm font-bold text-slate-800">Download Template SKU Baru (Sisa)</h3>
+                    <span class="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                      <i class="fa-solid fa-filter text-[10px]"></i> Auto-Filter Aktif (3.200 SKU eksisting dikeluarkan)
+                    </span>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed flex-1">
+                  File Excel ini <strong>HANYA berisi 76.800 sisa barang</strong> dari katalog 80.000 SKU yang belum
+                  terdaftar di toko ini. Implementator tidak akan pusing mencari barang yang sudah pernah di-setup.
+                </p>
+              </div>
+              <div class="pt-4 mt-auto">
+                <button onclick="downloadSmartTemplate()"
+                  class="w-full h-10 bg-[#1976d2] hover:bg-blue-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center space-x-2 transition-colors shadow-xs">
+                  <i class="fa-solid fa-file-excel"></i>
+                  <span>Download Template Excel Sisa SKU (.xlsx)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 2: Export Data Toko Saat Ini (Read-Only) -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-full">
+              <div class="space-y-3 flex-1 flex flex-col">
+                <div class="flex items-center space-x-3">
+                  <div
+                    class="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-sm font-bold shrink-0">
+                    2</div>
+                  <div class="min-h-[38px] flex flex-col justify-center">
+                    <h3 class="text-sm font-bold text-slate-800">Export Data Toko Saat Ini (View-Only)</h3>
+                    <span class="text-xs text-slate-500 font-medium">Arsip Audit / Lembar Opname Fisik</span>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed flex-1">
+                  Download seluruh 3.450 SKU yang sudah aktif di database toko ini. File ini murni
+                  <strong>Read-Only</strong> dan tidak bisa di-upload balik ke portal admin.
+                </p>
+              </div>
+              <div class="pt-4 mt-auto">
+                <button onclick="downloadStoreCurrentData()"
+                  class="w-full h-10 border border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 bg-white rounded-lg text-xs font-semibold flex items-center justify-center space-x-2 transition-colors shadow-xs">
+                  <i class="fa-solid fa-file-arrow-down"></i>
+                  <span>Download Data Aktif Toko (Read-Only)</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Safe Batch Import Engine (With Drag & Drop, Limit Guard, and Progress Bar) -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-cloud-arrow-up text-emerald-600 text-base"></i>
+                <h3 class="text-sm font-bold text-slate-800">Unggah File Excel Master SKU Baru</h3>
+              </div>
+              <span class="text-[11px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full font-semibold">
+                Batas Maksimal: 3.000 Baris / Batch Upload
+              </span>
+            </div>
+
+            <!-- Dropzone -->
+            <div id="dropzoneArea"
+              class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-50/50">
+              <input type="file" id="skuFileInput" class="hidden" accept=".xlsx, .xls, .csv"
+                onchange="simulateFileSelection(this)">
+              <div onclick="document.getElementById('skuFileInput').click()" class="space-y-2">
+                <div
+                  class="w-12 h-12 rounded-full bg-blue-100 text-[#1976d2] mx-auto flex items-center justify-center text-xl">
+                  <i class="fa-solid fa-file-excel"></i>
+                </div>
+                <div class="text-xs text-slate-700">
+                  <span class="font-semibold text-blue-600">Klik untuk pilih file Excel</span> atau seret file ke sini
+                </div>
+                <div class="text-[11px] text-slate-400">Format yang diterima: .xlsx / .csv dengan kolom standar
+                  1000saudara</div>
+              </div>
+
+              <!-- Upload Progress (Simulated) -->
+              <div id="uploadProgressBarContainer"
+                class="hidden mt-4 pt-4 border-t border-slate-200 text-left space-y-2">
+                <div class="flex justify-between text-xs text-slate-600">
+                  <span id="uploadFileName" class="font-semibold">Batch2_Pipa_Fitting_TB_Berkah.xlsx (1.250
+                    baris)</span>
+                  <span id="uploadProgressPercent" class="font-bold text-blue-600">0%</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                  <div id="uploadProgressBar" class="bg-[#1976d2] h-2 rounded-full transition-all duration-300"
+                    style="width: 0%"></div>
+                </div>
+                <div id="uploadProgressStatus" class="text-[11px] text-slate-500 italic">Memvalidasi kecocokan dengan
+                  80.000 SKU global...</div>
+              </div>
+            </div>
+
+            <!-- Upload History Log Table -->
+            <div class="pt-3">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Riwayat Batch Upload Toko Ini
+              </h4>
+              <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 text-slate-500 font-medium border-b border-slate-200 text-[11px]">
+                    <tr>
+                      <th class="py-2.5 px-3">Waktu Upload</th>
+                      <th class="py-2.5 px-3">Implementator</th>
+                      <th class="py-2.5 px-3">Nama File</th>
+                      <th class="py-2.5 px-3 text-center">Total Baris</th>
+                      <th class="py-2.5 px-3 text-center text-emerald-600">Sukses Masuk</th>
+                      <th class="py-2.5 px-3 text-center text-amber-600">Dilewati (Duplikat)</th>
+                      <th class="py-2.5 px-3 text-center">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr>
+                      <td class="py-2 px-3 text-slate-500">22 Sep 2026, 14:30 WIB</td>
+                      <td class="py-2 px-3 font-semibold">Cathrine Widjaja</td>
+                      <td class="py-2 px-3 font-mono text-[11px]">Batch1_Semen_Pasir_Besi.xlsx</td>
+                      <td class="py-2 px-3 text-center">2.200</td>
+                      <td class="py-2 px-3 text-center font-bold text-emerald-600">+2.200</td>
+                      <td class="py-2 px-3 text-center font-bold text-amber-600">0</td>
+                      <td class="py-2 px-3 text-center"><span
+                          class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Selesai</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="py-2 px-3 text-slate-500">23 Sep 2026, 10:15 WIB</td>
+                      <td class="py-2 px-3 font-semibold">Cathrine Widjaja</td>
+                      <td class="py-2 px-3 font-mono text-[11px]">Batch2_Cat_Thinner.xlsx</td>
+                      <td class="py-2 px-3 text-center">1.265</td>
+                      <td class="py-2 px-3 text-center font-bold text-emerald-600">+1.250</td>
+                      <td class="py-2 px-3 text-center font-bold text-amber-600">15 (Auto-Skip)</td>
+                      <td class="py-2 px-3 text-center"><span
+                          class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Selesai</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODAL 2: INLINE DATEPICKER DISPENSASI MANUAL CEPAT (STAGE 1 LIST DEPAN) -->
+      <!-- ========================================================================= -->
+      <div id="modalInlineDatepicker"
+        class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+        <div
+          class="bg-white w-full max-w-md rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center space-x-2 text-slate-800">
+              <i class="fa-regular fa-clock text-blue-600 text-base"></i>
+              <h3 class="text-sm font-bold">Penyesuaian Manual Masa Aktif</h3>
+            </div>
+            <button onclick="closeInlineDatepicker()" class="text-slate-400 hover:text-slate-600"><i
+                class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <div class="p-5 space-y-4 text-xs">
+            <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-blue-900 leading-relaxed text-[11px]">
+              <strong>Dispensasi Internal Kantor:</strong> Mengubah masa aktif secara instan langsung ke DB Azure toko
+              tanpa
+              menerbitkan voucher maupun invoice. Berguna untuk kompensasi 1–2 hari saat kendala implementasi.
+            </div>
+
+            <div>
+              <label class="block text-slate-500 text-[11px] mb-1">Toko Terpilih:</label>
+              <input type="text" id="inlineStoreNameInput" disabled
+                class="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 font-bold text-slate-800 text-xs">
+            </div>
+
+            <!-- Quick Addition Chips -->
+            <div>
+              <label class="block text-slate-500 text-[11px] mb-1.5">Tambah Cepat Toleransi Hari:</label>
+              <div class="flex items-center space-x-2">
+                <button onclick="addInlineDays(1)"
+                  class="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-700 font-semibold text-xs transition-colors">+1
+                  Hari</button>
+                <button onclick="addInlineDays(2)"
+                  class="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-700 font-semibold text-xs transition-colors">+2
+                  Hari</button>
+                <button onclick="addInlineDays(7)"
+                  class="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-700 font-semibold text-xs transition-colors">+7
+                  Hari</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-slate-500 text-[11px] mb-1">Tanggal Masa Aktif Baru (Datepicker):</label>
+              <input type="date" id="inlineDatePickerInput"
+                class="w-full border border-slate-300 rounded-lg px-3 py-2 font-semibold text-slate-800 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-slate-500 text-[11px] mb-1">Catatan Dispensasi (Wajib):</label>
+              <input type="text" id="inlineNoteInput" placeholder="Contoh: Dispensasi kendala opname gudang 1 hari"
+                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="px-5 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-end space-x-2">
+            <button onclick="closeInlineDatepicker()"
+              class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 text-xs font-medium">Batal</button>
+            <button onclick="saveInlineDatepicker()"
+              class="px-4 py-2 bg-[#1976d2] hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm">Simpan
+              Masa Aktif</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODAL 3: TAMBAH MASTER SKU GLOBAL PUSAT (WEB FORM 1-PER-1) -->
+      <!-- ========================================================================= -->
+      <div id="modalAddGlobalSku" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+        <div
+          class="bg-white w-full max-w-lg rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center space-x-2 text-slate-800">
+              <i class="fa-solid fa-layer-group text-indigo-600"></i>
+              <h3 class="text-sm font-bold">Input Master SKU Global Baru (Katalog 80.000)</h3>
+            </div>
+            <button onclick="closeAddGlobalSkuModal()" class="text-slate-400 hover:text-slate-600"><i
+                class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <div class="p-5 space-y-3 text-xs">
+            <div class="bg-indigo-50 border border-indigo-100 p-2.5 rounded-lg text-indigo-950 text-[11px]">
+              <strong>Standardisasi Nasional:</strong> Master SKU baru diinput satu per satu via form untuk menjaga
+              kebersihan data acuan material bangunan 1000saudara.
+            </div>
+
+            <div>
+              <label class="block text-slate-600 text-[11px] mb-1">Kode Barcode / SKU Nasional:</label>
+              <input type="text" id="globalSkuCode" placeholder="Contoh: SEM-TIGA-40KG"
+                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono uppercase focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-slate-600 text-[11px] mb-1">Nama Produk Standar:</label>
+              <input type="text" id="globalSkuName"
+                placeholder="Contoh: Semen Tiga Roda Portland Composite Cement 40 Kg"
+                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-slate-600 text-[11px] mb-1">Kategori Material:</label>
+                <select
+                  class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-white focus:ring-2 focus:ring-indigo-500">
+                  <option>Semen & Pasir</option>
+                  <option>Cat & Pelapis</option>
+                  <option>Pipa & Sanitari</option>
+                  <option>Besi & Baja</option>
+                  <option>Kayu & Triplek</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-slate-600 text-[11px] mb-1">Pilihan Satuan Acuan:</label>
+                <select
+                  class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-white focus:ring-2 focus:ring-indigo-500">
+                  <option>Sak</option>
+                  <option>Pcs</option>
+                  <option>Batang</option>
+                  <option>Dus</option>
+                  <option>Roll</option>
+                  <option>Meter</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-5 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-end space-x-2">
+            <button onclick="closeAddGlobalSkuModal()"
+              class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 text-xs font-medium">Batal</button>
+            <button onclick="saveGlobalSku()"
+              class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm">Simpan
+              ke Master Pusat</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODAL 4: DETAIL INVOICE & VOUCHER (SESUAI DOKUMEN RESMI INTECHGRA)       -->
+      <!-- ========================================================================= -->
+      <div id="modalDetailInvoice"
+        class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+        <div
+          class="bg-white w-full max-w-3xl rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[92vh]">
+
+          <!-- Top Title Bar -->
+          <div class="px-6 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <span>Detail Voucher</span>
+            </h3>
+            <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+              <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+          </div>
+
+          <!-- Scrollable Printable Document Area -->
+          <div class="p-8 overflow-y-auto space-y-6 relative bg-white" id="printableInvoiceArea">
+
+            <!-- Diagonal Watermark Stamp -->
+            <div id="invWatermarkContainer"
+              class="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden z-10 opacity-[0.14] select-none">
+              <div id="invWatermarkText"
+                class="text-5xl sm:text-6xl font-black text-emerald-600 uppercase tracking-widest -rotate-25 border-4 sm:border-8 border-emerald-600 px-8 py-3 rounded-2xl">
+                SUDAH TERPAKAI
+              </div>
+            </div>
+
+            <!-- Document Header: Logo & Invoice Number -->
+            <div class="flex items-start justify-between border-b border-slate-100 pb-5">
+              <div>
+                <div class="text-2xl font-bold tracking-tight text-[#1976d2] flex items-center">
+                  <span class="font-light text-blue-950">in</span>Techgra
+                </div>
+              </div>
+              <div class="text-right text-xs">
+                <span class="text-slate-400 font-semibold text-[11px] block">NO. INVOICE</span>
+                <span id="invModalNo" class="font-bold text-slate-800 text-sm font-mono">PKT-PREM-0726-0001</span>
+                <span class="text-slate-400 font-semibold text-[11px] block mt-2">TANGGAL INVOICE</span>
+                <span id="invModalDate" class="text-slate-700 font-medium">03 Juli 2026</span>
+              </div>
+            </div>
+
+            <!-- Customer & Voucher Info Section -->
+            <div class="text-xs space-y-2">
+              <div class="text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-2">
+                PEMBELIAN PAKET ATAS NAMA
+              </div>
+              <div class="space-y-1.5 font-mono text-[12px]">
+                <div class="flex">
+                  <span class="w-32 text-slate-600 font-sans">Toko</span>
+                  <span class="w-4 text-slate-400">:</span>
+                  <span id="invModalStore" class="font-bold text-slate-800 font-sans">CAHAYA, TB</span>
+                </div>
+                <div class="flex">
+                  <span class="w-32 text-slate-600 font-sans">PIC</span>
+                  <span class="w-4 text-slate-400">:</span>
+                  <span id="invModalPic" class="text-slate-800 font-sans">D1</span>
+                </div>
+                <div class="flex">
+                  <span class="w-32 text-slate-600 font-sans">No HP</span>
+                  <span class="w-4 text-slate-400">:</span>
+                  <span id="invModalPhone" class="text-slate-800 font-mono">085221804959</span>
+                </div>
+                <div class="flex">
+                  <span class="w-32 text-slate-600 font-sans">Kode Voucher</span>
+                  <span class="w-4 text-slate-400">:</span>
+                  <span id="invModalVoucher"
+                    class="font-bold text-slate-900 font-mono tracking-wider">0726-EW4Q-Y894</span>
+                </div>
+                <div class="flex">
+                  <span class="w-32 text-slate-600 font-sans">Status Voucher</span>
+                  <span class="w-4 text-slate-400">:</span>
+                  <span id="invModalStatus" class="font-semibold text-slate-800 font-sans">Sudah Terpakai</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item Breakdown Table -->
+            <div class="pt-2">
+              <table class="w-full text-xs text-left">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                    <th class="py-2.5 px-3">NAMA PAKET</th>
+                    <th class="py-2.5 px-3 text-center">HARGA SATUAN</th>
+                    <th class="py-2.5 px-3 text-center">JUMLAH</th>
+                    <th class="py-2.5 px-3 text-right">TOTAL HARGA</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 border-b border-slate-100">
+                  <tr>
+                    <td class="py-3 px-3 font-semibold text-slate-800" id="invModalItemName">Paket Premium inTechgra
+                    </td>
+                    <td class="py-3 px-3 text-center text-slate-600" id="invModalUnitPrice">Rp 2,700,000</td>
+                    <td class="py-3 px-3 text-center text-slate-700 font-bold" id="invModalQty">1</td>
+                    <td class="py-3 px-3 text-right font-bold text-slate-800" id="invModalTotalPrice">Rp 2,700,000</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Tagihan & Status Voucher Summary -->
+              <div class="mt-4 flex flex-col items-end space-y-1.5 text-xs">
+                <div class="flex items-center space-x-8">
+                  <span class="font-bold text-slate-700 uppercase">TOTAL TAGIHAN</span>
+                  <span id="invModalTotalTagihan" class="font-bold text-slate-900 text-sm w-32 text-right">Rp
+                    2,700,000</span>
+                </div>
+                <div class="flex items-center space-x-8">
+                  <span class="font-bold text-slate-700 uppercase">STATUS VOUCHER</span>
+                  <span id="invModalStatusSummary" class="font-black text-slate-900 uppercase w-32 text-right">SUDAH
+                    TERPAKAI</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Document Footer Brand & Support Info -->
+            <div class="pt-8 border-t border-slate-100 text-center space-y-2 text-xs">
+              <div class="font-bold text-base text-[#1976d2] tracking-tight">inTechgra</div>
+              <div class="flex flex-wrap items-center justify-center gap-4 text-slate-500 text-[11px]">
+                <div class="flex items-center space-x-1">
+                  <i class="fa-solid fa-phone text-[#1976d2]"></i>
+                  <span>08111166373</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                  <i class="fa-regular fa-envelope text-[#1976d2]"></i>
+                  <span>cs@1000saudara.com</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                  <i class="fa-solid fa-globe text-[#1976d2]"></i>
+                  <span>intechgra.co.id</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Modal Bottom Actions -->
+          <div class="px-6 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-center space-x-2">
+            <button onclick="closeInvoiceModal()"
+              class="px-5 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 text-xs font-semibold shadow-sm transition-colors">
+              Tutup
+            </button>
+            <button id="btnModalClaimVoucher" onclick="simulateClaimCurrentInvoiceVoucher()"
+              class="hidden px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm flex items-center space-x-1.5 transition-colors">
+              <i class="fa-solid fa-circle-check text-xs"></i>
+              <span>Klaim Voucher di Toko (+1 Thn)</span>
+            </button>
+            <button onclick="downloadInvoicePdf()"
+              class="px-5 py-2 bg-[#1976d2] hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm flex items-center space-x-2 transition-colors">
+              <i class="fa-solid fa-download text-xs"></i>
+              <span>Download Invoice</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODAL 4B: PERPANJANG AKUN (EXACT REPLICA DARI GAMBAR USER DENGAN EDIT COUNT TAHUN) -->
+      <!-- ========================================================================= -->
+      <div id="modalPerpanjangAkun" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+
+          <!-- Top Title Bar -->
+          <div class="px-7 pt-6 pb-4 flex items-center justify-between border-b border-slate-100">
+            <h3 id="modalPerpanjangTitle" class="text-base font-bold text-slate-800">
+              Perpanjang Akun InTechgra Basic
+            </h3>
+            <button onclick="closePerpanjangModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+              <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="px-7 py-6 space-y-6">
+            <!-- Box Card Pembelian Paket & Lisensi (Presisi 3 Kolom Sejajar) -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs">
+              
+              <!-- Baris 1: Paket Langganan + Stepper Count Berapa Tahun -->
+              <div class="px-5 py-4 flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0 pr-2">
+                  <span id="perpanjangPlanLabel" class="text-xs text-slate-800 font-medium leading-relaxed block">
+                    Paket inTechgra Basic + 3 user login <span id="perpanjangPlanRateText" class="text-slate-400 font-normal">(Rp 2,700,000/tahun)</span>
+                  </span>
+                </div>
+                <!-- Stepper Count Berapa Tahun (Sejajar Presisi) -->
+                <div class="w-32 flex justify-center shrink-0">
+                  <div class="inline-flex items-center border border-slate-300 rounded-lg bg-white shadow-xs px-1 w-28 justify-between">
+                    <button type="button" onclick="changePerpanjangYears(-1)"
+                      class="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded text-sm font-bold transition-colors">
+                      −
+                    </button>
+                    <span id="perpanjangYearsCount" class="text-center text-xs font-bold text-slate-800 select-none">
+                      1 Tahun
+                    </span>
+                    <button type="button" onclick="changePerpanjangYears(1)"
+                      class="w-7 h-7 flex items-center justify-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded text-sm font-bold transition-colors">
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div id="perpanjangPlanPrice" class="w-28 sm:w-32 text-right text-sm font-bold text-slate-900 font-sans shrink-0">
+                  Rp 2,700,000
+                </div>
+              </div>
+
+              <!-- Baris 2: Tambah Akses Login + Stepper User -->
+              <div class="px-5 py-3.5 flex items-center justify-between gap-4 border-t border-slate-200 bg-slate-50/30">
+                <div class="flex-1 min-w-0 pr-2">
+                  <span class="text-xs text-slate-800 font-medium leading-relaxed block">
+                    Tambah akses login <span class="text-slate-400 font-normal">(Rp 125,000/user)</span>
+                  </span>
+                </div>
+                <!-- Stepper User (Sejajar Presisi) -->
+                <div class="w-32 flex justify-center shrink-0">
+                  <div class="inline-flex items-center border border-slate-300 rounded-lg bg-white shadow-xs px-1 w-28 justify-between">
+                    <button type="button" onclick="changePerpanjangExtraUsers(-1)"
+                      class="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded text-sm font-bold transition-colors">
+                      −
+                    </button>
+                    <span id="perpanjangExtraUsersCount" class="w-8 text-center text-xs font-bold text-slate-800 select-none">
+                      0
+                    </span>
+                    <button type="button" onclick="changePerpanjangExtraUsers(1)"
+                      class="w-7 h-7 flex items-center justify-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded text-sm font-bold transition-colors">
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div id="perpanjangExtraUserPrice" class="w-28 sm:w-32 text-right text-sm font-bold text-slate-900 font-sans shrink-0">
+                  Rp 0
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Total Row (Persis Gambar Pengguna) -->
+            <div class="pt-2 flex items-center justify-end space-x-6 border-t border-slate-100">
+              <span class="text-xs font-semibold tracking-wider text-slate-500 uppercase">TOTAL</span>
+              <span id="perpanjangTotalPrice" class="w-28 sm:w-32 text-right text-base font-extrabold text-blue-900 font-sans shrink-0">Rp 2,700,000</span>
+            </div>
+          </div>
+
+          <!-- Modal Bottom Actions (Persis Gambar: Batalkan & Generate Voucher) -->
+          <div class="px-7 py-4 border-t border-slate-100 bg-slate-50/60 flex items-center justify-end space-x-3">
+            <button type="button" onclick="closePerpanjangModal()"
+              class="px-6 py-2 border border-blue-400 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-semibold shadow-xs transition-colors">
+              Batalkan
+            </button>
+            <button type="button" onclick="submitPerpanjangPackage()"
+              class="px-6 py-2 bg-[#2563eb] hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5">
+              <span>Generate Voucher</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODAL 5: UPGRADE AKUN INTECHGRA LITE (REPLIKA GAMBAR PENGGUNA)             -->
+      <!-- ========================================================================= -->
+      <div id="modalUpgradeAkun" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+        <div
+          class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+
+          <!-- Top Title Bar -->
+          <div class="px-7 pt-6 pb-4 flex items-center justify-between border-b border-slate-100">
+            <h3 class="text-base font-bold text-slate-800">
+              Upgrade Akun
+            </h3>
+            <button onclick="closeUpgradeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+              <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="px-7 py-6 space-y-6">
+            <!-- Radio Upgrade Choices -->
+            <div>
+              <label class="block text-sm font-semibold text-slate-800 mb-3.5">
+                Silakan pilih upgrade paket :
+              </label>
+              <div class="space-y-3 pl-1">
+                <label id="upgradeOptionBasic" class="flex items-center space-x-3 cursor-pointer group select-none">
+                  <input type="radio" name="upgradeTierRadio" value="basic" onchange="calculateUpgradeTotal()"
+                    class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500">
+                  <span class="text-sm font-medium text-slate-700 group-hover:text-blue-700">Upgrade ke Basic (Include 3 User Login)</span>
+                </label>
+                <label id="upgradeOptionPro" class="flex items-center space-x-3 cursor-pointer group select-none">
+                  <input type="radio" name="upgradeTierRadio" value="pro" onchange="calculateUpgradeTotal()"
+                    class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500">
+                  <span class="text-sm font-medium text-slate-700 group-hover:text-blue-700">Upgrade ke Pro (Include 3 User Login)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Price Breakdown Box (2 Rows) -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs">
+              <!-- Row 1: Biaya Langganan + 3 User Login -->
+              <div class="px-5 py-4 flex items-center justify-between">
+                <div class="text-xs text-slate-800 font-semibold">
+                  <span>Biaya langganan + 3 user login</span>
+                  <span id="upgradeBasePlanRate" class="text-slate-400 font-normal ml-1">(Rp0/tahun)</span>
+                </div>
+                <div id="upgradeBasePlanPrice" class="text-sm font-bold text-slate-900">
+                  Rp0
+                </div>
+              </div>
+
+              <!-- Row 2: Tambah Akses Login (+seat) -->
+              <div class="px-5 py-3.5 flex items-center justify-between border-t border-slate-200 bg-slate-50/30">
+                <div class="flex items-center space-x-3">
+                  <span class="text-xs font-semibold text-slate-800">
+                    Tambah akses login <span class="text-slate-400 font-normal">(Rp 125,000/user)</span>
+                  </span>
+                  <!-- Stepper [- 0 +] -->
+                  <div class="inline-flex items-center border border-slate-300 rounded-lg bg-white shadow-xs px-1">
+                    <button type="button" onclick="changeUpgradeExtraUsers(-1)"
+                      class="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded text-sm font-bold transition-colors">
+                      −
+                    </button>
+                    <span id="upgradeExtraUsersCount"
+                      class="w-8 text-center text-xs font-bold text-slate-800 select-none">
+                      0
+                    </span>
+                    <button type="button" onclick="changeUpgradeExtraUsers(1)"
+                      class="w-7 h-7 flex items-center justify-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded text-sm font-bold transition-colors">
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div id="upgradeExtraUserPrice" class="text-sm font-bold text-slate-900">
+                  Rp 0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Bottom Actions (Replika Tombol: Batalkan & Generate Voucher) -->
+          <div class="px-7 py-4 border-t border-slate-100 bg-slate-50/60 flex items-center justify-end space-x-3">
+            <button type="button" onclick="closeUpgradeModal()"
+              class="px-6 py-2 border border-blue-400 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-semibold shadow-xs transition-colors">
+              Batalkan
+            </button>
+            <button type="button" onclick="submitUpgradePackage()"
+              class="px-6 py-2 bg-[#7079cb] hover:bg-[#5e66b8] text-white rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5">
+              <span>Generate Voucher</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODAL 6: FORM IMPLEMENTASI (Implementasi) SESUAI REFERENSI GAMBAR PENGGUNA   -->
+      <!-- ========================================================================= -->
+      <div id="modalImplementasi" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+        <div
+          class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[94vh]">
+
+          <!-- Top Title Bar -->
+          <div class="px-6 pt-5 pb-3 border-b border-slate-100 flex items-start justify-between bg-white shrink-0">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Form Implementasi</h3>
+              <p class="text-xs text-slate-500 mt-0.5">Silakan isi form implementasi</p>
+            </div>
+            <button onclick="closeImplementasiModal()"
+              class="text-slate-400 hover:text-slate-600 transition-colors p-1">
+              <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+          </div>
+
+          <!-- Scrollable Form Body -->
+          <div class="p-6 overflow-y-auto space-y-4 text-xs">
+
+            <!-- Paket Akun -->
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1.5">Paket Akun</label>
+              <div class="relative">
+                <select id="implPaketAkun"
+                  class="w-full appearance-none bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Pilih paket</option>
+                  <option value="Basic">inTechgra Basic (Include 3 User Login)</option>
+                  <option value="Pro">inTechgra Pro (Include 3 User Login)</option>
+                  <option value="Lite">inTechgra Lite (Versi Gratis)</option>
+                </select>
+                <i
+                  class="fa-solid fa-chevron-down absolute right-3.5 top-3.5 text-slate-400 text-[10px] pointer-events-none"></i>
+              </div>
+            </div>
+
+            <!-- Card: Paket Implementasi (Mapping Area Jabobarban, Jateng, Jatim) -->
+            <div class="border border-slate-200 rounded-xl p-4 bg-white space-y-3 shadow-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-slate-800">Paket Implementasi</span>
+                <span id="implAreaBadge"
+                  class="text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full">Area
+                  Terpetakan: Jabobarban</span>
+              </div>
+
+              <!-- Baris Pemilihan / Override Area jika diperlukan -->
+              <div
+                class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px]">
+                <span class="text-slate-500">Pricelist Wilayah Toko:</span>
+                <select id="implAreaSelect" onchange="onImplAreaChange()"
+                  class="bg-white border border-slate-200 rounded px-2 py-1 text-[11px] font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <option value="jabobarban">Jabobarban (Rp 1.250.000/Minggu)</option>
+                  <option value="jateng">Jawa Tengah (Rp 875.000/Minggu)</option>
+                  <option value="jatim">Jawa Timur (Rp 1.000.000/Minggu)</option>
+                </select>
+              </div>
+
+              <!-- Baris 1: Paket Implementasi [Area] Stepper -->
+              <div class="flex items-center justify-between pt-1">
+                <span id="implAreaRateLabel" class="text-xs text-slate-700 font-medium">Paket Implementasi Jabobarban
+                  (Rp1.250.000/Minggu)</span>
+                <div class="inline-flex items-center border border-slate-300 rounded-lg bg-white shadow-xs px-1">
+                  <button type="button" onclick="changeImplWeeks(-1)"
+                    class="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded text-xs font-bold transition-colors">
+                    −
+                  </button>
+                  <span id="implWeekCount" class="w-8 text-center text-xs font-bold text-slate-800 select-none">
+                    0
+                  </span>
+                  <button type="button" onclick="changeImplWeeks(1)"
+                    class="w-7 h-7 flex items-center justify-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded text-xs font-bold transition-colors">
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <!-- Baris 2: Jumlah Admin Stepper -->
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-slate-700 font-medium">Jumlah Admin</span>
+                <div class="inline-flex items-center border border-slate-300 rounded-lg bg-white shadow-xs px-1">
+                  <button type="button" onclick="changeImplAdmins(-1)"
+                    class="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded text-xs font-bold transition-colors">
+                    −
+                  </button>
+                  <span id="implAdminCount" class="w-8 text-center text-xs font-bold text-slate-800 select-none">
+                    0
+                  </span>
+                  <button type="button" onclick="changeImplAdmins(1)"
+                    class="w-7 h-7 flex items-center justify-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded text-xs font-bold transition-colors">
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <!-- Baris 3: Total Biaya Implementasi -->
+              <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                <span class="font-bold text-blue-900 text-xs">Total Biaya Implementasi</span>
+                <span id="implTotalCostDisplay" class="font-bold text-blue-900 text-sm">Rp0</span>
+              </div>
+            </div>
+
+            <!-- Card: Masa Implementasi (Datepickers) -->
+            <div class="border border-slate-200 rounded-xl p-4 bg-white space-y-2.5 shadow-xs">
+              <div class="font-bold text-xs text-slate-800">Masa Implementasi</div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] text-slate-600 mb-1">Tanggal Mulai</label>
+                  <input type="date" id="implStartDate" onchange="calculateImplDurationFromDates()"
+                    class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-600 mb-1">Tanggal Akhir</label>
+                  <input type="date" id="implEndDate" onchange="calculateImplDurationFromDates()"
+                    class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+            </div>
+
+            <!-- Implementator -->
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1.5">Implementator</label>
+              <div class="relative">
+                <select id="implTeamSelect"
+                  class="w-full appearance-none bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Pilih implementator</option>
+                  <option value="Team Alpha (Rian & Dimas) - Jabobarban">Team Alpha (Rian & Dimas) - Jabobarban</option>
+                  <option value="Team Beta (Budi Santoso & Wahyu) - Jawa Tengah">Team Beta (Budi Santoso & Wahyu) - Jawa
+                    Tengah</option>
+                  <option value="Team Gamma (Ahmad Fauzi & Hendra) - Jawa Timur">Team Gamma (Ahmad Fauzi & Hendra) -
+                    Jawa Timur</option>
+                  <option value="Cathrine Widjaja (Lead Implementator)">Cathrine Widjaja (Lead Implementator)</option>
+                  <option value="Fajar Pratama (Senior Field Implementasi)">Fajar Pratama (Senior Field Implementasi)
+                  </option>
+                </select>
+                <i
+                  class="fa-solid fa-chevron-down absolute right-3.5 top-3.5 text-slate-400 text-[10px] pointer-events-none"></i>
+              </div>
+            </div>
+
+            <!-- Catatan (Opsional) -->
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1.5">Catatan <span
+                  class="font-normal text-slate-400 italic">(Opsional)</span></label>
+              <textarea id="implNotes" rows="2" placeholder="Masukkan catatan"
+                class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+
+            <!-- Tombol Tambah (Full Width Sesuai Gambar) -->
+            <div class="pt-2">
+              <button type="button" onclick="submitFormImplementasi()" id="btnSubmitImplementasi"
+                class="w-full py-2.5 bg-[#1976d2] hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors">
+                Tambah
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TOAST NOTIFICATION CONTAINER -->
+      <!-- ========================================================================= -->
+      <div id="toastNotification"
+        class="fixed bottom-5 right-5 z-50 transform translate-y-12 opacity-0 transition-all duration-300 pointer-events-none">
+        <div
+          class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 text-xs border border-slate-700">
+          <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+          <span id="toastMessage" class="font-medium">Pesan notifikasi berhasil</span>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- JAVASCRIPT LOGIC & STATE MANAGEMENT -->
+      <!-- ========================================================================= -->
+      <script>
+        // -------------------------------------------------------------
+        // 1. DATA STATE (SIMULASI TENANT AZURE: LITE, BASIC, PRO)
+        // -------------------------------------------------------------
+        let currentPackage = 'pro'; // default tab
+        let selectedStore = null;
+
+        const storeData = {
+          lite: [
+            { id: 1, name: 'Toko Material Sederhana Jaya', tenant: 'tk-lite-001', provinsi: 'Jawa Barat', city: 'Kab. Bogor', kecamatan: 'Ciawi', kelurahan: 'Bendungan', jalan: 'Jl. Raya Ciawi', noRumah: 'No. 12', pic: 'Bpk. Hendra', tlp: '-', phone: '081234567801', status: 'Aktif', regDate: '15 Maret 2025, 09:30', totalProduk: '850', expiry: '-', expiryDisplay: 'Tanpa Masa Aktif', users: '1 User', address: 'Jl. Raya Ciawi No. 12, Bogor' },
+            { id: 2, name: 'TB Sumber Rezeki Sukabumi', tenant: 'tk-lite-002', provinsi: 'Jawa Barat', city: 'Sukabumi', kecamatan: 'Cikole', kelurahan: 'Selabatu', jalan: 'Jl. Pelabuhan Ratu', noRumah: 'No. 45', pic: 'Ibu Maryam', tlp: '-', phone: '081234567802', status: 'Aktif', regDate: '10 Februari 2026, 11:00', totalProduk: '620', expiry: '-', expiryDisplay: 'Tanpa Masa Aktif', users: '1 User', address: 'Jl. Pelabuhan Ratu No. 45' },
+            { id: 3, name: 'TB Pelita Bangunan', tenant: 'tk-lite-003', provinsi: 'Jawa Barat', city: 'Cianjur', kecamatan: 'Karangtengah', kelurahan: 'Bojong', jalan: 'Jl. Raya Cianjur', noRumah: 'KM 5', pic: 'Pak Tatang', tlp: '-', phone: '081234567803', status: 'Aktif', regDate: '18 Mei 2025, 14:15', totalProduk: '910', expiry: '-', expiryDisplay: 'Tanpa Masa Aktif', users: '1 User', address: 'Jl. Raya Cianjur KM 5' },
+            { id: 4, name: 'TB Harapan Baru Sentosa', tenant: 'tk-lite-004', provinsi: 'Banten', city: 'Serang', kecamatan: 'Kasemen', kelurahan: 'Banten', jalan: 'Jl. Raya Banten Lama', noRumah: 'No. 8', pic: 'Bpk. Ridho', tlp: '-', phone: '081234567804', status: 'Aktif', regDate: '01 Januari 2025, 08:00', totalProduk: '430', expiry: '-', expiryDisplay: 'Tanpa Masa Aktif', users: '1 User', address: 'Jl. Raya Banten Lama No. 8, Serang' },
+          ],
+          basic: [
+            { id: 101, name: 'TB Usaha Makmur Depok', tenant: 'tk-bsc-101', provinsi: 'Jawa Barat', city: 'Kota Depok', kecamatan: 'Beji', kelurahan: 'Kemiri Muka', jalan: 'Jl. Margonda Raya', noRumah: 'No. 201', pic: 'Ir. Danang Prasetyo', tlp: '021-7721990', phone: '081388990011', status: 'Aktif', regDate: '05 Januari 2025, 10:00', totalProduk: '1.850', expiry: '2026-11-30', expiryDisplay: '30 Nov 2026', users: '3 / 3 User', address: 'Jl. Margonda Raya No. 201, Depok' },
+            { id: 102, name: 'Toko Bangunan Cahaya Terang', tenant: 'tk-bsc-102', provinsi: 'Banten', city: 'Tangerang', kecamatan: 'Batuceper', kelurahan: 'Kebon Besar', jalan: 'Jl. Daan Mogot', noRumah: 'KM 19', pic: 'Bpk. Agus Wijaya', tlp: '-', phone: '081388990022', status: 'Segera Berakhir', regDate: '12 November 2024, 08:45', totalProduk: '1.420', expiry: '2026-09-30', expiryDisplay: '30 Sep 2026', users: '2 / 3 User', address: 'Jl. Daan Mogot KM 19, Tangerang' },
+            { id: 103, name: 'TB Mitra Abadi Bekasi', tenant: 'tk-bsc-103', provinsi: 'Jawa Barat', city: 'Kota Bekasi', kecamatan: 'Bekasi Selatan', kelurahan: 'Pekayon Jaya', jalan: 'Jl. Ahmad Yani', noRumah: 'No. 56', pic: 'H. Sudirman', tlp: '021-8849102', phone: '081388990033', status: 'Aktif', regDate: '20 September 2024, 15:20', totalProduk: '2.100', expiry: '2026-12-15', expiryDisplay: '15 Des 2026', users: '3 / 3 User', address: 'Jl. Ahmad Yani No. 56, Bekasi' },
+            { id: 104, name: 'TB Prima Mandiri', tenant: 'tk-bsc-104', provinsi: 'Jawa Barat', city: 'Cikarang', kecamatan: 'Cikarang Selatan', kelurahan: 'Pasirsari', jalan: 'Kawasan Industri Jababeka 2', noRumah: 'Blok C-1', pic: 'Pak Yudi', tlp: '-', phone: '081388990044', status: 'Implementasi', regDate: '01 September 2026, 09:00', totalProduk: '350', expiry: '2026-10-05', expiryDisplay: '05 Okt 2026', users: '1 / 3 User', address: 'Kawasan Industri Jababeka 2' },
+            { id: 105, name: 'TB Karya Sentosa Tangerang', tenant: 'tk-bsc-105', provinsi: 'Banten', city: 'Kota Tangerang', kecamatan: 'Cipondoh', kelurahan: 'Poris Plawad', jalan: 'Jl. KH Hasyim Ashari', noRumah: 'No. 88', pic: 'Bpk. Surya Wijaya', tlp: '021-5578123', phone: '081388990055', status: 'Expired', regDate: '10 September 2024, 10:00', totalProduk: '1.650', expiry: '2026-09-10', expiryDisplay: '10 Sep 2026', users: '3 / 3 User', address: 'Jl. KH Hasyim Ashari No. 88, Tangerang' },
+          ],
+          pro: [
+            { id: 201, name: 'TB. Jaya Makmur', tenant: 'tk-pro-201', provinsi: 'DKI Jakarta', city: 'Jakarta Barat', kecamatan: 'Palmerah', kelurahan: 'Slipi', jalan: 'Jl. Slipi No. 12 Jakarta Barat', noRumah: 'No. 12', pic: 'Hayat', tlp: '-', phone: '081234567890', status: 'Aktif', regDate: '18 Agustus 2024, 10:00', totalProduk: '100', expiry: '2026-12-31', expiryDisplay: '31 Des 2026', users: '3 / 3 User', address: 'Jl. Slipi No. 12 Jakarta Barat' },
+            { id: 202, name: 'Toko Bangunan Berkah Jaya', tenant: 'tk-pro-202', provinsi: 'Jawa Barat', city: 'Kota Bogor', kecamatan: 'Bogor Utara', kelurahan: 'Bantarjati', jalan: 'Jl. Raya Pajajaran', noRumah: 'No. 88', pic: 'H. Ridwan Santoso', tlp: '0251-8321900', phone: '0812-9843-1209', status: 'Aktif', regDate: '12 Januari 2026, 14:00', totalProduk: '3.450', expiry: '2026-12-31', expiryDisplay: '31 Des 2026', users: '3 / 3 User', address: 'Jl. Raya Pajajaran No. 88, Bantarjati, Kota Bogor' },
+            { id: 203, name: 'PT Sentosa Material Prima', tenant: 'tk-pro-203', provinsi: 'DKI Jakarta', city: 'Jakarta Barat', kecamatan: 'Kembangan', kelurahan: 'Kembangan Selatan', jalan: 'Komp. Ruko Puri Niaga', noRumah: 'Blok B/12', pic: 'Kurniawan Salim', tlp: '021-5830911', phone: '08119988771', status: 'Segera Berakhir', regDate: '02 Oktober 2024, 11:15', totalProduk: '5.200', expiry: '2026-09-30', expiryDisplay: '30 Sep 2026', users: '5 / 5 User', address: 'Komp. Ruko Puri Niaga Blok B/12, Kembangan' },
+            { id: 204, name: 'Mega Baja & Material Serpong', tenant: 'tk-pro-204', provinsi: 'Banten', city: 'Tangerang Selatan', kecamatan: 'Serpong', kelurahan: 'Lengkong Gudang', jalan: 'Jl. Raya Serpong', noRumah: 'No. 101', pic: 'Bambang Setyadi', tlp: '021-5378901', phone: '08127766554', status: 'Aktif', regDate: '14 Maret 2024, 16:30', totalProduk: '4.800', expiry: '2027-03-31', expiryDisplay: '31 Mar 2027', users: '4 / 6 User', address: 'Jl. Raya Serpong No. 101, BSD City' },
+            { id: 205, name: 'TB Istana Semen & Pipa Bandung', tenant: 'tk-pro-205', provinsi: 'Jawa Barat', city: 'Kota Bandung', kecamatan: 'Batununggal', kelurahan: 'Kacapiring', jalan: 'Jl. Soekarno Hatta', noRumah: 'No. 412', pic: 'Cecep Hidayat', tlp: '022-7319988', phone: '08132233445', status: 'Aktif', regDate: '08 Juni 2025, 13:40', totalProduk: '3.900', expiry: '2026-12-20', expiryDisplay: '20 Des 2026', users: '3 / 4 User', address: 'Jl. Soekarno Hatta No. 412, Bandung' },
+            { id: 206, name: 'Depo Bangunan Jaya Sentosa', tenant: 'tk-pro-206', provinsi: 'Jawa Barat', city: 'Kota Bekasi', kecamatan: 'Bekasi Timur', kelurahan: 'Margahayu', jalan: 'Jl. Juanda', noRumah: 'No. 80', pic: 'Ibu Ratna Susanti', tlp: '021-8812345', phone: '08156677889', status: 'Implementasi', regDate: '15 Agustus 2026, 10:10', totalProduk: '1.200', expiry: '2026-10-01', expiryDisplay: '01 Okt 2026', users: '2 / 3 User', address: 'Jl. Juanda No. 80, Bekasi Timur' },
+            { id: 207, name: 'TB Semarang Perkasa', tenant: 'tk-pro-207', provinsi: 'Jawa Tengah', city: 'Kota Semarang', kecamatan: 'Semarang Barat', kelurahan: 'Krobokan', jalan: 'Jl. Pemuda', noRumah: 'No. 88', pic: 'H. Bambang Riyadi', tlp: '024-8451234', phone: '081325112233', status: 'Implementasi', regDate: '01 September 2026, 09:00', totalProduk: '2.400', expiry: '2026-10-15', expiryDisplay: '15 Okt 2026', users: '3 / 3 User', address: 'Jl. Pemuda No. 88, Semarang' },
+            { id: 208, name: 'TB Surabaya Jaya Sentosa', tenant: 'tk-pro-208', provinsi: 'Jawa Timur', city: 'Kota Surabaya', kecamatan: 'Wonokromo', kelurahan: 'Darmo', jalan: 'Jl. Raya Darmo', noRumah: 'No. 45', pic: 'Bpk. Gunawan Tan', tlp: '031-5678901', phone: '081230998877', status: 'Aktif', regDate: '20 Juni 2025, 11:30', totalProduk: '4.100', expiry: '2026-12-31', expiryDisplay: '31 Des 2026', users: '4 / 4 User', address: 'Jl. Raya Darmo No. 45, Surabaya' },
+            { id: 209, name: 'TB Graha Bangunan Mandiri', tenant: 'tk-pro-209', provinsi: 'DKI Jakarta', city: 'Jakarta Selatan', kecamatan: 'Pasar Minggu', kelurahan: 'Pejaten Timur', jalan: 'Jl. Raya Pasar Minggu', noRumah: 'No. 15', pic: 'Bpk. Hartono', tlp: '021-7809988', phone: '081230998899', status: 'Expired', regDate: '10 September 2024, 09:30', totalProduk: '4.700', expiry: '2026-09-10', expiryDisplay: '10 Sep 2026', users: '4 / 5 User', address: 'Jl. Raya Pasar Minggu No. 15, Jakarta Selatan' }
+          ]
+        };
+
+        // Voucher & License Transaction History per Store Simulation
+        const voucherHistory = {
+          1: [
+            { no: 1, invoice: 'INV/LITE/2025/001', type: 'Registrasi Akun Gratis (Lite)', qty: '1 User (Gratis)', expiry: 'Tanpa Masa Aktif', voucher: 'FREE-LITE-INIT', price: 'Rp 0', status: 'Sudah Terpakai', by: 'System Auto', date: '15 Mar 2025' }
+          ],
+          2: [
+            { no: 1, invoice: 'INV/LITE/2026/012', type: 'Registrasi Akun Gratis (Lite)', qty: '1 User (Gratis)', expiry: 'Tanpa Masa Aktif', voucher: 'FREE-LITE-INIT', price: 'Rp 0', status: 'Sudah Terpakai', by: 'System Auto', date: '10 Feb 2026' }
+          ],
+          3: [
+            { no: 1, invoice: 'INV/LITE/2025/089', type: 'Registrasi Akun Gratis (Lite)', qty: '1 User (Gratis)', expiry: 'Tanpa Masa Aktif', voucher: 'FREE-LITE-INIT', price: 'Rp 0', status: 'Sudah Terpakai', by: 'System Auto', date: '18 Mei 2025' }
+          ],
+          4: [
+            { no: 1, invoice: 'INV/LITE/2025/004', type: 'Registrasi Akun Gratis (Lite)', qty: '1 User (Gratis)', expiry: 'Tanpa Masa Aktif', voucher: 'FREE-LITE-INIT', price: 'Rp 0', status: 'Sudah Terpakai', by: 'System Auto', date: '01 Jan 2025' }
+          ],
+          101: [
+            { no: 1, invoice: 'INV/BSC/2025/0012', type: 'Paket inTechgra Basic', qty: '1 Tahun (3 User)', expiry: 's/d 30 Nov 2026', voucher: 'SN-BSC-9921-X1', price: 'Rp 1,500,000', status: 'Sudah Terpakai', by: 'Cathrine Widjaja', date: '05 Jan 2025' }
+          ],
+          102: [
+            { no: 1, invoice: 'INV/BSC/2024/0988', type: 'Paket inTechgra Basic', qty: '1 Tahun (2 User)', expiry: 's/d 30 Sep 2026', voucher: 'SN-BSC-4411-K2', price: 'Rp 1,500,000', status: 'Sudah Terpakai', by: 'Budi Santoso', date: '12 Nov 2024' }
+          ],
+          103: [
+            { no: 1, invoice: 'INV/BSC/2024/0620', type: 'Paket inTechgra Basic', qty: '1 Tahun (3 User)', expiry: 's/d 15 Des 2026', voucher: 'SN-BSC-7711-A3', price: 'Rp 1,500,000', status: 'Sudah Terpakai', by: 'Cathrine Widjaja', date: '20 Sep 2024' }
+          ],
+          104: [
+            { no: 1, invoice: 'INV/BSC/2026/0401', type: 'Paket inTechgra Basic (Setup)', qty: '1 Tahun (1 User)', expiry: 's/d 05 Okt 2026', voucher: 'SN-BSC-8800-M1', price: 'Rp 1,500,000', status: 'Sedang Berjalan', by: 'Tim Implementasi', date: '01 Sep 2026' }
+          ],
+          105: [
+            { no: 1, invoice: 'INV/BSC/2024/0710', type: 'Paket inTechgra Basic', qty: '1 Tahun (3 User)', expiry: 's/d 10 Sep 2026', voucher: 'SN-BSC-2210-Z9', price: 'Rp 1,500,000', status: 'Sudah Terpakai', by: 'Cathrine Widjaja', date: '10 Sep 2024' }
+          ],
+          201: [
+            { no: 1, invoice: 'PKT-PREM-0726-0001', type: 'Perpanjang Akun', qty: '1 Tahun', expiry: 's/d 31 Des 2026', voucher: '0726-EW4Q-Y894', price: 'Rp 2,700,000', status: 'Sudah Terpakai', by: 'Cathrine Widjaja', date: '03 Juli 2026' },
+            { no: 2, invoice: 'INV/2026/06/0089', type: 'Tambah Akses', qty: '+1 User', expiry: 's/d 31 Des 2026', voucher: 'SN-USR-4410-Q1', price: 'Rp 150,000', status: 'Sudah Terpakai', by: 'Cathrine Widjaja', date: '15 Jun 2026' },
+            { no: 3, invoice: 'INV/2026/09/0142', type: 'Tambah Akses', qty: '+1 User', expiry: 's/d 31 Des 2026', voucher: 'SN-USR-9921-W8', price: 'Rp 150,000', status: 'Belum Terpakai', by: 'Cathrine Widjaja', date: '21 Sep 2026' },
+          ],
+          202: [
+            { no: 1, invoice: 'PKT-PREM-0726-0001', type: 'Perpanjang Akun', qty: '1 Tahun', expiry: 's/d 31 Des 2026', voucher: '0726-EW4Q-Y894', price: 'Rp 2,700,000', status: 'Sudah Terpakai', by: 'Cathrine Widjaja', date: '03 Juli 2026' },
+            { no: 2, invoice: 'INV/2026/06/0089', type: 'Tambah Akses', qty: '+1 User', expiry: 's/d 31 Des 2026', voucher: 'SN-USR-4410-Q1', price: 'Rp 150,000', status: 'Sudah Terpakai', by: 'Cathrine Widjaja', date: '15 Jun 2026' }
+          ],
+          203: [
+            { no: 1, invoice: 'INV/2025/10/0811', type: 'Perpanjang Akun', qty: '1 Tahun', expiry: 's/d 30 Sep 2026', voucher: 'SN-PRO-1120-P3', price: 'Rp 2,700,000', status: 'Sudah Terpakai', by: 'Budi Santoso', date: '02 Okt 2025' }
+          ],
+          206: [
+            { no: 1, invoice: 'INV/PRO/2026/0901', type: 'Implementasi Toko Baru', qty: '1 Tahun (3 User)', expiry: 's/d 01 Okt 2026', voucher: 'SN-PRO-5544-IMP', price: 'Rp 3,500,000', status: 'Sedang Berjalan', by: 'Tim Implementasi', date: '15 Agu 2026' }
+          ],
+          209: [
+            { no: 1, invoice: 'INV/PRO/2024/0410', type: 'Paket inTechgra Pro', qty: '1 Tahun (5 User)', expiry: 's/d 10 Sep 2026', voucher: 'SN-PRO-0019-EXP', price: 'Rp 2,700,000', status: 'Sudah Terpakai', by: 'Cathrine Widjaja', date: '10 Sep 2024' }
+          ]
+        };
+
+        // -------------------------------------------------------------
+        // 2. INITIALIZATION & TAB SWITCHER (STAGE 1)
+        // -------------------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+          renderStoreTable();
+        });
+
+        function switchPackage(pkg) {
+          currentPackage = pkg;
+
+          // Update UI Tab Styling
+          const tabs = ['lite', 'basic', 'pro'];
+          tabs.forEach(t => {
+            const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+            const badge = document.getElementById('tabCount' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (t === pkg) {
+              btn.className = "flex-1 md:flex-initial px-4 py-2 rounded-md transition-all bg-[#1976d2] text-white shadow-sm font-semibold flex items-center justify-center space-x-2";
+              if (badge) badge.className = "bg-blue-800 text-white text-[10px] font-bold px-2 py-0.5 rounded-full";
+            } else {
+              btn.className = "flex-1 md:flex-initial px-4 py-2 rounded-md transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-2";
+              if (badge) badge.className = "bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full";
+            }
+          });
+
+          const labelMap = { lite: 'inTechgra Lite', basic: 'inTechgra Basic', pro: 'inTechgra Pro' };
+          document.getElementById('currentPackageLabel').innerText = labelMap[pkg];
+          document.getElementById('pagePackageName').innerText = labelMap[pkg];
+
+          const hintEl = document.getElementById('colHeaderMasaAktifHint');
+          if (hintEl) {
+            hintEl.innerText = pkg === 'lite' ? 'Gratis' : 'Klik utk Ubah';
+          }
+
+          // Reset status filter & pencarian saat berganti tab agar semua status tampil
+          const statusFilterEl = document.getElementById('statusFilter');
+          if (statusFilterEl) statusFilterEl.value = 'ALL';
+          const searchInputEl = document.getElementById('searchInput');
+          if (searchInputEl) searchInputEl.value = '';
+
+          renderStoreTable();
+        }
+
+        function renderStoreTable() {
+          const tbody = document.getElementById('storeTableBody');
+          const stores = storeData[currentPackage] || [];
+          tbody.innerHTML = '';
+
+          if (stores.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">Tidak ada toko terdaftar pada paket ini</td></tr>`;
+            return;
+          }
+
+          stores.forEach((store, index) => {
+            let statusBadge = '';
+            const stLower = (store.status || '').toLowerCase();
+            if (stLower === 'aktif') {
+              statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Aktif</span>`;
+            } else if (stLower === 'segera berakhir' || stLower.includes('h-7')) {
+              statusBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1 pulse-subtle"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>H-7 Expired</span>`;
+            } else if (stLower === 'implementasi') {
+              statusBadge = `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Implementasi</span>`;
+            } else {
+              statusBadge = `<span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Expired</span>`;
+            }
+
+            // Kolom Masa Aktif: Toko tanpa masa aktif menampilkan infinity icon, toko bertanggal menampilkan tombol datepicker interaktif
+            let expiryCell = '';
+            if (store.expiry === '-' || store.expiryDisplay === 'Tanpa Masa Aktif') {
+              expiryCell = `
+                <div class="inline-flex items-center space-x-1.5 bg-slate-100 border border-slate-200/80 px-2.5 py-1 rounded-lg text-slate-600 text-xs font-semibold select-none">
+                  <i class="fa-solid fa-infinity text-[#1976d2] text-[11px]"></i>
+                  <span>Tanpa Masa Aktif</span>
+                </div>
+              `;
+            } else {
+              expiryCell = `
+                <!-- INTERACTIVE INLINE DATEPICKER TRIGGER -->
+                <button onclick="openInlineDatepicker(${store.id})" title="Klik untuk penyesuaian manual cepat (dispensasi 1-2 hari)" class="group flex items-center space-x-1.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 px-2.5 py-1 rounded-lg transition-all text-left">
+                  <i class="fa-regular fa-calendar text-blue-600 text-[11px]"></i>
+                  <span class="font-semibold text-slate-700 group-hover:text-blue-700">${store.expiryDisplay}</span>
+                  <i class="fa-solid fa-pen text-[9px] text-slate-400 group-hover:text-blue-600 ml-1 opacity-60"></i>
+                </button>
+              `;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-50/70 transition-colors";
+            tr.dataset.status = store.status || '';
+            tr.dataset.name = store.name || '';
+            tr.dataset.city = store.city || '';
+            tr.dataset.phone = store.phone || '';
+            tr.dataset.cleanPhone = (store.phone || '').replace(/\D/g, '');
+            tr.innerHTML = `
+          <td class="py-3 px-4 text-center text-slate-400 font-mono">${index + 1}</td>
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-800 text-xs">${store.name}</div>
+          </td>
+          <td class="py-3 px-4 text-slate-600">${store.city}</td>
+          <td class="py-3 px-4">
+            ${expiryCell}
+          </td>
+          <td class="py-3 px-4 text-center font-semibold text-slate-700">${store.users}</td>
+          <td class="py-3 px-4 text-center">${statusBadge}</td>
+          <td class="py-3 px-4 text-center">
+            <button onclick="openStoreDetail(${store.id})" class="bg-[#1976d2] hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1 mx-auto">
+              <span>Detail</span>
+              <i class="fa-solid fa-chevron-right text-[9px]"></i>
+            </button>
+          </td>
+        `;
+            tbody.appendChild(tr);
+          });
+
+          // Update Tab Badges Dynamically
+          if (document.getElementById('tabCountLite')) document.getElementById('tabCountLite').innerText = (storeData.lite || []).length;
+          if (document.getElementById('tabCountBasic')) document.getElementById('tabCountBasic').innerText = (storeData.basic || []).length;
+          if (document.getElementById('tabCountPro')) document.getElementById('tabCountPro').innerText = (storeData.pro || []).length;
+
+          // Update Quick Metrics Counts
+          const total = stores.length;
+          const active = stores.filter(s => (s.status || '').toLowerCase() === 'aktif').length;
+          const warning = stores.filter(s => (s.status || '').toLowerCase() === 'segera berakhir' || (s.status || '').toLowerCase().includes('h-7')).length;
+          const implementasi = stores.filter(s => (s.status || '').toLowerCase() === 'implementasi').length;
+          const expired = stores.filter(s => (s.status || '').toLowerCase() === 'expired').length;
+
+          if (document.getElementById('metricActive')) document.getElementById('metricActive').innerText = active;
+          if (document.getElementById('metricWarning')) document.getElementById('metricWarning').innerText = warning;
+          if (document.getElementById('metricExpired')) document.getElementById('metricExpired').innerText = expired;
+          if (document.getElementById('metricOnboard')) document.getElementById('metricOnboard').innerText = implementasi;
+          if (document.getElementById('pageInfo')) document.getElementById('pageInfo').innerText = `1 - ${total} dari ${total} toko`;
+        }
+
+        function filterStoreTable() {
+          const q = document.getElementById('searchInput').value.toLowerCase().trim();
+          const cleanQ = q.replace(/\D/g, ''); // angka bersih untuk pencarian no. HP fleksibel
+          const filterStatus = document.getElementById('statusFilter').value;
+          const rows = document.querySelectorAll('#storeTableBody tr');
+          let visibleCount = 0;
+
+          rows.forEach(row => {
+            const rowStatus = (row.dataset.status || '').toLowerCase().trim();
+            const storeName = (row.dataset.name || '').toLowerCase();
+            const storePhone = (row.dataset.phone || '').toLowerCase();
+            const cleanPhone = (row.dataset.cleanPhone || '');
+
+            // Logika Pencarian: Cocokkan Nama Toko ATAU Nomor Handphone Terdaftar
+            let matchesQuery = true;
+            if (q) {
+              const matchesName = storeName.includes(q);
+              const matchesPhone = storePhone.includes(q) || (cleanQ.length >= 3 && cleanPhone.includes(cleanQ));
+              matchesQuery = matchesName || matchesPhone;
+            }
+
+            let matchesStatus = false;
+            if (filterStatus === 'ALL') {
+              matchesStatus = true;
+            } else if (filterStatus === 'Expired') {
+              // Eksklusif Expired: TIDAK boleh mencakup 'segera berakhir' atau 'h-7'
+              matchesStatus = (rowStatus === 'expired');
+            } else if (filterStatus === 'Segera Berakhir') {
+              // Eksklusif Segera Berakhir (H-7)
+              matchesStatus = (rowStatus === 'segera berakhir' || rowStatus.includes('h-7'));
+            } else if (filterStatus === 'Aktif') {
+              matchesStatus = (rowStatus === 'aktif');
+            } else if (filterStatus === 'Implementasi') {
+              matchesStatus = (rowStatus === 'implementasi');
+            } else {
+              matchesStatus = (rowStatus === filterStatus.toLowerCase());
+            }
+
+            if (matchesQuery && matchesStatus) {
+              row.style.display = '';
+              visibleCount++;
+            } else {
+              row.style.display = 'none';
+            }
+          });
+
+          const total = (storeData[currentPackage] || []).length;
+          const pageInfoEl = document.getElementById('pageInfo');
+          if (pageInfoEl) {
+            if (filterStatus === 'ALL' && !q) {
+              pageInfoEl.innerText = `1 - ${total} dari ${total} toko`;
+            } else {
+              pageInfoEl.innerText = `${visibleCount} dari ${total} toko`;
+            }
+          }
+        }
+
+        // -------------------------------------------------------------
+        // 3. INLINE DATEPICKER (STAGE 1 MANUAL ADJUSTMENT / DISPENSASI)
+        // -------------------------------------------------------------
+        let activeInlineStore = null;
+
+        function openInlineDatepicker(storeId) {
+          const store = storeData[currentPackage].find(s => s.id === storeId);
+          if (!store) return;
+          if (store.expiry === '-' || store.expiryDisplay === 'Tanpa Masa Aktif') {
+            showToast('Akun berstatus gratis selamanya tanpa batasan masa aktif.');
+            return;
+          }
+          activeInlineStore = store;
+
+          document.getElementById('inlineStoreNameInput').value = store.name;
+          document.getElementById('inlineDatePickerInput').value = store.expiry;
+          document.getElementById('inlineNoteInput').value = '';
+          document.getElementById('modalInlineDatepicker').classList.remove('hidden');
+        }
+
+        function closeInlineDatepicker() {
+          document.getElementById('modalInlineDatepicker').classList.add('hidden');
+          activeInlineStore = null;
+        }
+
+        function addInlineDays(days) {
+          if (!activeInlineStore) return;
+          const dateInput = document.getElementById('inlineDatePickerInput');
+          const currentDate = new Date(dateInput.value || activeInlineStore.expiry);
+          currentDate.setDate(currentDate.getDate() + days);
+
+          const year = currentDate.getFullYear();
+          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+          const day = String(currentDate.getDate()).padStart(2, '0');
+          dateInput.value = `${year}-${month}-${day}`;
+
+          document.getElementById('inlineNoteInput').value = `Toleransi penyesuaian +${days} hari kendala implementasi lapangan`;
+          showToast(`Tanggal dimajukan +${days} hari`);
+        }
+
+        function saveInlineDatepicker() {
+          if (!activeInlineStore) return;
+          const newDateVal = document.getElementById('inlineDatePickerInput').value;
+          if (!newDateVal) {
+            alert('Silakan pilih tanggal masa aktif baru');
+            return;
+          }
+
+          // Format date to display (e.g. 05 Jan 2027)
+          const d = new Date(newDateVal);
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+          const formatted = `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+          // Update in data
+          activeInlineStore.expiry = newDateVal;
+          activeInlineStore.expiryDisplay = formatted;
+
+          renderStoreTable();
+          closeInlineDatepicker();
+          showToast(`Masa aktif ${activeInlineStore.name} berhasil diubah ke ${formatted} (Non-Invoice)`);
+        }
+
+        // -------------------------------------------------------------
+        // 4. STORE WORKSPACE & SUB-TABS (SOLUSI B: HALAMAN DENGAN 3 SUB-TAB)
+        // -------------------------------------------------------------
+        function openStoreDetail(storeId) {
+          const store = storeData[currentPackage].find(s => s.id === storeId);
+          if (!store) return;
+          selectedStore = store;
+
+          // Populate Workspace Header & Breadcrumbs
+          const pkgCapital = currentPackage.charAt(0).toUpperCase() + currentPackage.slice(1);
+          document.getElementById('workspaceBreadcrumbPkg').innerText = `inTechgra ${pkgCapital}`;
+          document.getElementById('workspaceBreadcrumbName').innerText = store.name;
+          document.getElementById('workspaceStoreTitle').innerText = store.name;
+          document.getElementById('workspaceBadgePackage').innerText = `INTECHGRA ${currentPackage.toUpperCase()}`;
+
+          const statusEl = document.getElementById('workspaceStatusBadge');
+          const stLower = (store.status || '').toLowerCase();
+          statusEl.innerText = store.status;
+          if (stLower === 'aktif') {
+            statusEl.className = "text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1";
+          } else if (stLower === 'segera berakhir' || stLower.includes('h-7')) {
+            statusEl.className = "text-[10px] font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1";
+          } else if (stLower === 'implementasi') {
+            statusEl.className = "text-[10px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1";
+          } else {
+            statusEl.className = "text-[10px] font-bold bg-red-100 text-red-800 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1";
+          }
+
+          // Populate Tab 1: Informasi Toko (13 Kolom Sesuai Referensi Pengguna)
+          document.getElementById('infoNamaToko').innerText = store.name;
+          document.getElementById('infoProvinsi').innerText = store.provinsi || 'DKI Jakarta';
+          document.getElementById('infoKabupaten').innerText = store.city || 'Jakarta Barat';
+          document.getElementById('infoKecamatan').innerText = store.kecamatan || 'Palmerah';
+          document.getElementById('infoKelurahan').innerText = store.kelurahan || 'Slipi';
+          document.getElementById('infoJalan').innerText = store.jalan || store.address;
+          document.getElementById('infoNoRumah').innerText = store.noRumah || 'No. 12';
+          document.getElementById('infoPic').innerText = store.pic || '-';
+          document.getElementById('infoTlp').innerText = store.tlp || '-';
+          document.getElementById('infoHandphone').innerText = store.phone || '081234567890';
+          document.getElementById('infoTglRegistrasi').innerText = store.regDate || '18 Agustus 2024, 10:00';
+          document.getElementById('infoTotalProduk').innerText = store.totalProduk || '100';
+
+          const infoStatusEl = document.getElementById('infoStatus');
+          infoStatusEl.innerText = store.status;
+          if (stLower === 'aktif') {
+            infoStatusEl.className = "bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block";
+          } else if (stLower === 'segera berakhir' || stLower.includes('h-7')) {
+            infoStatusEl.className = "bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block";
+          } else if (stLower === 'implementasi') {
+            infoStatusEl.className = "bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block";
+          } else {
+            infoStatusEl.className = "bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block";
+          }
+
+          // Populate Tab 1: Peta Lokasi Toko (Google Maps)
+          const fullAddr = `${store.jalan || store.address || ''}, ${store.kelurahan ? 'Kel. ' + store.kelurahan + ', ' : ''}${store.kecamatan ? 'Kec. ' + store.kecamatan + ', ' : ''}${store.city || ''}, ${store.provinsi || ''}`;
+          const mapQuery = encodeURIComponent(`${store.name}, ${store.city || ''}`);
+          const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+          const mapsEmbedUrl = `https://maps.google.com/maps?q=${mapQuery}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
+          const mapIframe = document.getElementById('storeMapIframe');
+          if (mapIframe) {
+            mapIframe.src = mapsEmbedUrl;
+          }
+          const btnMapsExt = document.getElementById('btnOpenMapsExternal');
+          if (btnMapsExt) {
+            btnMapsExt.href = mapsUrl;
+          }
+          const mapFloatingName = document.getElementById('mapFloatingStoreName');
+          if (mapFloatingName) {
+            mapFloatingName.innerText = store.name;
+          }
+          const mapFloatingCity = document.getElementById('mapFloatingCity');
+          if (mapFloatingCity) {
+            mapFloatingCity.innerText = store.city || '';
+          }
+          const mapDetailAddr = document.getElementById('mapDetailAddress');
+          if (mapDetailAddr) {
+            mapDetailAddr.innerText = fullAddr;
+          }
+          const mapDetailArea = document.getElementById('mapDetailArea');
+          if (mapDetailArea) {
+            const areaKey = detectStoreArea(store);
+            const areaNames = { jabobarban: 'Zona Jabobarban (Jakarta, Jabar, Banten)', jateng: 'Zona Jawa Tengah & DIY', jatim: 'Zona Jawa Timur' };
+            mapDetailArea.innerText = areaNames[areaKey] || store.provinsi;
+          }
+
+          // Populate Tab 2: Kelola Voucher / Lisensi
+          if (document.getElementById('modalTargetStoreName')) {
+            document.getElementById('modalTargetStoreName').innerText = store.name;
+          }
+          if (document.getElementById('inputCurrentExpiryModal')) {
+            document.getElementById('inputCurrentExpiryModal').value = store.expiryDisplay;
+          }
+          if (document.getElementById('inputCurrentUserQuota')) {
+            document.getElementById('inputCurrentUserQuota').value = store.users;
+          }
+          if (document.getElementById('inputUserExpiryFollowStore')) {
+            document.getElementById('inputUserExpiryFollowStore').value = store.expiryDisplay;
+          }
+          updatePerpanjangAkunPreview();
+
+          // Check package type to adjust Tab 2 action buttons
+          const btnTambahAkses = document.getElementById('btnTambahAkses');
+          const btnPerpanjangAkun = document.getElementById('btnPerpanjangAkun');
+          const btnPerpanjangText = document.getElementById('btnPerpanjangText');
+          const btnPerpanjangIcon = document.getElementById('btnPerpanjangIcon');
+          const btnUpgradeAkun = document.getElementById('btnUpgradeAkun');
+          const btnUpgradeAkunText = document.getElementById('btnUpgradeAkunText');
+          const quickTabVoucherText = document.getElementById('quickTabVoucherText');
+          const btnImplementasi = document.getElementById('btnImplementasi');
+
+          if (currentPackage === 'lite') {
+            if (btnTambahAkses) btnTambahAkses.classList.add('hidden');
+            if (btnPerpanjangAkun) btnPerpanjangAkun.classList.add('hidden');
+            if (btnUpgradeAkun) {
+              btnUpgradeAkun.classList.remove('hidden');
+              if (btnUpgradeAkunText) btnUpgradeAkunText.innerText = 'Upgrade Akun';
+            }
+            if (quickTabVoucherText) quickTabVoucherText.innerText = 'Upgrade Akun';
+            // Tombol implementasi HANYA muncul pada detail toko dengan status paket inTechgra LITE
+            if (btnImplementasi) btnImplementasi.classList.remove('hidden');
+          } else if (currentPackage === 'basic') {
+            if (btnTambahAkses) btnTambahAkses.classList.remove('hidden');
+            if (btnPerpanjangAkun) {
+              btnPerpanjangAkun.classList.remove('hidden');
+              if (btnPerpanjangText) btnPerpanjangText.innerText = 'Perpanjang Akun';
+              if (btnPerpanjangIcon) btnPerpanjangIcon.className = 'fa-solid fa-calendar-plus text-[11px]';
+              btnPerpanjangAkun.className = 'bg-[#1976d2] hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5';
+            }
+            // Pada inTechgra Basic: Tampilkan tombol Upgrade (kemungkinan upgrade ke Pro + tambah user)
+            if (btnUpgradeAkun) {
+              btnUpgradeAkun.classList.remove('hidden');
+              if (btnUpgradeAkunText) btnUpgradeAkunText.innerText = 'Upgrade Akun';
+            }
+            if (quickTabVoucherText) quickTabVoucherText.innerText = 'Kelola Voucher';
+            // Sembunyikan tombol implementasi untuk paket selain LITE
+            if (btnImplementasi) btnImplementasi.classList.add('hidden');
+          } else { // 'pro'
+            if (btnTambahAkses) btnTambahAkses.classList.remove('hidden');
+            if (btnPerpanjangAkun) {
+              btnPerpanjangAkun.classList.remove('hidden');
+              if (btnPerpanjangText) btnPerpanjangText.innerText = 'Perpanjang Akun';
+              if (btnPerpanjangIcon) btnPerpanjangIcon.className = 'fa-solid fa-calendar-plus text-[11px]';
+              btnPerpanjangAkun.className = 'bg-[#1976d2] hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5';
+            }
+            // Pada inTechgra Pro: Sembunyikan tombol upgrade karena Pro paket tertinggi
+            if (btnUpgradeAkun) btnUpgradeAkun.classList.add('hidden');
+            if (quickTabVoucherText) quickTabVoucherText.innerText = 'Kelola Voucher';
+            if (btnImplementasi) btnImplementasi.classList.add('hidden');
+          }
+
+          renderFullVoucherHistory(store.id);
+
+          // Hide Store List & Show Store Workspace Page (Solusi B)
+          document.getElementById('viewStoreList').classList.add('hidden');
+          document.getElementById('viewStoreWorkspace').classList.remove('hidden');
+
+          // Default ke Tab 1 (Profil Toko)
+          switchStoreTab('profile');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openStoreDirections() {
+          if (!selectedStore) return;
+          const fullAddr = `${selectedStore.jalan || selectedStore.address || ''}, ${selectedStore.city || ''}, ${selectedStore.provinsi || ''}`;
+          const q = encodeURIComponent(`${selectedStore.name}, ${fullAddr}`);
+          window.open(`https://www.google.com/maps/dir/?api=1&destination=${q}`, '_blank');
+        }
+
+        function closeStoreWorkspace() {
+          document.getElementById('viewStoreWorkspace').classList.add('hidden');
+          document.getElementById('viewStoreList').classList.remove('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeStoreDetail() {
+          closeStoreWorkspace();
+        }
+
+        function switchStoreTab(tab) {
+          const activeBtnClass = "px-5 py-2.5 rounded-lg transition-all bg-[#1976d2] text-white shadow-sm font-semibold flex items-center space-x-2 shrink-0";
+          const inactiveBtnClass = "px-5 py-2.5 rounded-lg transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50 flex items-center space-x-2 shrink-0";
+
+          // Hide all tabs
+          document.getElementById('tabContentProfile').classList.add('hidden');
+          document.getElementById('tabContentVouchers').classList.add('hidden');
+          document.getElementById('tabContentSku').classList.add('hidden');
+
+          // Reset button styles
+          document.getElementById('subTabProfile').className = inactiveBtnClass;
+          document.getElementById('subTabVouchers').className = inactiveBtnClass;
+          document.getElementById('subTabSku').className = inactiveBtnClass;
+
+          // Activate selected tab
+          if (tab === 'profile') {
+            document.getElementById('tabContentProfile').classList.remove('hidden');
+            document.getElementById('subTabProfile').className = activeBtnClass;
+          } else if (tab === 'vouchers') {
+            document.getElementById('tabContentVouchers').classList.remove('hidden');
+            document.getElementById('subTabVouchers').className = activeBtnClass;
+            if (selectedStore) {
+              if (document.getElementById('inputCurrentUserQuota')) {
+                document.getElementById('inputCurrentUserQuota').value = selectedStore.users;
+              }
+              if (document.getElementById('inputUserExpiryFollowStore')) {
+                document.getElementById('inputUserExpiryFollowStore').value = selectedStore.expiryDisplay;
+              }
+              renderFullVoucherHistory(selectedStore.id);
+            }
+          } else if (tab === 'sku') {
+            document.getElementById('tabContentSku').classList.remove('hidden');
+            document.getElementById('subTabSku').className = activeBtnClass;
+          }
+        }
+
+        // -------------------------------------------------------------
+        // 5. KELOLA VOUCHER & LISENSI LOGIC (STAGE 2)
+        // -------------------------------------------------------------
+        function openVoucherModal() {
+          switchStoreTab('vouchers');
+        }
+
+        function closeVoucherModal() {
+          document.getElementById('subFormTambahAkses').classList.add('hidden');
+          document.getElementById('subFormPerpanjangAkun').classList.add('hidden');
+        }
+
+        function toggleFormTambahAkses() {
+          const el = document.getElementById('subFormTambahAkses');
+          el.classList.toggle('hidden');
+          document.getElementById('subFormPerpanjangAkun').classList.add('hidden');
+        }
+
+        function handlePerpanjangOrUpgradeClick() {
+          if (currentPackage === 'lite') {
+            openUpgradeModal();
+          } else {
+            openPerpanjangModal();
+          }
+        }
+
+        function updatePerpanjangAkunPreview() {
+          const previewEl = document.getElementById('previewNewExpiryText');
+          if (!previewEl || !selectedStore) return;
+          if (!selectedStore.expiry || selectedStore.expiry === '-') {
+            previewEl.innerText = '+1 Tahun (12 Bulan)';
+            return;
+          }
+          const cur = new Date(selectedStore.expiry);
+          cur.setFullYear(cur.getFullYear() + 1);
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+          previewEl.innerText = `+1 Thn (Est. ${cur.getDate()} ${months[cur.getMonth()]} ${cur.getFullYear()})`;
+        }
+
+        function renderFullVoucherHistory(storeId) {
+          const list = voucherHistory[storeId] || [];
+
+          const tbody = document.getElementById('voucherHistoryBody');
+          tbody.innerHTML = '';
+
+          if (list.length === 0) {
+            const actionLabel = currentPackage === 'lite' ? 'Upgrade Akun' : 'Perpanjang Akun / Tambah Akses';
+            tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-400">Belum ada riwayat transaksi voucher/invoice untuk toko ini. Klik <strong>${actionLabel}</strong> di atas untuk membuat transaksi lisensi baru.</td></tr>`;
+            return;
+          }
+
+          list.forEach((item, idx) => {
+            let badgeStatus = '';
+            if (item.status === 'Sudah Terpakai') {
+              badgeStatus = `<span class="bg-slate-100 text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded">Sudah Terpakai</span>`;
+            } else if (item.status === 'Sedang Berjalan') {
+              badgeStatus = `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded">Sedang Berjalan</span>`;
+            } else {
+              badgeStatus = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Belum Terpakai</span>`;
+            }
+
+            let expiryBadge = '';
+            if (item.status === 'Belum Terpakai' && item.type === 'Perpanjang Akun') {
+              expiryBadge = `
+                <span class="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-900 px-2 py-0.5 rounded text-[11px] font-semibold" title="Masa aktif resmi bertambah setelah voucher berhasil di-klaim oleh toko">
+                  <i class="fa-regular fa-clock text-[10px] text-amber-600"></i>
+                  <span>${item.expiry || '+1 Tahun (Setelah Klaim)'}</span>
+                </span>
+              `;
+            } else {
+              expiryBadge = `
+                <span class="inline-flex items-center gap-1.5 bg-blue-50/80 border border-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px]">
+                  <i class="fa-regular fa-calendar-check text-[10px] text-blue-600"></i>
+                  <span>${item.expiry || selectedStore?.expiryDisplay || 's/d 31 Des 2026'}</span>
+                </span>
+              `;
+            }
+
+            let claimBtn = '';
+            if (item.status === 'Belum Terpakai' && item.type === 'Perpanjang Akun') {
+              claimBtn = `
+                <button onclick="simulateClaimVoucher('${item.voucher}')" title="Simulasi Toko Klaim Voucher (+1 Tahun Masa Aktif)" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 px-2 py-1 rounded text-[11px] font-bold transition-colors flex items-center space-x-1">
+                  <i class="fa-solid fa-check text-[10px]"></i>
+                  <span>Klaim</span>
+                </button>
+              `;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-50/70 transition-colors";
+            tr.innerHTML = `
+          <td class="py-3 px-3 text-center text-slate-400 font-mono">${idx + 1}</td>
+          <td class="py-3 px-3">
+            <button onclick="openInvoiceModal('${item.invoice}')" title="Klik untuk lihat detail invoice resmi" class="font-mono font-bold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1.5 transition-colors">
+              <span>${item.invoice}</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[9px] opacity-70"></i>
+            </button>
+          </td>
+          <td class="py-3 px-3 font-medium">${item.type}</td>
+          <td class="py-3 px-3 font-bold text-slate-800">${item.qty || item.amount || '-'}</td>
+          <td class="py-3 px-3 font-semibold text-slate-700">
+            ${expiryBadge}
+          </td>
+          <td class="py-3 px-3">${badgeStatus}</td>
+          <td class="py-3 px-3 text-slate-600">${item.by}</td>
+          <td class="py-3 px-3 text-center">
+            <div class="flex items-center justify-center space-x-1.5">
+              ${claimBtn}
+              <button onclick="openInvoiceModal('${item.invoice}')" title="Buka Detail Invoice" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-1 rounded text-[11px] font-semibold transition-colors flex items-center space-x-1">
+                <i class="fa-solid fa-file-invoice text-[10px]"></i>
+                <span>Lihat Inv</span>
+              </button>
+              <button onclick="copyInvoiceCode('${item.invoice}')" title="Salin Nomor Invoice" class="border border-slate-200 hover:bg-slate-100 text-slate-600 px-2 py-1 rounded text-[11px] font-semibold transition-colors">
+                <i class="fa-regular fa-copy text-[10px]"></i>
+              </button>
+            </div>
+          </td>
+        `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        let currentActiveInvoiceCode = null;
+
+        function openInvoiceModal(invoiceNo) {
+          if (!selectedStore) return;
+          const historyList = voucherHistory[selectedStore.id] || [];
+          const item = historyList.find(h => h.invoice === invoiceNo) || historyList[0] || {
+            invoice: invoiceNo,
+            type: 'Perpanjang Akun',
+            qty: '1 Tahun',
+            expiry: selectedStore.expiryDisplay,
+            voucher: '0726-EW4Q-Y894',
+            status: 'Sudah Terpakai',
+            date: '03 Juli 2026',
+            price: 'Rp 2,700,000'
+          };
+
+          currentActiveInvoiceCode = item.invoice;
+
+          document.getElementById('invModalNo').innerText = item.invoice;
+          document.getElementById('invModalDate').innerText = item.date || '03 Juli 2026';
+          document.getElementById('invModalStore').innerText = selectedStore.name;
+          document.getElementById('invModalPic').innerText = selectedStore.pic || 'Owner Toko';
+          document.getElementById('invModalPhone').innerText = selectedStore.phone;
+          document.getElementById('invModalVoucher').innerText = item.voucher || '0726-EW4Q-Y894';
+          document.getElementById('invModalStatus').innerText = item.status;
+
+          // Item Table
+          let itemName = '';
+          if (item.type === 'Tambah Akses') {
+            itemName = `Tambah Akses User Login (${item.qty}) inTechgra`;
+          } else if (item.type && item.type.startsWith('Upgrade')) {
+            itemName = `Upgrade Lisensi ${item.type} inTechgra (${item.qty})`;
+          } else if (item.type === 'Implementasi') {
+            itemName = `Layanan Implementasi Toko (${item.qty})`;
+          } else {
+            itemName = `Paket ${currentPackage.toUpperCase()} inTechgra (${item.qty})`;
+          }
+          const priceText = item.price || (item.type === 'Tambah Akses' ? 'Rp 150,000' : 'Rp 2,700,000');
+
+          document.getElementById('invModalItemName').innerText = itemName;
+          document.getElementById('invModalUnitPrice').innerText = priceText;
+          document.getElementById('invModalQty').innerText = item.type === 'Tambah Akses' ? (item.qty.replace(/[^0-9]/g, '') || '1') : '1';
+          document.getElementById('invModalTotalPrice').innerText = priceText;
+          document.getElementById('invModalTotalTagihan').innerText = priceText;
+          document.getElementById('invModalStatusSummary').innerText = item.status.toUpperCase();
+
+          // Watermark
+          const watermarkEl = document.getElementById('invWatermarkText');
+          if (item.status === 'Sudah Terpakai') {
+            watermarkEl.innerText = 'SUDAH TERPAKAI';
+            watermarkEl.className = 'text-5xl sm:text-6xl font-black text-emerald-600 uppercase tracking-widest -rotate-25 border-4 sm:border-8 border-emerald-600 px-8 py-3 rounded-2xl';
+          } else if (item.status === 'Sedang Berjalan') {
+            watermarkEl.innerText = 'IMPLEMENTASI';
+            watermarkEl.className = 'text-5xl sm:text-6xl font-black text-blue-600 uppercase tracking-widest -rotate-25 border-4 sm:border-8 border-blue-600 px-8 py-3 rounded-2xl';
+          } else {
+            watermarkEl.innerText = 'BELUM TERPAKAI';
+            watermarkEl.className = 'text-5xl sm:text-6xl font-black text-amber-500 uppercase tracking-widest -rotate-25 border-4 sm:border-8 border-amber-500 px-8 py-3 rounded-2xl';
+          }
+
+          // Tombol Klaim di Modal
+          const btnModalClaim = document.getElementById('btnModalClaimVoucher');
+          if (btnModalClaim) {
+            if (item.status === 'Belum Terpakai' && item.type === 'Perpanjang Akun') {
+              btnModalClaim.classList.remove('hidden');
+            } else {
+              btnModalClaim.classList.add('hidden');
+            }
+          }
+
+          document.getElementById('modalDetailInvoice').classList.remove('hidden');
+        }
+
+        function closeInvoiceModal() {
+          document.getElementById('modalDetailInvoice').classList.add('hidden');
+        }
+
+        function downloadInvoicePdf() {
+          const invNo = document.getElementById('invModalNo').innerText;
+          showToast(`Mengunduh Invoice PDF resmi: ${invNo}.pdf`);
+        }
+
+        function submitGenerateVoucherUser() {
+          if (!selectedStore) return;
+          const userAddition = document.getElementById('inputAddUserSeat').value;
+          const newInv = `INV/2026/09/${Math.floor(100 + Math.random() * 900)}`;
+          const newSN = `0726-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+          // Aturan Bisnis: Masa aktif user login otomatis mengikuti masa aktif toko
+          const userExpiry = selectedStore.expiryDisplay;
+
+          if (!voucherHistory[selectedStore.id]) {
+            voucherHistory[selectedStore.id] = [];
+          }
+
+          voucherHistory[selectedStore.id].unshift({
+            no: voucherHistory[selectedStore.id].length + 1,
+            invoice: newInv,
+            type: 'Tambah Akses',
+            qty: userAddition,
+            expiry: userExpiry,
+            voucher: newSN,
+            price: 'Rp 150,000',
+            status: 'Belum Terpakai',
+            by: 'Cathrine Widjaja',
+            date: 'Hari ini'
+          });
+
+          renderFullVoucherHistory(selectedStore.id);
+          toggleFormTambahAkses();
+          showToast(`Invoice ${newInv} untuk ${userAddition} (Masa aktif ${userExpiry}) berhasil dibuat!`);
+        }
+
+        // -------------------------------------------------------------
+        // 5B. PERPANJANG AKUN (SESUAI REPLIKA GAMBAR DENGAN EDIT COUNT TAHUN)
+        // -------------------------------------------------------------
+        let perpanjangYears = 1;
+        let perpanjangExtraUsers = 0;
+
+        function openPerpanjangModal() {
+          if (!selectedStore) return;
+          perpanjangYears = 1;
+          perpanjangExtraUsers = 0;
+
+          const pkgTitle = currentPackage === 'basic' ? 'InTechgra Basic' : 'InTechgra Pro';
+          const pkgRate = currentPackage === 'basic' ? 2700000 : 4000000;
+          const pkgRateText = currentPackage === 'basic' ? '(Rp 2,700,000/tahun)' : '(Rp 4,000,000/tahun)';
+
+          document.getElementById('modalPerpanjangTitle').innerText = `Perpanjang Akun ${pkgTitle}`;
+          document.getElementById('perpanjangPlanLabel').innerHTML = `Paket inTechgra ${currentPackage === 'basic' ? 'Basic' : 'Pro'} + 3 user login <span id="perpanjangPlanRateText" class="text-slate-400 font-normal">${pkgRateText}</span>`;
+          document.getElementById('perpanjangYearsCount').innerText = `${perpanjangYears} Tahun`;
+          document.getElementById('perpanjangExtraUsersCount').innerText = `${perpanjangExtraUsers}`;
+
+          calculatePerpanjangTotal();
+          document.getElementById('modalPerpanjangAkun').classList.remove('hidden');
+        }
+
+        function closePerpanjangModal() {
+          document.getElementById('modalPerpanjangAkun').classList.add('hidden');
+        }
+
+        function changePerpanjangYears(delta) {
+          perpanjangYears = Math.max(1, Math.min(10, perpanjangYears + delta));
+          document.getElementById('perpanjangYearsCount').innerText = `${perpanjangYears} Tahun`;
+          calculatePerpanjangTotal();
+        }
+
+        function changePerpanjangExtraUsers(delta) {
+          perpanjangExtraUsers = Math.max(0, Math.min(20, perpanjangExtraUsers + delta));
+          document.getElementById('perpanjangExtraUsersCount').innerText = `${perpanjangExtraUsers}`;
+          calculatePerpanjangTotal();
+        }
+
+        function calculatePerpanjangTotal() {
+          const baseRatePerYear = currentPackage === 'basic' ? 2700000 : 4000000;
+          const planTotal = perpanjangYears * baseRatePerYear;
+          const extraUserTotal = perpanjangExtraUsers * 125000 * perpanjangYears;
+          const grandTotal = planTotal + extraUserTotal;
+
+          document.getElementById('perpanjangPlanPrice').innerText = `Rp ${planTotal.toLocaleString('id-ID')}`;
+          document.getElementById('perpanjangExtraUserPrice').innerText = extraUserTotal === 0 ? 'Rp 0' : `Rp ${extraUserTotal.toLocaleString('id-ID')}`;
+          document.getElementById('perpanjangTotalPrice').innerText = `Rp ${grandTotal.toLocaleString('id-ID')}`;
+        }
+
+        function submitPerpanjangPackage() {
+          if (!selectedStore) return;
+          const baseRatePerYear = currentPackage === 'basic' ? 2700000 : 4000000;
+          const planTotal = perpanjangYears * baseRatePerYear;
+          const extraUserTotal = perpanjangExtraUsers * 125000 * perpanjangYears;
+          const totalAmount = planTotal + extraUserTotal;
+          const totalUsers = 3 + perpanjangExtraUsers;
+
+          const newInv = `INV/2026/09/${Math.floor(100 + Math.random() * 900)}`;
+          const newSN = `0726-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+          // Estimasi masa aktif setelah klaim
+          let estExpiry = `+${perpanjangYears} Tahun (Setelah Klaim)`;
+          if (selectedStore.expiry && selectedStore.expiry !== '-') {
+            const d = new Date(selectedStore.expiry);
+            d.setFullYear(d.getFullYear() + perpanjangYears);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            estExpiry = `+${perpanjangYears} Thn (Est. ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()})`;
+          }
+
+          if (!voucherHistory[selectedStore.id]) {
+            voucherHistory[selectedStore.id] = [];
+          }
+
+          const descQty = perpanjangExtraUsers > 0 
+            ? `${perpanjangYears} Tahun (${totalUsers} Users)` 
+            : `${perpanjangYears} Tahun (3 Users)`;
+
+          voucherHistory[selectedStore.id].unshift({
+            no: voucherHistory[selectedStore.id].length + 1,
+            invoice: newInv,
+            type: 'Perpanjang Akun',
+            qty: descQty,
+            expiry: estExpiry,
+            voucher: newSN,
+            price: `Rp ${totalAmount.toLocaleString('id-ID')}`,
+            status: 'Belum Terpakai',
+            by: 'Cathrine Widjaja',
+            date: 'Hari ini',
+            years: perpanjangYears,
+            extraUsers: perpanjangExtraUsers
+          });
+
+          renderFullVoucherHistory(selectedStore.id);
+          closePerpanjangModal();
+          showToast(`Invoice ${newInv} & Voucher Perpanjangan ${perpanjangYears} Tahun berhasil dibuat! Masa aktif resmi bertambah setelah voucher di-klaim.`);
+
+          // Buka modal invoice resmi
+          setTimeout(() => {
+            openInvoiceModal(newInv);
+          }, 350);
+        }
+
+        function simulateClaimVoucher(voucherOrInv) {
+          if (!selectedStore) return;
+          const historyList = voucherHistory[selectedStore.id] || [];
+          const item = historyList.find(h => h.voucher === voucherOrInv || h.invoice === voucherOrInv);
+          if (!item) return;
+
+          if (item.status === 'Sudah Terpakai') {
+            showToast(`Voucher ${item.voucher} sudah berstatus terpakai.`);
+            return;
+          }
+
+          // Perbarui status voucher menjadi Sudah Terpakai
+          item.status = 'Sudah Terpakai';
+
+          // Perpanjang masa aktif toko sesuai durasi tahun voucher (default: 1 tahun jika tidak ada properti years)
+          const addYears = item.years || 1;
+          let baseDate = new Date();
+          if (selectedStore.expiry && selectedStore.expiry !== '-') {
+            baseDate = new Date(selectedStore.expiry);
+          }
+          baseDate.setFullYear(baseDate.getFullYear() + addYears);
+
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+          const formattedDisplay = `${baseDate.getDate()} ${months[baseDate.getMonth()]} ${baseDate.getFullYear()}`;
+          const y = baseDate.getFullYear();
+          const m = String(baseDate.getMonth() + 1).padStart(2, '0');
+          const d = String(baseDate.getDate()).padStart(2, '0');
+
+          selectedStore.expiry = `${y}-${m}-${d}`;
+          selectedStore.expiryDisplay = formattedDisplay;
+          selectedStore.status = 'Aktif';
+
+          // Jika ada penambahan user login
+          if (item.extraUsers && item.extraUsers > 0) {
+            const currentTotalUsers = parseInt(selectedStore.users) || 3;
+            const newTotalUsers = currentTotalUsers + item.extraUsers;
+            selectedStore.users = `${newTotalUsers} / ${newTotalUsers} User`;
+            if (document.getElementById('detailInfoUsers')) {
+              document.getElementById('detailInfoUsers').innerText = selectedStore.users;
+            }
+          }
+
+          // Perbarui kolom expiry di data item history
+          item.expiry = `s/d ${formattedDisplay}`;
+
+          // Sinkronisasi elemen tampilan di Halaman Toko
+          if (document.getElementById('detailInfoExpiry')) {
+            document.getElementById('detailInfoExpiry').innerText = selectedStore.expiryDisplay;
+          }
+          if (document.getElementById('inputCurrentExpiryModal')) {
+            document.getElementById('inputCurrentExpiryModal').value = selectedStore.expiryDisplay;
+          }
+          if (document.getElementById('inputUserExpiryFollowStore')) {
+            document.getElementById('inputUserExpiryFollowStore').value = selectedStore.expiryDisplay;
+          }
+          updatePerpanjangAkunPreview();
+
+          renderFullVoucherHistory(selectedStore.id);
+          showToast(`Voucher ${item.voucher} berhasil di-klaim oleh toko! Masa aktif resmi bertambah ${addYears} tahun (s/d ${formattedDisplay}).`);
+        }
+
+        function simulateClaimCurrentInvoiceVoucher() {
+          if (currentActiveInvoiceCode) {
+            simulateClaimVoucher(currentActiveInvoiceCode);
+            openInvoiceModal(currentActiveInvoiceCode);
+          }
+        }
+
+        function copyInvoiceCode(code) {
+          navigator.clipboard.writeText(code).then(() => {
+            showToast(`Kode Invoice ${code} berhasil disalin ke clipboard!`);
+          }).catch(() => {
+            showToast(`Kode Invoice: ${code}`);
+          });
+        }
+
+        function copyVoucherCode(code) {
+          copyInvoiceCode(code);
+        }
+
+        // -------------------------------------------------------------
+        // 5B. UPGRADE AKUN INTECHGRA (LITE KE BASIC/PRO & BASIC KE PRO)
+        // -------------------------------------------------------------
+        let upgradeExtraUsers = 0;
+
+        function openUpgradeModal() {
+          upgradeExtraUsers = 0;
+          document.getElementById('upgradeExtraUsersCount').innerText = '0';
+
+          const upgradeOptionBasic = document.getElementById('upgradeOptionBasic');
+          const upgradeOptionPro = document.getElementById('upgradeOptionPro');
+
+          // Reset radio buttons
+          const radios = document.getElementsByName('upgradeTierRadio');
+          radios.forEach(r => r.checked = false);
+
+          if (currentPackage === 'basic') {
+            // Toko sudah di paket Basic: sembunyikan opsi Basic, tampilkan dan pilih opsi Pro
+            if (upgradeOptionBasic) upgradeOptionBasic.classList.add('hidden');
+            if (upgradeOptionPro) upgradeOptionPro.classList.remove('hidden');
+            const proRadio = document.querySelector('input[name="upgradeTierRadio"][value="pro"]');
+            if (proRadio) proRadio.checked = true;
+          } else {
+            // Toko di paket Lite: tampilkan kedua pilihan Basic & Pro
+            if (upgradeOptionBasic) upgradeOptionBasic.classList.remove('hidden');
+            if (upgradeOptionPro) upgradeOptionPro.classList.remove('hidden');
+          }
+
+          calculateUpgradeTotal();
+          document.getElementById('modalUpgradeAkun').classList.remove('hidden');
+        }
+
+        function closeUpgradeModal() {
+          document.getElementById('modalUpgradeAkun').classList.add('hidden');
+        }
+
+        function changeUpgradeExtraUsers(delta) {
+          upgradeExtraUsers = Math.max(0, Math.min(10, upgradeExtraUsers + delta));
+          document.getElementById('upgradeExtraUsersCount').innerText = upgradeExtraUsers;
+          calculateUpgradeTotal();
+        }
+
+        function calculateUpgradeTotal() {
+          const selectedRadio = document.querySelector('input[name="upgradeTierRadio"]:checked');
+          const basePlanRateEl = document.getElementById('upgradeBasePlanRate');
+          const basePlanPriceEl = document.getElementById('upgradeBasePlanPrice');
+          const extraPriceEl = document.getElementById('upgradeExtraUserPrice');
+
+          let basePrice = 0;
+          let rateText = '(Rp0/tahun)';
+
+          if (selectedRadio) {
+            if (selectedRadio.value === 'basic') {
+              basePrice = 1800000;
+              rateText = '(Rp 1.800.000/tahun)';
+            } else if (selectedRadio.value === 'pro') {
+              basePrice = 2700000;
+              rateText = '(Rp 2.700.000/tahun)';
+            }
+          }
+
+          const extraCost = upgradeExtraUsers * 125000;
+
+          basePlanRateEl.innerText = rateText;
+          basePlanPriceEl.innerText = basePrice === 0 ? 'Rp0' : `Rp ${basePrice.toLocaleString('id-ID')}`;
+          extraPriceEl.innerText = extraCost === 0 ? 'Rp 0' : `Rp ${extraCost.toLocaleString('id-ID')}`;
+        }
+
+        function submitUpgradePackage() {
+          if (!selectedStore) return;
+          const selectedRadio = document.querySelector('input[name="upgradeTierRadio"]:checked');
+          if (!selectedRadio) {
+            alert('Silakan pilih salah satu upgrade paket terlebih dahulu (Upgrade ke Basic atau Pro).');
+            return;
+          }
+
+          const tier = selectedRadio.value; // 'basic' or 'pro'
+          const tierName = tier === 'basic' ? 'Basic' : 'Pro';
+          const basePrice = tier === 'basic' ? 1800000 : 2700000;
+          const extraCost = upgradeExtraUsers * 125000;
+          const totalAmount = basePrice + extraCost;
+          const totalUsers = 3 + upgradeExtraUsers;
+
+          const newInv = `INV/UPG/2026/09/${Math.floor(100 + Math.random() * 900)}`;
+          const newSN = `UPG-${tier.toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+          // Masa aktif baru: 1 tahun dari sekarang
+          const d = new Date();
+          d.setFullYear(d.getFullYear() + 1);
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+          const formattedExpiry = `s/d ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+          const displayExpiry = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+          if (!voucherHistory[selectedStore.id]) {
+            voucherHistory[selectedStore.id] = [];
+          }
+
+          const newHistoryItem = {
+            no: voucherHistory[selectedStore.id].length + 1,
+            invoice: newInv,
+            type: `Upgrade ke ${tierName}`,
+            qty: `1 Thn (${totalUsers} Users)`,
+            expiry: formattedExpiry,
+            voucher: newSN,
+            price: `Rp ${totalAmount.toLocaleString('id-ID')}`,
+            status: 'Belum Terpakai',
+            by: 'Cathrine Widjaja',
+            date: 'Hari ini'
+          };
+
+          voucherHistory[selectedStore.id].unshift(newHistoryItem);
+
+          // Perbarui status dan kuota toko
+          selectedStore.users = `${totalUsers} / ${totalUsers} User`;
+          selectedStore.expiryDisplay = displayExpiry;
+          selectedStore.status = 'Aktif';
+
+          // Update UI elements secara dinamis
+          if (document.getElementById('detailInfoUsers')) {
+            document.getElementById('detailInfoUsers').innerText = selectedStore.users;
+          }
+          if (document.getElementById('detailInfoExpiry')) {
+            document.getElementById('detailInfoExpiry').innerText = selectedStore.expiryDisplay;
+          }
+          if (document.getElementById('inputCurrentExpiryModal')) {
+            document.getElementById('inputCurrentExpiryModal').value = selectedStore.expiryDisplay;
+          }
+          if (document.getElementById('inputCurrentUserQuota')) {
+            document.getElementById('inputCurrentUserQuota').value = selectedStore.users;
+          }
+          if (document.getElementById('inputUserExpiryFollowStore')) {
+            document.getElementById('inputUserExpiryFollowStore').value = selectedStore.expiryDisplay;
+          }
+
+          // Sesuaikan tombol aksi di Tab Kelola Voucher
+          const btnImpl = document.getElementById('btnImplementasi');
+          if (btnImpl) btnImpl.classList.add('hidden');
+          const btnTambah = document.getElementById('btnTambahAkses');
+          if (btnTambah) btnTambah.classList.remove('hidden');
+          const btnPerpanjangText = document.getElementById('btnPerpanjangText');
+          if (btnPerpanjangText) btnPerpanjangText.innerText = 'Perpanjang Akun';
+          const btnPerpanjangIcon = document.getElementById('btnPerpanjangIcon');
+          if (btnPerpanjangIcon) btnPerpanjangIcon.className = 'fa-solid fa-calendar-plus text-[11px]';
+          const btnPerpanjangAkun = document.getElementById('btnPerpanjangAkun');
+          if (btnPerpanjangAkun) {
+            btnPerpanjangAkun.classList.remove('hidden');
+            btnPerpanjangAkun.className = 'bg-[#1976d2] hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center space-x-1.5';
+          }
+          const quickTabVoucherText = document.getElementById('quickTabVoucherText');
+          if (quickTabVoucherText) quickTabVoucherText.innerText = 'Kelola Voucher';
+
+          const btnUpgradeAkun = document.getElementById('btnUpgradeAkun');
+          if (tier === 'pro') {
+            // Jika sudah di-upgrade ke Pro, sembunyikan tombol upgrade karena Pro adalah tier tertinggi
+            if (btnUpgradeAkun) btnUpgradeAkun.classList.add('hidden');
+          } else {
+            // Jika di-upgrade ke Basic, tombol upgrade tetap ada agar nanti bisa lanjut upgrade ke Pro
+            if (btnUpgradeAkun) btnUpgradeAkun.classList.remove('hidden');
+          }
+
+          renderFullVoucherHistory(selectedStore.id);
+          closeUpgradeModal();
+          showToast(`Berhasil generate voucher upgrade ke inTechgra ${tierName} (${totalUsers} User)!`);
+
+          // Buka modal invoice resmi yang baru saja dibuat
+          setTimeout(() => {
+            openInvoiceModal(newInv);
+          }, 350);
+        }
+
+        // -------------------------------------------------------------
+        // 5C. FORM IMPLEMENTASI LOGIC
+        // -------------------------------------------------------------
+        const areaPricelist = {
+          jabobarban: { name: 'Jabobarban', price: 1250000, label: 'Paket Implementasi Jabobarban (Rp1.250.000/Minggu)' },
+          jateng: { name: 'Jawa Tengah', price: 875000, label: 'Paket Implementasi Jawa Tengah (Rp875.000/Minggu)' },
+          jatim: { name: 'Jawa Timur', price: 1000000, label: 'Paket Implementasi Jawa Timur (Rp1.000.000/Minggu)' }
+        };
+
+        let implWeeks = 1;
+        let implAdmins = 0;
+        let currentImplAreaKey = 'jabobarban';
+
+        function detectStoreArea(store) {
+          if (!store) return 'jabobarban';
+          const prov = (store.provinsi || '').toLowerCase();
+          const city = (store.city || '').toLowerCase();
+
+          if (prov.includes('jawa tengah') || prov.includes('yogyakarta') || city.includes('semarang') || city.includes('solo') || city.includes('magelang')) {
+            return 'jateng';
+          }
+          if (prov.includes('jawa timur') || city.includes('surabaya') || city.includes('malang') || city.includes('sidoarjo') || city.includes('jember')) {
+            return 'jatim';
+          }
+          return 'jabobarban'; // Default (DKI Jakarta, Jawa Barat, Banten)
+        }
+
+        function openImplementasiModal() {
+          if (!selectedStore) return;
+
+          // Reset counters
+          implWeeks = 1;
+          implAdmins = 0;
+          document.getElementById('implWeekCount').innerText = implWeeks;
+          document.getElementById('implAdminCount').innerText = implAdmins;
+
+          // Auto-select package based on store
+          const pkgCapital = currentPackage.charAt(0).toUpperCase() + currentPackage.slice(1);
+          document.getElementById('implPaketAkun').value = pkgCapital;
+
+          // Area detection mapping
+          currentImplAreaKey = detectStoreArea(selectedStore);
+          document.getElementById('implAreaSelect').value = currentImplAreaKey;
+          updateImplAreaUI();
+
+          // Dates default: today to 7 days ahead (1 week)
+          const today = new Date();
+          const nextWeek = new Date();
+          nextWeek.setDate(today.getDate() + 7);
+
+          const fmt = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+          };
+
+          document.getElementById('implStartDate').value = fmt(today);
+          document.getElementById('implEndDate').value = fmt(nextWeek);
+
+          // Notes reset
+          document.getElementById('implNotes').value = '';
+
+          calculateImplTotal();
+          document.getElementById('modalImplementasi').classList.remove('hidden');
+        }
+
+        function closeImplementasiModal() {
+          document.getElementById('modalImplementasi').classList.add('hidden');
+        }
+
+        function onImplAreaChange() {
+          currentImplAreaKey = document.getElementById('implAreaSelect').value;
+          updateImplAreaUI();
+          calculateImplTotal();
+        }
+
+        function updateImplAreaUI() {
+          const areaObj = areaPricelist[currentImplAreaKey] || areaPricelist.jabobarban;
+          document.getElementById('implAreaRateLabel').innerText = areaObj.label;
+          document.getElementById('implAreaBadge').innerText = `Area Terpetakan: ${areaObj.name}`;
+        }
+
+        function changeImplWeeks(delta) {
+          implWeeks = Math.max(0, Math.min(52, implWeeks + delta));
+          document.getElementById('implWeekCount').innerText = implWeeks;
+
+          // Adjust end date if start date exists
+          const startVal = document.getElementById('implStartDate').value;
+          if (startVal && implWeeks > 0) {
+            const startD = new Date(startVal);
+            startD.setDate(startD.getDate() + (implWeeks * 7));
+            const y = startD.getFullYear();
+            const m = String(startD.getMonth() + 1).padStart(2, '0');
+            const day = String(startD.getDate()).padStart(2, '0');
+            document.getElementById('implEndDate').value = `${y}-${m}-${day}`;
+          }
+
+          calculateImplTotal();
+        }
+
+        function changeImplAdmins(delta) {
+          implAdmins = Math.max(0, Math.min(20, implAdmins + delta));
+          document.getElementById('implAdminCount').innerText = implAdmins;
+          calculateImplTotal();
+        }
+
+        function calculateImplDurationFromDates() {
+          const startVal = document.getElementById('implStartDate').value;
+          const endVal = document.getElementById('implEndDate').value;
+          if (startVal && endVal) {
+            const startD = new Date(startVal);
+            const endD = new Date(endVal);
+            const diffTime = endD - startD;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 0) {
+              implWeeks = Math.max(1, Math.ceil(diffDays / 7));
+              document.getElementById('implWeekCount').innerText = implWeeks;
+              calculateImplTotal();
+            }
+          }
+        }
+
+        function calculateImplTotal() {
+          const areaObj = areaPricelist[currentImplAreaKey] || areaPricelist.jabobarban;
+          const areaCost = implWeeks * areaObj.price;
+          const adminCost = implAdmins * 125000;
+          const total = areaCost + adminCost;
+
+          document.getElementById('implTotalCostDisplay').innerText = total === 0 ? 'Rp0' : `Rp ${total.toLocaleString('id-ID')}`;
+          return total;
+        }
+
+        function submitFormImplementasi() {
+          if (!selectedStore) return;
+          const pkgVal = document.getElementById('implPaketAkun').value;
+          if (!pkgVal) {
+            alert('Silakan pilih Paket Akun terlebih dahulu.');
+            return;
+          }
+
+          const teamVal = document.getElementById('implTeamSelect').value;
+          if (!teamVal) {
+            alert('Silakan pilih Implementator yang bertugas untuk toko ini.');
+            return;
+          }
+
+          const startVal = document.getElementById('implStartDate').value;
+          const endVal = document.getElementById('implEndDate').value;
+          if (!startVal || !endVal) {
+            alert('Silakan tentukan masa implementasi (Tanggal Mulai & Tanggal Akhir).');
+            return;
+          }
+
+          const areaObj = areaPricelist[currentImplAreaKey] || areaPricelist.jabobarban;
+          const totalAmount = calculateImplTotal();
+
+          const newInv = `INV/IMP/2026/09/${Math.floor(100 + Math.random() * 900)}`;
+          const newSN = `IMP-${areaObj.name.substring(0, 3).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+          // Format end date display
+          const d = new Date(endVal);
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+          const formattedEnd = `s/d ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+          if (!voucherHistory[selectedStore.id]) {
+            voucherHistory[selectedStore.id] = [];
+          }
+
+          const newHistoryItem = {
+            no: voucherHistory[selectedStore.id].length + 1,
+            invoice: newInv,
+            type: 'Implementasi',
+            qty: `${implWeeks} Minggu (${implAdmins} Admin)`,
+            expiry: formattedEnd,
+            voucher: newSN,
+            price: `Rp ${totalAmount.toLocaleString('id-ID')}`,
+            status: 'Sedang Berjalan',
+            by: teamVal,
+            date: 'Hari ini'
+          };
+
+          voucherHistory[selectedStore.id].unshift(newHistoryItem);
+
+          // Update status toko menjadi Implementasi saat berjalan implementasi
+          selectedStore.status = 'Implementasi';
+
+          // Update badge di header workspace toko
+          const wsBadge = document.getElementById('workspaceStatusBadge');
+          if (wsBadge) {
+            wsBadge.innerText = 'Implementasi';
+            wsBadge.className = "text-[10px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1";
+          }
+          // Update badge di Tab 1: Informasi Toko
+          const infoBadge = document.getElementById('infoStatus');
+          if (infoBadge) {
+            infoBadge.innerText = 'Implementasi';
+            infoBadge.className = "bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block";
+          }
+
+          // Sinkronisasi tabel utama dan counter metric di list toko
+          renderStoreTable();
+
+          renderFullVoucherHistory(selectedStore.id);
+          closeImplementasiModal();
+          showToast(`Form Implementasi (${areaObj.name}) berhasil ditambahkan! Status toko kini: Implementasi`);
+
+          // Buka modal invoice resmi implementasi
+          setTimeout(() => {
+            openInvoiceModal(newInv);
+          }, 350);
+        }
+
+        // -------------------------------------------------------------
+        // 6. STAGE 3: EXPORT & IMPORT SKU HELPER
+        // -------------------------------------------------------------
+        function openSkuMigrationView() {
+          switchStoreTab('sku');
+        }
+
+        function backToStoreDetail() {
+          closeStoreWorkspace();
+        }
+
+        function downloadSmartTemplate() {
+          showToast('Mengunduh template: 76.550 sisa barang (3.450 SKU eksisting telah difilter keluar)...');
+        }
+
+        function downloadStoreCurrentData() {
+          showToast('Mengunduh data aktif 3.450 SKU (Read-Only / Lembar Opname)...');
+        }
+
+        function simulateFileSelection(input) {
+          if (!input.files || input.files.length === 0) return;
+          const file = input.files[0];
+
+          const container = document.getElementById('uploadProgressBarContainer');
+          const bar = document.getElementById('uploadProgressBar');
+          const percent = document.getElementById('uploadProgressPercent');
+          const status = document.getElementById('uploadProgressStatus');
+          const name = document.getElementById('uploadFileName');
+
+          name.innerText = `${file.name} (Estimasi 1.250 baris data)`;
+          container.classList.remove('hidden');
+
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += 20;
+            if (progress > 100) progress = 100;
+            bar.style.width = progress + '%';
+            percent.innerText = progress + '%';
+
+            if (progress === 40) {
+              status.innerText = 'Mencocokkan kode barang dengan 80.000 SKU nasional...';
+            } else if (progress === 80) {
+              status.innerText = 'Menyaring duplikat & memvalidasi dropdown satuan...';
+            } else if (progress === 100) {
+              clearInterval(interval);
+              status.innerText = 'Selesai diinjeksikan ke Database Azure Toko!';
+              setTimeout(() => {
+                alert('🎉 HASIL BATCH IMPORT KE AZURE:\n\n✅ 1.238 SKU Baru Berhasil Masuk ke Toko\n⏭️ 12 SKU Duplikat Otomatis Dilewati (Data Toko Aman)\n\nData stok & harga awal telah aktif di sistem toko!');
+                container.classList.add('hidden');
+                bar.style.width = '0%';
+              }, 400);
+            }
+          }, 350);
+        }
+
+        function openAddGlobalSkuModal() {
+          document.getElementById('modalAddGlobalSku').classList.remove('hidden');
+        }
+
+        function closeAddGlobalSkuModal() {
+          document.getElementById('modalAddGlobalSku').classList.add('hidden');
+        }
+
+        function saveGlobalSku() {
+          const code = document.getElementById('globalSkuCode').value;
+          const name = document.getElementById('globalSkuName').value;
+          if (!code || !name) {
+            alert('Lengkapi kode barcode dan nama produk');
+            return;
+          }
+          closeAddGlobalSkuModal();
+          showToast(`SKU Global ${code} berhasil didaftarkan ke katalog master 80.000!`);
+          document.getElementById('globalSkuCode').value = '';
+          document.getElementById('globalSkuName').value = '';
+        }
+
+        // -------------------------------------------------------------
+        // 7. TOAST NOTIFICATION UTILITY
+        // -------------------------------------------------------------
+        let toastTimeout = null;
+        function showToast(message) {
+          const toast = document.getElementById('toastNotification');
+          const msg = document.getElementById('toastMessage');
+          msg.innerText = message;
+
+          toast.classList.remove('translate-y-12', 'opacity-0');
+          toast.classList.add('translate-y-0', 'opacity-100');
+
+          if (toastTimeout) clearTimeout(toastTimeout);
+          toastTimeout = setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-12', 'opacity-0');
+          }, 3000);
+        }
+
+        function switchSidebarMenu(menu) {
+          if (menu !== 'toko') {
+            showToast(`Menu ${menu} adalah simulasi. Klik 'Manajemen Toko' untuk alur Stage 1-3.`);
+          }
+        }
+      </script>
+</body>
+
+</html>
